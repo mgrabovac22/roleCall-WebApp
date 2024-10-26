@@ -1,9 +1,16 @@
 {
-  "dependencies": {
-    "express": "^4.21.1",
-    "path": "^0.12.7"
+  "name": "servis",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "servis": "tsc && node build/servis/server.js",
+    "aplikacija": "tsc && node build/aplikacija/server.js"
   },
-  "devDependencies": {
-    "@types/node": "^22.8.1"
-  }
+  "keywords": [
+    "aplikacija"
+  ],
+  "author": "Marin Grabovac",
+  "license": "ISC",
+  "description": ""
 }
