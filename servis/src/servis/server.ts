@@ -1,18 +1,35 @@
 import express from "express";
-/*import { fileURLToPath } from 'url';
-import path from 'path';
+import { __filename, __dirname, dajPortSevis } from '../moduli/okolinaUtils.js';
+import { Konfiguracija } from "../moduli/upravljateljKonfiguracije.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);*/
-
+const port = dajPortSevis("mgrabovac22");
+const konfiguracija = new Konfiguracija();
 const server = express();
-server.use(express.json());
 
-let fun = function(zahtjev:express.Request, odgovor:express.Response){
-    odgovor.send('Hello world!');
-  };
-server.get('/', fun);
+try {
+    server.use(express.json());
 
-server.listen(12000, () => {
-    console.log("Server is running on http://localhost:12000");
-});
+    await konfiguracija.ucitajKonfiguraciju();
+	console.log("Konfiguracija učitana i provjerena.");
+
+
+    let fun = function(zahtjev:express.Request, odgovor:express.Response){
+        odgovor.send('Hello world!');
+      };
+
+    server.get('/', fun);
+    
+    server.listen(port, () => {
+        if (port == 12223) { 
+            console.log("Server je pokrenut na http://localhost:" + port);
+        }
+        else{
+            console.log("Server je pokrenut na http://spider.foi.hr:" + port);
+        }
+    });
+} catch (error) {
+    console.error("Greska pri pokretanju server: ", error);
+    process.exit(1);
+}
+
+

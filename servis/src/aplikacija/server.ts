@@ -1,18 +1,35 @@
 import express from "express";
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { __filename, __dirname, dajPort } from '../moduli/okolinaUtils.js';
+import { Konfiguracija } from "../moduli/upravljateljKonfiguracije.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+const port = dajPort("mgrabovac22");
+const konfiguracija = new Konfiguracija();
 const server = express();
 
-server.get("/dokumentacija", (zahtjev, odgovor) => {
-    odgovor.sendFile(path.join(__dirname, "../../dokumentacija/dokumentacija.html"));
-});
-server.use("/css", express.static(path.join(__dirname, "./css")));
+try {
+    server.use(express.json());
+
+    await konfiguracija.ucitajKonfiguraciju();
+	console.log("Konfiguracija učitana i provjerena.");
 
 
-server.listen(3000, () => {
-    console.log("Server is running on http://localhost:3000");
-});
+    server.get("/dokumentacija", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
+    });
+    server.use("/css", express.static(path.join(__dirname(), "./css")));
+    
+    server.listen(port, () => {
+        if (port == 12222) { 
+            console.log("Server je pokrenut na http://localhost:" + port);
+        }
+        else{
+            console.log("Server je pokrenut na http://spider.foi.hr:" + port);
+        }
+    });
+} catch (error) {
+    console.error("Greska pri pokretanju server: ", error);
+    process.exit(1);
+}
+
+

@@ -9,8 +9,8 @@
 		"copy-files": "copyfiles -u 1 src/**/*.html src/**/*.css src/**/*.jpg 'src/**/*.js' build/",
 		"clean": "rm -r build/*",
 		"compile": "tsc --watch false",
-		"servis": "node build/servis/server.js podaci/konfiguracija.csv",
-		"aplikacija": "node build/aplikacija/server.js podaci/konfiguracija.csv",
+		"servis": "cd podaci && node ../build/servis/server.js",
+		"aplikacija": "cd podaci && node ../build/aplikacija/server.js",
 		"start": "npm run clean && npm run compile && npm run copy-files && npm run servis",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
