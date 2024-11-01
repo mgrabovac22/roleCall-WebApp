@@ -1,16 +1,30 @@
 {
-  "name": "servis",
-  "version": "1.0.0",
-  "main": "server.js",
-  "type": "module",
-  "scripts": {
-    "servis": "tsc && node build/servis/server.js",
-    "aplikacija": "tsc && node build/aplikacija/server.js"
-  },
-  "keywords": [
-    "aplikacija"
-  ],
-  "author": "Marin Grabovac",
-  "license": "ISC",
-  "description": ""
+	"name": "vjezba_04_dz1",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"type": "module",
+	"scripts": {
+		"pripremi": "npm link --save --package-lock false express  express-session cookie-parser better-sqlite3 cors jsonwebtoken nodemailer base32-encoding totp-generator",
+		"copy-files": "copyfiles -u 1 src/**/*.html src/**/*.css src/**/*.jpg 'src/**/*.js' build/",
+		"clean": "rm -r build/*",
+		"compile": "tsc --watch false",
+		"servis": "node build/servis/server.js podaci/konfiguracija.csv",
+		"aplikacija": "node build/aplikacija/server.js podaci/konfiguracija.csv",
+		"start": "npm run clean && npm run compile && npm run copy-files && npm run servis",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Marin Grabovac",
+	"license": "ISC",
+	"dependencies": {
+		"base32-encoding": "file:../../../../../../../../../usr/lib/node_modules/base32-encoding",
+		"better-sqlite3": "file:../../../../../../../../../usr/lib/node_modules/better-sqlite3",
+		"cookie-parser": "file:../../../../../../../../../usr/lib/node_modules/cookie-parser",
+		"cors": "file:../../../../../../../../../usr/lib/node_modules/cors",
+		"express": "file:../../../../../../../../../usr/lib/node_modules/express",
+		"express-session": "file:../../../../../../../../../usr/lib/node_modules/express-session",
+		"jsonwebtoken": "file:../../../../../../../../../usr/lib/node_modules/jsonwebtoken",
+		"nodemailer": "file:../../../../../../../../../usr/lib/node_modules/nodemailer",
+		"totp-generator": "file:../../../../../../../../../usr/lib/node_modules/totp-generator"
+	}
 }

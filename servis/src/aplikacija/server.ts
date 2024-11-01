@@ -10,6 +10,7 @@ const server = express();
 server.get("/dokumentacija", (zahtjev, odgovor) => {
     odgovor.sendFile(path.join(__dirname, "../../dokumentacija/dokumentacija.html"));
 });
+server.use("/css", express.static(path.join(__dirname, "./css")));
 
 
 server.listen(3000, () => {
