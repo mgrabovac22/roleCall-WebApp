@@ -13,14 +13,36 @@ try {
     await konfiguracija.ucitajKonfiguraciju();
 	console.log("Konfiguracija učitana i provjerena.");
 
-
+    server.get("/", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/index.html"))
+    });
+    server.get("/login", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/login.html"))
+    });
+    server.get("/registracija", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/registracija.html"))
+    });
+    server.get("/dodavanje", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/dodavanje.html"))
+    });
+    server.get("/detalji", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/detalji.html"))
+    });
+    server.get("/korisnici", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/korisnici.html"))
+    });
+    server.get("/osobe", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/osobe.html"))
+    });
     server.get("/dokumentacija", (zahtjev, odgovor) => {
         odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
     });
+
+
     server.use("/css", express.static(path.join(__dirname(), "./css")));
     server.use("/slike", express.static(path.join(__dirname(), "./resursi/slike")));
     server.use("/dok", express.static(path.join(__dirname(), "../../dokumentacija")));
-    
+
     server.listen(port, () => {
         if (port == 12222) { 
             console.log("Server je pokrenut na http://localhost:" + port);

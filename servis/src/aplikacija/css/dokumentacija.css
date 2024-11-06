@@ -1,9 +1,6 @@
 body{
     background-color: lightblue;
-}
-
-#naslovDokumentacija{
-    text-align: center;
+    margin: 0;
 }
 
 @keyframes rotiraj {
@@ -17,6 +14,10 @@ body{
 
 #mojeInfo{
     text-align: center;
+}
+
+#mojaSlika{
+    padding-top: 2vh;
 }
 
 #mojaSlika:hover{
