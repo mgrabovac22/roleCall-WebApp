@@ -18,6 +18,8 @@ try {
         odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
     });
     server.use("/css", express.static(path.join(__dirname(), "./css")));
+    server.use("/slike", express.static(path.join(__dirname(), "./resursi/slike")));
+    server.use("/dok", express.static(path.join(__dirname(), "../../dokumentacija")));
     
     server.listen(port, () => {
         if (port == 12222) { 

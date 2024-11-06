@@ -1,6 +1,78 @@
 body{
-    background-color: olive;
+    background-color: lightblue;
 }
+
 #naslovDokumentacija{
     text-align: center;
 }
+
+@keyframes rotiraj {
+    from{
+        transform: rotate(360deg);
+    }
+    to{
+        transform: rotate(0deg);
+    }
+}
+
+#mojeInfo{
+    text-align: center;
+}
+
+#mojaSlika:hover{
+    animation: rotiraj infinite 2s linear;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+th, td {
+    padding: 14px 20px;
+    text-align: left;
+}
+
+th {
+    background-color: #3A506B;
+    color: #F0F5FA;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+tr:nth-child(even) {
+    background-color: #F7FBFC;
+}
+
+tr:nth-child(odd) {
+    background-color: #E9EEF2;
+}
+
+tr:hover {
+    background-color: #D4E6F1;
+}
+
+td {
+    color: #333;
+    font-size: 0.95em;
+}
+
+caption {
+    caption-side: top;
+    font-size: 1.25em;
+    font-weight: bold;
+    padding: 12px;
+    color: #3A506B;
+    text-align: center;
+}
+
+#eraModelKor{
+    text-align: center;
+}
+
