@@ -35,15 +35,11 @@ header nav a {
     transition: color 0.3s;
 }
 
-header nav a:hover {
-    color: #007acc;
-}
-
 #contHeader1{
     display: flex;
     align-items: center;
 }
 
-#trenutnaStranica{
+.trenutnaStranica, header nav a:hover{
     color: #007acc
 }
