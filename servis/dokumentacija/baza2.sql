@@ -70,4 +70,8 @@ VALUES (
   'Ovo je opis filma.'
 );
 
+INSERT INTO "korisnici"("naziv")
+VALUES ('Registrirani korisnik'),
+       ('Administrator');
+
 SELECT * FROM film;

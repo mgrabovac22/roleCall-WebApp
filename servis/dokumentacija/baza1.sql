@@ -18,9 +18,22 @@ CREATE TABLE "korisnik"(
     REFERENCES "tip_korisnika"("id")
 );
 
-INSERT INTO "tip_korisnika" ("naziv", "opis")
-VALUES 
-  ('administrator', 'Administrator sa svim pravima pristupa.'),
-  ('registrirani korisnik', 'Korisnik sa osnovnim pravima pristupa.');
+INSERT INTO "tip_korisnika"("naziv", "opis")
+VALUES ('Registrirani korisnik', 'Korisnik koji ima samo određena prava'),
+       ('Administrator', 'Korisnik koji nema ograničenja prava');
+
+INSERT INTO "korisnik" (
+  "ime", 
+  "prezime", 
+  "adresa", 
+  "korime", 
+  "lozinka", 
+  "email", 
+  "tip_korisnika_id", 
+  "status"
+)
+VALUES
+  ('Običan', 'Korisnik', 'Adresa 1', 'obican', 'rwa', 'obican@primjer.com', 2, 'aktivan'),
+  ('Admin', 'Korisnik', 'Adresa 2', 'admin', 'rwa', 'admin@primjer.com', 1, 'aktivan');
 
 SELECT * FROM tip_korisnika;

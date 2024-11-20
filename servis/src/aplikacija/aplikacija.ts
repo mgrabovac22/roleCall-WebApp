@@ -3,7 +3,8 @@ import path from 'path';
 import { __filename, __dirname, dajPort } from '../moduli/okolinaUtils.js';
 import { Konfiguracija } from "../moduli/upravljateljKonfiguracije.js";
 
-const port = dajPort("mgrabovac22");
+let port: Number = 3001;
+let provjera: Boolean = false;
 const konfiguracija = new Konfiguracija();
 const server = express();
 
@@ -43,8 +44,16 @@ try {
     server.use("/slike", express.static(path.join(__dirname(), "./resursi/slike")));
     server.use("/dok", express.static(path.join(__dirname(), "../../dokumentacija")));
 
+    if (process.argv[3] && process.argv[3] !== "") {
+        port = parseInt(process.argv[3]);
+        provjera = true;
+    }
+    else{
+        port = dajPort("mgrabovac22");
+    }
+
     server.listen(port, () => {
-        if (port == 12222) { 
+        if (port == 12222 || provjera) { 
             console.log("Server je pokrenut na http://localhost:" + port);
         }
         else{
