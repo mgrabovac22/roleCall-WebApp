@@ -1,4 +1,4 @@
-import { Osoba, Film, FilmOsoba } from "../../iServis/iTmdb.js";
+import { Osoba, Film, FilmOsoba, Slika } from "../../iServis/iTmdb.js";
 import Baza from "../db/bazaSQLite.js";
 import path from "path";
 import { __dirname } from "../../moduli/okolinaUtils.js";
@@ -126,6 +126,29 @@ export class OsobaDAO {
       await this.baza.ubaciAzurirajPodatke(sql, [osobaId, filmId]);
     }
 
+    return true;
+  }
+
+  async dajSlikeOsobe(id: number): Promise<Slika[]> {
+    const sql = `
+      SELECT * FROM slika
+      WHERE osoba_id = ?
+    `;
+    const podaci = await this.baza.dajPodatkePromise(sql, [id]) as Array<any>;
+
+    return podaci.map((p: any) => ({
+      id: p.id,
+      putanja_do_slike: p.putanja_do_slike,
+      osoba_id: p.osoba_id,
+    }));
+  }
+
+  async dodajSliku(slika: Slika): Promise<boolean> {
+    const sql = `
+      INSERT INTO slika (putanja_do_slike, osoba_id)
+      VALUES (?, ?)
+    `;
+    await this.baza.ubaciAzurirajPodatke(sql, [slika.putanja_do_slike, slika.osoba_id]);
     return true;
   }
 }

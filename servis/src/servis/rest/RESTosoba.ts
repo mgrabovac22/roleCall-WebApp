@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { OsobaDAO } from "../dao/osobaDAO.js";
-import { Osoba } from "../../iServis/iTmdb.js";
+import { Osoba, Slika } from "../../iServis/iTmdb.js";
 
 export class RestOsoba {
   private osobaDAO: OsobaDAO;
@@ -57,40 +57,56 @@ export class RestOsoba {
 
   async getOsobePoStranici(zahtjev: Request, odgovor: Response) {
     const stranica = parseInt(zahtjev.query["stranica"] as string) || 1;
-
+  
     try {
       const osobe = await this.osobaDAO.dajSvePoStranici(stranica);
-      odgovor.status(200).json(osobe);
+  
+      const osobeSaSlikama = await Promise.all(
+        osobe.map(async (osoba) => {
+          const slike = await this.osobaDAO.dajSlikeOsobe(osoba.id);
+          return {
+            ...osoba,
+            slike,
+          };
+        })
+      );
+  
+      odgovor.status(200).json(osobeSaSlikama);
     } catch (err) {
       console.error("Greška prilikom dohvaćanja osoba:", err);
       odgovor.status(500).json({ greska: "Greška prilikom dohvaćanja osoba" });
     }
   }
+  
 
   async getOsoba(zahtjev: Request, odgovor: Response) {
     const id = parseInt(zahtjev.params["id"] || "0");
     if (id === 0) {
-        odgovor.status(400).json({ greska: "Nevažeći ID osobe" });
-        return;
-    }
-
-    if (!id) {
-      odgovor.status(400).json({ greska: "Nedostaje ID osobe" });
+      odgovor.status(400).json({ greska: "Nevažeći ID osobe" });
       return;
     }
-
+  
     try {
       const osoba = await this.osobaDAO.daj(id);
       if (!osoba) {
         odgovor.status(404).json({ greska: "Osoba nije pronađena" });
         return;
       }
-      odgovor.status(200).json(osoba);
+  
+      const slike = await this.osobaDAO.dajSlikeOsobe(id);
+  
+      const rezultat = {
+        ...osoba,
+        slike,
+      };
+  
+      odgovor.status(200).json(rezultat);
     } catch (err) {
       console.error("Greška prilikom dohvaćanja osobe:", err);
       odgovor.status(500).json({ greska: "Greška prilikom dohvaćanja osobe" });
     }
   }
+  
 
   async getFilmoveOsobe(zahtjev: Request, odgovor: Response) {
     const id = parseInt(zahtjev.params["id"] || "0");
@@ -155,6 +171,29 @@ export class RestOsoba {
     } catch (err) {
       console.error("Greška prilikom brisanja veza između osobe i filmova:", err);
       odgovor.status(500).json({ greska: "Greška prilikom brisanja veza između osobe i filmova" });
+    }
+  }
+
+  async postSlika(zahtjev: Request, odgovor: Response) {
+    const { putanja_do_slike, osoba_id } = zahtjev.body;
+
+    if (!putanja_do_slike || !osoba_id) {
+      odgovor.status(400).json({ greska: "Nedostaju obavezni podaci za dodavanje slike" });
+      return;
+    }
+
+    const slika: Slika = {
+      id: 0,
+      putanja_do_slike,
+      osoba_id,
+    };
+
+    try {
+      await this.osobaDAO.dodajSliku(slika);
+      odgovor.status(201).json({ poruka: "Slika uspešno dodana" });
+    } catch (err) {
+      console.error("Greška prilikom dodavanja slike:", err);
+      odgovor.status(500).json({ greska: "Greška prilikom dodavanja slike" });
     }
   }
 }
