@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dodavanje</title>
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/dodavanje.css">
 </head>
 <body>
     <header>
@@ -24,10 +25,27 @@
         </nav>
     </header>
     <main>
-
+        <h1>Pretraži Osobe</h1>
+        <form id="searchForm">
+            <input type="text" id="searchInput" placeholder="Unesi ime osobe" required>
+            <button type="submit">Traži</button>
+        </form>
+        <table id="results">
+            <thead>
+            <tr>
+                <th>Ime i Prezime</th>
+                <th>Poznat po</th>
+                <th>Popularnost</th>
+                <th>Slika</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </main>
     <footer>
         
     </footer>
+    <script src="/jsk/osobePretrazi.js"></script>
 </body>
 </html>

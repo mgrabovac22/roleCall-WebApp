@@ -45,9 +45,13 @@ try {
     console.log(`Port: ${port}`);
 
     server.all("*", (zahtjev, odgovor, dalje)=>{
-        //logika za provjeravanje prijave
-
+        /*if(zahtjev.session.korime == null){
+			odgovor.redirect("/prijava");
+		}else{
+			dalje();
+		}*/
         dalje();
+
     })
 
     server.get("/", (zahtjev, odgovor) => {
