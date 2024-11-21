@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+/*import { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import { Konfiguracija } from "../../moduli/upravljateljKonfiguracije";
 
@@ -26,4 +26,4 @@ const sessionValidation = (req: Request, res: Response, next: NextFunction): voi
 };
   
 
-export { sessionMiddleware, sessionValidation };
+export { sessionMiddleware, sessionValidation };*/

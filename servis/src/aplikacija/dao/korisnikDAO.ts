@@ -7,7 +7,7 @@ export class KorisnikDAO {
   private baza: Baza;
 
   constructor() {
-    const apsolutnaPutanja = path.resolve(__dirname(), "../../../podaci/RWA2024mgrabovac22_servis.sqlite");
+    const apsolutnaPutanja = path.resolve(__dirname(), "../../../podaci/RWA2024mgrabovac22_web.sqlite");
     this.baza = new Baza(apsolutnaPutanja);
   }
 

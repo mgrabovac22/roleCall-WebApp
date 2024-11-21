@@ -1,13 +1,26 @@
 import express from "express";
 import path from "path";
+//import session from "express-session";
 import { __dirname, dajPort, dajPortServis } from "../moduli/okolinaUtils.js";
 import { Konfiguracija } from "../moduli/upravljateljKonfiguracije.js";
+import { RestKorisnik } from "./dao/servisKlijent.js";
 
 let port: number;
 let portServis: number;
 let provjeraPorta: boolean = false;
 const konfiguracija = new Konfiguracija();
+//let konf = konfiguracija.dajKonf();
 const server = express();
+const restKorisnik = new RestKorisnik();
+
+/*server.use(
+    session({
+        secret: konf.tajniKljucSesija,
+        resave: false,
+        saveUninitialized: false,
+        cookie: { secure: false },
+    })
+);*/
 
 try {
     server.use(express.json());
@@ -31,7 +44,14 @@ try {
     console.log(`PortServis: ${portServis}`);
     console.log(`Port: ${port}`);
 
+    server.all("*", (zahtjev, odgovor, dalje)=>{
+        //logika za provjeravanje prijave
+
+        dalje();
+    })
+
     server.get("/", (zahtjev, odgovor) => {
+
         odgovor.sendFile(path.join(__dirname(), "./html/index.html"));
     });
 
@@ -64,11 +84,17 @@ try {
     });
 
     server.use("/css", express.static(path.join(__dirname(), "./css")));
+    server.use("/jsk", express.static(path.join(__dirname(), "./jsk")));
     server.use("/slike", express.static(path.join(__dirname(), "./resursi/slike")));
     server.use("/dok", express.static(path.join(__dirname(), "../../dokumentacija")));
+    
+    server.post("/servis/korisnici", (req, res) => restKorisnik.postKorisnik(req, res));
+    server.post("/servis/prijava", (req, res) => restKorisnik.prijavaKorisnika(req, res));
+    server.get("/servis/korisnici", (req, res) => restKorisnik.getKorisnici(req, res));
+    server.get("/servis/tipovi-korisnika", (req, res) => restKorisnik.getTipoviKorisnika(req, res));
 
     server.listen(port, () => {
-        if (provjeraPorta) {
+        if (provjeraPorta || port==12222) {
             console.log(`Server je pokrenut na http://localhost:${port}`);
         } else {
             console.log(`Server je pokrenut na http://spider.foi.hr:${port}`);

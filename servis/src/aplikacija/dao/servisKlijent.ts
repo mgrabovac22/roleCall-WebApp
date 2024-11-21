@@ -1,50 +1,94 @@
-import { KorisnikDAO } from "./korisnikDAO.js";
-import { Korisnik, TipKorisnika } from "../../iAplikacija/iKorisnik.js";
+import { Request, Response } from "express";
+import { KorisnikDAO } from "../dao/korisnikDAO.js";
+import { kreirajSHA256 } from "../../moduli/generatori.js";
 
-export class ServisKlijent {
+export class RestKorisnik {
   private korisnikDAO: KorisnikDAO;
 
   constructor() {
     this.korisnikDAO = new KorisnikDAO();
   }
 
-  async dodajKorisnika(korisnik: Korisnik): Promise<boolean> {
+  async postKorisnik(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
+    const { ime, prezime, adresa, korime, lozinka, email, tip_korisnika_id, status } = zahtjev.body;
+
+    if (!korime || !lozinka || !email || !tip_korisnika_id) {
+      odgovor.status(400).json({ greska: "Nedostaju obavezni podaci (korime, lozinka, email, tip_korisnika_id)" });
+      return;
+    }
+
     try {
-      return await this.korisnikDAO.dodajKorisnika(korisnik);
-    } catch (error) {
-      console.error("Greška pri dodavanju korisnika:", error);
-      return false;
+      let hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
+      const uspjeh = await this.korisnikDAO.dodajKorisnika({
+        id: 0, 
+        ime: ime || null,
+        prezime: prezime || null,
+        adresa: adresa || null,
+        korime,
+        lozinka: hashLozinka,
+        email,
+        tip_korisnika_id,
+        status: status || null,
+      });
+
+      if (uspjeh) {
+        odgovor.status(201).json({ poruka: "Korisnik uspješno dodan" });
+      } else {
+        odgovor.status(400).json({ greska: "Dodavanje korisnika nije uspjelo" });
+      }
+    } catch (err) {
+      console.error("Greška prilikom dodavanja korisnika:", err);
+      odgovor.status(500).json({ greska: "Interna greška servera" });
     }
   }
 
-  async prijaviKorisnika(korime: string, lozinka: string): Promise<Korisnik | null> {
+  async prijavaKorisnika(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
+    const { korime, lozinka } = zahtjev.body;
+    
+    let hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
+    
+    if (!korime || !lozinka) {
+      odgovor.status(400).json({ greska: "Nedostaju podaci za prijavu (korime, lozinka)" });
+      return;
+    }
+
     try {
       const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);
-      if (korisnik && korisnik.lozinka === lozinka) {
-        return korisnik;
+      
+      if (korisnik && korisnik.lozinka === hashLozinka) {
+        
+        //zahtjev.session.korisnik = korisnik;
+        odgovor.status(200).json({ poruka: "Prijava uspješna", korisnik });
+      } else {
+        odgovor.status(401).json({ greska: "Pogrešni podaci za prijavu" });
       }
-      return null;
-    } catch (error) {
-      console.error("Greška pri prijavi korisnika:", error);
-      return null;
+    } catch (err) {
+      console.error("Greška prilikom prijave korisnika:", err);
+      odgovor.status(500).json({ greska: "Interna greška servera" });
     }
   }
 
-  async dajSveKorisnike(): Promise<Korisnik[]> {
+  async getKorisnici(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     try {
-      return await this.korisnikDAO.dajSveKorisnike();
-    } catch (error) {
-      console.error("Greška pri dohvaćanju korisnika:", error);
-      return [];
+      const korisnici = await this.korisnikDAO.dajSveKorisnike();
+      odgovor.status(200).json(korisnici);
+    } catch (err) {
+      console.error("Greška prilikom dohvaćanja korisnika:", err);
+      odgovor.status(500).json({ greska: "Interna greška servera" });
     }
   }
 
-  async dajTipoveKorisnika(): Promise<TipKorisnika[]> {
+  async getTipoviKorisnika(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     try {
-      return await this.korisnikDAO.dajTipoveKorisnika();
-    } catch (error) {
-      console.error("Greška pri dohvaćanju tipova korisnika:", error);
-      return [];
+      const tipoviKorisnika = await this.korisnikDAO.dajTipoveKorisnika();
+      odgovor.status(200).json(tipoviKorisnika);
+    } catch (err) {
+      console.error("Greška prilikom dohvaćanja tipova korisnika:", err);
+      odgovor.status(500).json({ greska: "Interna greška servera" });
     }
   }
 }

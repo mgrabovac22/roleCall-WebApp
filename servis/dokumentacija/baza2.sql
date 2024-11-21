@@ -35,7 +35,7 @@ CREATE TABLE "film_osoba"(
     FOREIGN KEY("osoba_id")
     REFERENCES "osoba"("id")
 );
-CREATE TABLE "korisnici"(
+CREATE TABLE "tip_korisnika"(
   "id" INTEGER PRIMARY KEY NOT NULL,
   "naziv" VARCHAR(100) NOT NULL,
   CONSTRAINT "id_UNIQUE"
@@ -45,10 +45,10 @@ CREATE TABLE "korisnik"(
   "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   "korime" VARCHAR(50) NOT NULL,
   "status" VARCHAR(45) NOT NULL,
-  "Korisnici_id" INTEGER NOT NULL,
+  "tip_korisnika_id" INTEGER NOT NULL,
   CONSTRAINT "fk_Korisnik_Korisnici1"
-    FOREIGN KEY("Korisnici_id")
-    REFERENCES "korisnici"("id")
+    FOREIGN KEY("tip_korisnika_id")
+    REFERENCES "tip_korisnika"("id")
 );
 
 INSERT INTO "film" (
@@ -70,7 +70,7 @@ VALUES (
   'Ovo je opis filma.'
 );
 
-INSERT INTO "korisnici"("naziv")
+INSERT INTO "tip_korisnika"("naziv")
 VALUES ('Registrirani korisnik'),
        ('Administrator');
 
