@@ -1,25 +1,65 @@
-import * as jwt from "../../moduli/jwtModul.js";
-import { Request, Response } from "express";
-import { RWASession } from "./upravljajHTML.js";
-export class FetchUpravitelj {
-  private tajniKljucJWT: string;
+import jwt from "jsonwebtoken";
+import {Request} from "express";
 
-  constructor(tajniKljucJWT: string) {
-    this.tajniKljucJWT = tajniKljucJWT;
-  }
+export function kreirajToken(korisnik:{korime:string}, tajniKljucJWT:string){
+	let token = jwt.sign({ korime: korisnik.korime }, tajniKljucJWT, { expiresIn: "15s" });
+	//console.log(token);
+  return token;
+}
 
-  async getJWT (zahtjev:Request, odgovor:Response) {
-    odgovor.type("json");
-    let sesija = zahtjev.session as RWASession;
-    if (sesija['korime'] != null) {
-      let k = { korime: sesija.korime };
-      let noviToken = jwt.kreirajToken(k, this.tajniKljucJWT);
-      odgovor.send({ ok: noviToken });
-      return;
+export function provjeriToken(zahtjev:Request, tajniKljucJWT:string) {
+ //	console.log("Provjera tokena: "+zahtjev.headers.authorization);
+    if (zahtjev.headers.authorization != null) {
+        console.log(zahtjev.headers.authorization);
+        let token = zahtjev.headers.authorization.split(" ")[1] ?? "";
+        console.log(token)
+        try {
+            let podaci = jwt.verify(token, tajniKljucJWT);
+            //console.log("JWT podaci: "+podaci);
+            return podaci;
+        } catch (e) {
+       //     console.log(e)
+            return false;
+        }
     }
-    odgovor.status(401);
-    odgovor.send({ greska: "nemam token!" });
-  };
+    return false;
+}
 
+export function dajToken(zahtjev:Request) {
+  return zahtjev.headers.authorization;
+}
 
+export function ispisiDijelove(token:string){
+	let dijelovi = token.split(".");
+  if(dijelovi[0] != undefined){
+	  let zaglavlje =  dekodirajBase64(dijelovi[0]);
+	  console.log(zaglavlje);
+  }
+  if(dijelovi[1] != undefined){
+	  let tijelo =  dekodirajBase64(dijelovi[1]);
+	  console.log(tijelo);
+  }
+  if(dijelovi[2] != undefined){
+	  let potpis =  dekodirajBase64(dijelovi[2]);
+	  console.log(potpis);
+  }
+}
+
+export function dajTijelo(token:string){
+	let dijelovi = token.split(".");
+  if(dijelovi[1] == undefined)
+    return {};
+	return JSON.parse(dekodirajBase64(dijelovi[1]));
+}
+
+export function dajZaglavlje(token:string){
+	let dijelovi = token.split(".");
+  if(dijelovi[1] == undefined)
+    return {};
+	return JSON.parse(dekodirajBase64(dijelovi[1]));
+}
+
+function dekodirajBase64(data:string){
+	let buff = Buffer.from(data, 'base64');
+	return buff.toString('ascii');
 }

@@ -9,11 +9,11 @@ export class RestFilm {
     this.filmDAO = new FilmDAO();
   }
 
-  async getFilmove(req: Request, odgovor: Response) {
+  async getFilmove(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
-    const stranica = parseInt(req.query["stranica"] as string) || 1;
-    const datumOd = req.query["datumOd"] as string;
-    const datumDo = req.query["datumDo"] as string;
+    const stranica = parseInt(zahtjev.query["stranica"] as string) || 1;
+    const datumOd = zahtjev.query["datumOd"] as string;
+    const datumDo = zahtjev.query["datumDo"] as string;
 
     try {
       const filmovi = await this.filmDAO.dajFilmovePoStranici(stranica, datumOd, datumDo);
@@ -24,9 +24,9 @@ export class RestFilm {
     }
   }
 
-  async postFilm(req: Request, odgovor: Response) {
+  async postFilm(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
-    const film: Film = req.body;
+    const film: Film = zahtjev.body;
 
     if (!film.jezik || !film.org_naslov || !film.naslov || !film.datum_izdavanja) {
       odgovor.status(400).json({ greska: "Nedostaju obavezni podaci za dodavanje filma" });
@@ -42,9 +42,9 @@ export class RestFilm {
     }
   }
 
-  async getFilm(req: Request, odgovor: Response) {
+  async getFilm(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
-    const id = parseInt(req.params["id"] || "0");
+    const id = parseInt(zahtjev.params["id"] || "0");
     if (id === 0) {
       odgovor.status(400).json({ greska: "Nevažeći ID filma" });
       return;
@@ -64,9 +64,9 @@ export class RestFilm {
     }
   }
   
-  async deleteFilm(req: Request, odgovor: Response) {
+  async deleteFilm(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
-    const id = parseInt(req.params["id"] || "0");
+    const id = parseInt(zahtjev.params["id"] || "0");
     if (id === 0) {
       odgovor.status(400).json({ greska: "Nevažeći ID filma" });
       return;
