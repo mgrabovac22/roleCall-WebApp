@@ -10,6 +10,7 @@ export class RestOsoba {
   }
 
   async postOsoba(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     const { ime_prezime, izvor_poznatosti, putanja_profila, rang_popularnosti } = zahtjev.body;
 
     if (!ime_prezime || !izvor_poznatosti || !putanja_profila) {
@@ -35,6 +36,7 @@ export class RestOsoba {
   }
 
   async deleteOsoba(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     const id = parseInt(zahtjev.params["id"] || "0");
     if (id === 0) {
         odgovor.status(400).json({ greska: "Nevažeći ID osobe" });
@@ -56,6 +58,7 @@ export class RestOsoba {
   }
 
   async getOsobePoStranici(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     const stranica = parseInt(zahtjev.query["stranica"] as string) || 1;
   
     try {
@@ -80,6 +83,7 @@ export class RestOsoba {
   
 
   async getOsoba(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     const id = parseInt(zahtjev.params["id"] || "0");
     if (id === 0) {
       odgovor.status(400).json({ greska: "Nevažeći ID osobe" });
@@ -109,6 +113,7 @@ export class RestOsoba {
   
 
   async getFilmoveOsobe(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     const id = parseInt(zahtjev.params["id"] || "0");
     if (id === 0) {
         odgovor.status(400).json({ greska: "Nevažeći ID osobe" });
@@ -131,6 +136,7 @@ export class RestOsoba {
   }
 
   async poveziOsobuFilmove(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     const id = parseInt(zahtjev.params["id"] || "0");
     if (id === 0) {
         odgovor.status(400).json({ greska: "Nevažeći ID osobe" });
@@ -153,6 +159,7 @@ export class RestOsoba {
   }
 
   async obrisiVezeOsobaFilmove(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     const id = parseInt(zahtjev.params["id"] || "0");
     if (id === 0) {
         odgovor.status(400).json({ greska: "Nevažeći ID osobe" });
@@ -175,6 +182,7 @@ export class RestOsoba {
   }
 
   async postSlika(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     const { putanja_do_slike, osoba_id } = zahtjev.body;
 
     if (!putanja_do_slike || !osoba_id) {

@@ -10,6 +10,7 @@ export class RestKorisnik {
   }
 
   async postKorisnici(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     const { korime, status, korisnici_id } = zahtjev.body;
 
     if (!korime || !status || !korisnici_id) {
@@ -34,6 +35,7 @@ export class RestKorisnik {
   }
 
   async deleteKorisnik(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     const korime = zahtjev.params['korime'];
 
     if (!korime) {
@@ -51,10 +53,12 @@ export class RestKorisnik {
   }
 
   getKorisnici(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     odgovor.status(405).json({ greska: "GET metoda nije dopuštena" });
   }
 
   putKorisnici(zahtjev: Request, odgovor: Response) {
+    odgovor.type("application/json");
     odgovor.status(405).json({ greska: "PUT metoda nije dopuštena" });
   }
 }
