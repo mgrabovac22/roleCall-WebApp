@@ -1,5 +1,5 @@
 import express from "express";
-import { __filename, __dirname, dajPortSevis } from "../moduli/okolinaUtils.js";
+import { __filename, __dirname, dajPortServis } from "../moduli/okolinaUtils.js";
 import { Konfiguracija } from "../moduli/upravljateljKonfiguracije.js";
 import { RestKorisnik } from "./rest/RESTkorisnik.js";
 import { RestOsoba } from "./rest/RESTosoba.js";
@@ -24,7 +24,7 @@ try {
         port = parseInt(process.argv[3]);
         provjera = true;
     } else {
-        port = dajPortSevis("mgrabovac22");
+        port = dajPortServis("mgrabovac22");
     }
 
     //Default

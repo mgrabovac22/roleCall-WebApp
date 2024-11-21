@@ -43,7 +43,7 @@ export function dajPort(korime:string){
 	return port;
 }
 
-export function dajPortSevis(korime:string){
+export function dajPortServis(korime:string){
 	const HOST = os.hostname();
 	let port = null;
 	if(HOST != "spider"){
