@@ -72,10 +72,9 @@ export class FilmDAO {
     return true;
   }
 
-  // Dohvatanje jednog filma prema ID-u
-  /*async dajFilm(id: number): Promise<Film | null> {
+  async dajFilm(id: number): Promise<Film | null> {
     const sql = "SELECT * FROM film WHERE id = ?";
-    const podaci = await this.baza.dajPodatkePromise(sql, [id]);
+    const podaci = await this.baza.dajPodatkePromise(sql, [id]) as Array<any>;
 
     if (podaci.length === 1) {
       const p = podaci[0];
@@ -94,17 +93,16 @@ export class FilmDAO {
     return null;
   }
 
-  // Brisanje filma ako nema više veza
   async obrisiFilm(id: number): Promise<boolean> {
     const sqlVeze = "SELECT COUNT(*) as veze FROM film_osoba WHERE film_id = ?";
     const sqlBrisanje = "DELETE FROM film WHERE id = ?";
 
-    const veze = await this.baza.dajPodatkePromise(sqlVeze, [id]);
+    const veze = await this.baza.dajPodatkePromise(sqlVeze, [id]) as Array<any>;
     if (veze[0].veze > 0) {
       throw new Error("Film ima povezane osobe i ne može biti obrisan.");
     }
 
     await this.baza.ubaciAzurirajPodatke(sqlBrisanje, [id]);
     return true;
-  }*/
+  }
 }

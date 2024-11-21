@@ -48,6 +48,8 @@ try {
     //Endpointi za filmove
     server.get("/servis/film", (req, res) => restFilm.getFilmove(req, res));
     server.post("/servis/film", (req, res) => restFilm.postFilm(req, res));
+    server.get("/servis/film/:id", (req, res) => restFilm.getFilm(req, res));
+    server.delete("/servis/film/:id", (req, res) => restFilm.deleteFilm(req, res));
 
     //Endpointi za slike
     server.post("/servis/osoba/slika", (req, res) => restOsoba.postSlika(req, res));
