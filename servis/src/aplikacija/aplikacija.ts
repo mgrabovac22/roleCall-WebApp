@@ -4,6 +4,7 @@ import path from "path";
 import { __dirname, dajPort, dajPortServis } from "../moduli/okolinaUtils.js";
 import { Konfiguracija } from "../moduli/upravljateljKonfiguracije.js";
 import { RestKorisnik } from "./dao/servisKlijent.js";
+import { Middleware } from "./tsc/slojZaPristupServisu.js";
 
 let port: number;
 let portServis: number;
@@ -12,7 +13,6 @@ const konfiguracija = new Konfiguracija();
 //let konf = konfiguracija.dajKonf();
 const server = express();
 const restKorisnik = new RestKorisnik();
-
 /*server.use(
     session({
         secret: konf.tajniKljucSesija,
@@ -86,6 +86,12 @@ try {
     server.get("/dokumentacija", (zahtjev, odgovor) => {
         odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
     });
+
+    const middleware = new Middleware(portServis);
+
+    server.post("/servis/dodaj/osoba", middleware.postOsoba.bind(middleware));
+    server.delete("/servis/obrisi/osoba/:id", (req, res) => middleware.deleteOsoba(req, res));
+    server.get("/servis/apikey", (req, res) => middleware.getApiKey(req, res));
 
     server.use("/css", express.static(path.join(__dirname(), "./css")));
     server.use("/jsk", express.static(path.join(__dirname(), "./jsk")));

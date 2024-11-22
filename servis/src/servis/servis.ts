@@ -4,6 +4,7 @@ import { Konfiguracija } from "../moduli/upravljateljKonfiguracije.js";
 import { RestKorisnik } from "./rest/RESTkorisnik.js";
 import { RestOsoba } from "./rest/RESTosoba.js";
 import { RestFilm } from "./rest/RESTfilm.js";
+import cors from "cors";
 
 let port = 3000;
 const konfiguracija = new Konfiguracija();
@@ -14,6 +15,7 @@ const restFilm = new RestFilm();
 let provjera: Boolean = false;
 
 try {
+    server.use(cors());
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
 
