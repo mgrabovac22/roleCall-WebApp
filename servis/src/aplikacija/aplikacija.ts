@@ -118,8 +118,9 @@ try {
     server.put("/servis/korisnici/:id/pristup", (req, res) => restKorisnik.dajPristup(req, res));
     server.put("/servis/korisnici/:id/zabrani-pristup", (req, res) => restKorisnik.zabraniPristup(req, res));
     
-    server.post("/servis/dodaj/osoba", slojZaPristupServisu.postOsoba.bind(slojZaPristupServisu));
+    server.post("/servis/dodaj/osoba", (req, res) => slojZaPristupServisu.postOsoba(req, res));
     server.delete("/servis/obrisi/osoba/:id", (req, res) => slojZaPristupServisu.deleteOsoba(req, res));
+    server.get("/servis/provjera-postojanja/:id", (req, res) => slojZaPristupServisu.provjeriPostojanjeOsobe(req, res));
 
     server.get("/servis/osobe", (req, res) => restOsoba.getOsobe(req, res));
 

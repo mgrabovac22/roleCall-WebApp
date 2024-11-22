@@ -12,15 +12,21 @@ export class OsobaDAO {
   }
 
   async dodaj(osoba: Osoba): Promise<boolean> {
-    if (!osoba.ime_prezime || !osoba.izvor_poznatosti || !osoba.putanja_profila) {
+    if (!osoba.id || !osoba.ime_prezime || !osoba.izvor_poznatosti || !osoba.putanja_profila) {
       throw new Error("Nedostaju obavezni podaci za dodavanje osobe.");
     }
 
     const sql = `
-      INSERT INTO osoba (ime_prezime, izvor_poznatosti, putanja_profila, rang_popularnosti)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO osoba (id, ime_prezime, izvor_poznatosti, putanja_profila, rang_popularnosti)
+      VALUES (?, ?, ?, ?, ?)
     `;
-    const podaci = [osoba.ime_prezime, osoba.izvor_poznatosti, osoba.putanja_profila, osoba.rang_popularnosti];
+    const podaci = [
+      osoba.id,
+      osoba.ime_prezime,
+      osoba.izvor_poznatosti,
+      osoba.putanja_profila,
+      osoba.rang_popularnosti,
+    ];
 
     await this.baza.ubaciAzurirajPodatke(sql, podaci);
     return true;
@@ -44,10 +50,11 @@ export class OsobaDAO {
     const limit = 20;
     const offset = (stranica - 1) * limit;
 
-    const sql = "SELECT * FROM osoba LIMIT ? OFFSET ?";
+    const sql = "SELECT row_id, * FROM osoba LIMIT ? OFFSET ?";
     const podaci = (await this.baza.dajPodatkePromise(sql, [limit, offset])) as Array<any>;
 
     return podaci.map((p) => ({
+      row_id: p.row_id,
       id: p.id,
       ime_prezime: p.ime_prezime,
       izvor_poznatosti: p.izvor_poznatosti,
@@ -61,12 +68,13 @@ export class OsobaDAO {
       throw new Error("ID je obavezan za dohvaćanje osobe.");
     }
 
-    const sql = "SELECT * FROM osoba WHERE id = ?";
+    const sql = "SELECT row_id, * FROM osoba WHERE id = ?";
     const podaci = (await this.baza.dajPodatkePromise(sql, [id])) as Array<any>;
 
     if (podaci.length === 1) {
       const p = podaci[0];
       return {
+        row_id: p.row_id,
         id: p.id,
         ime_prezime: p.ime_prezime,
         izvor_poznatosti: p.izvor_poznatosti,
@@ -83,7 +91,7 @@ export class OsobaDAO {
     const offset = (stranica - 1) * limit;
 
     const sql = `
-      SELECT f.*
+      SELECT f.row_id, f.*
       FROM film f
       JOIN film_osoba fo ON f.id = fo.film_id
       WHERE fo.osoba_id = ?
@@ -92,6 +100,7 @@ export class OsobaDAO {
     const podaci = (await this.baza.dajPodatkePromise(sql, [id, limit, offset])) as Array<any>;
 
     return podaci.map((p) => ({
+      row_id: p.row_id,
       id: p.id,
       jezik: p.jezik,
       org_naslov: p.org_naslov,
@@ -131,12 +140,13 @@ export class OsobaDAO {
 
   async dajSlikeOsobe(id: number): Promise<Slika[]> {
     const sql = `
-      SELECT * FROM slika
+      SELECT row_id, * FROM slika
       WHERE osoba_id = ?
     `;
-    const podaci = await this.baza.dajPodatkePromise(sql, [id]) as Array<any>;
+    const podaci = (await this.baza.dajPodatkePromise(sql, [id])) as Array<any>;
 
     return podaci.map((p: any) => ({
+      row_id: p.row_id,
       id: p.id,
       putanja_do_slike: p.putanja_do_slike,
       osoba_id: p.osoba_id,
@@ -145,10 +155,10 @@ export class OsobaDAO {
 
   async dodajSliku(slika: Slika): Promise<boolean> {
     const sql = `
-      INSERT INTO slika (putanja_do_slike, osoba_id)
-      VALUES (?, ?)
+      INSERT INTO slika (id, putanja_do_slike, osoba_id)
+      VALUES (?, ?, ?)
     `;
-    await this.baza.ubaciAzurirajPodatke(sql, [slika.putanja_do_slike, slika.osoba_id]);
+    await this.baza.ubaciAzurirajPodatke(sql, [slika.id, slika.putanja_do_slike, slika.osoba_id]);
     return true;
   }
 }

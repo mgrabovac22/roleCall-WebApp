@@ -1,7 +1,7 @@
-import { Film } from "../../iServis/iTmdb.js";
 import Baza from "../db/bazaSQLite.js";
 import path from "path";
 import { __dirname } from "../../moduli/okolinaUtils.js";
+import { Film } from "../../iServis/iTmdb.js";
 
 export class FilmDAO {
   private baza: Baza;
@@ -18,30 +18,22 @@ export class FilmDAO {
   ): Promise<Film[]> {
     const limit = 20;
     const offset = (stranica - 1) * limit;
-  
+
     let sql = "SELECT * FROM film";
-    const podaci: any[] = []; 
-  
+    const podaci: any[] = [];
+
     if (datumOd && datumDo) {
       sql += " WHERE datum_izdavanja BETWEEN ? AND ?";
       podaci.push(datumOd, datumDo);
     }
-  
+
     sql += " LIMIT ? OFFSET ?";
     podaci.push(limit, offset);
-  
-    const filmovi = (await this.baza.dajPodatkePromise(sql, podaci)) as Array<{
-      id: number;
-      jezik: string;
-      org_naslov: string;
-      naslov: string;
-      rang_popularnosti: number | null;
-      putanja_postera: string | null;
-      datum_izdavanja: string;
-      opis: string | null;
-    }>;
-  
+
+    const filmovi = (await this.baza.dajPodatkePromise(sql, podaci)) as Array<any>;
+
     return filmovi.map((p) => ({
+      row_id: p.row_id,
       id: p.id,
       jezik: p.jezik,
       org_naslov: p.org_naslov,
@@ -52,14 +44,14 @@ export class FilmDAO {
       opis: p.opis,
     }));
   }
-  
 
   async dodajFilm(film: Film): Promise<boolean> {
     const sql = `
-      INSERT INTO film (jezik, org_naslov, naslov, rang_popularnosti, putanja_postera, datum_izdavanja, opis)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO film (id, jezik, org_naslov, naslov, rang_popularnosti, putanja_postera, datum_izdavanja, opis)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const podaci = [
+      film.id,
       film.jezik,
       film.org_naslov,
       film.naslov,
@@ -74,11 +66,12 @@ export class FilmDAO {
 
   async dajFilm(id: number): Promise<Film | null> {
     const sql = "SELECT * FROM film WHERE id = ?";
-    const podaci = await this.baza.dajPodatkePromise(sql, [id]) as Array<any>;
+    const podaci = (await this.baza.dajPodatkePromise(sql, [id])) as Array<any>;
 
     if (podaci.length === 1) {
       const p = podaci[0];
       return {
+        row_id: p.row_id,
         id: p.id,
         jezik: p.jezik,
         org_naslov: p.org_naslov,
@@ -89,7 +82,6 @@ export class FilmDAO {
         opis: p.opis,
       };
     }
-
     return null;
   }
 
@@ -97,7 +89,7 @@ export class FilmDAO {
     const sqlVeze = "SELECT COUNT(*) as veze FROM film_osoba WHERE film_id = ?";
     const sqlBrisanje = "DELETE FROM film WHERE id = ?";
 
-    const veze = await this.baza.dajPodatkePromise(sqlVeze, [id]) as Array<any>;
+    const veze = (await this.baza.dajPodatkePromise(sqlVeze, [id])) as Array<any>;
     if (veze[0].veze > 0) {
       throw new Error("Film ima povezane osobe i ne može biti obrisan.");
     }

@@ -44,7 +44,7 @@ async function dajOsobe(stranica) {
     }
 }
 
-function prikaziOsobe(osobe) {
+async function prikaziOsobe(osobe) {
     let glavna = document.getElementById("sadrzaj");
     let tablica = "<table>";
     tablica += "<tr><th>Ime</th><th>Poznat po</th><th>Popularnost</th><th>Profil</th><th>Radnje</th></tr>";
@@ -54,6 +54,9 @@ function prikaziOsobe(osobe) {
         const izvorPoznatosti = osoba.known_for_department || "N/A";
         const popularnost = osoba.popularity ? osoba.popularity.toFixed(2) : null;
         const profilPath = osoba.profile_path ? `https://image.tmdb.org/t/p/w200${osoba.profile_path}` : null;
+        const osobaId = osoba.id;
+
+        const postojiUBazi = await daLiOsobaPostojiUBazi(osobaId);
 
         tablica += "<tr>";
         tablica += `<td>${ime}</td>`;
@@ -61,8 +64,11 @@ function prikaziOsobe(osobe) {
         tablica += `<td>${popularnost || "N/A"}</td>`;
         tablica += `<td>${profilPath ? `<img src="${profilPath}" alt="${ime}" style="width: 50px;">` : "N/A"}</td>`;
         tablica += `<td>
-                        <button onclick="dodajOsobu(${osoba.id}, '${ime}', '${izvorPoznatosti}', '${profilPath}', ${popularnost})">Dodaj</button>
-                        <button onclick="brisiOsobu(${osoba.id}, '${ime}')">Briši</button>
+                        ${
+                            postojiUBazi
+                                ? `<button onclick="brisiOsobu(${osobaId}, '${ime}')">Obriši</button>`
+                                : `<button onclick="dodajOsobu(${osobaId}, '${ime}', '${izvorPoznatosti}', '${profilPath}', ${popularnost})">Dodaj</button>`
+                        }
                     </td>`;
         tablica += "</tr>";
     }
@@ -70,6 +76,7 @@ function prikaziOsobe(osobe) {
 
     glavna.innerHTML = tablica;
 }
+
 
 async function dodajOsobu(id, ime, izvor_poznatosti, putanja_profila, rang_popularnosti) {
     try {
@@ -133,6 +140,21 @@ async function brisiOsobu(id, ime) {
         poruka.innerHTML = "Došlo je do greške prilikom brisanja osobe!";
     }
 }
+
+async function daLiOsobaPostojiUBazi(id) {
+    const url = `/servis/provjera-postojanja/${id}`;
+    try {
+        const odgovor = await fetch(url, { method: "GET" });
+        if (odgovor.status === 200) {
+            return true; 
+        }
+        return false; 
+    } catch (error) {
+        console.error(`Greška prilikom provere osobe sa ID ${id}:`, error);
+        return false;
+    }
+}
+
 
 function prikaziStranicenje(trenutna, ukupno) {
     let navigacija = document.getElementById("stranicenje");
