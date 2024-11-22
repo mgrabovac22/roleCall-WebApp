@@ -1,29 +1,40 @@
 import express from "express";
 import path from "path";
-//import session from "express-session";
+import session from "express-session";
 import { __dirname, dajPort, dajPortServis } from "../moduli/okolinaUtils.js";
 import { Konfiguracija } from "../moduli/upravljateljKonfiguracije.js";
 import { RestKorisnik } from "./dao/servisKlijent.js";
-import { Middleware } from "./tsc/slojZaPristupServisu.js";
+import { SlojZaPristupServisu } from "./tsc/slojZaPristupServisu.js";
+import { RestOsoba } from "./tsc/tmdbKlijent.js";
+import cors from "cors";
 
 let port: number;
 let portServis: number;
 let provjeraPorta: boolean = false;
 const konfiguracija = new Konfiguracija();
-//let konf = konfiguracija.dajKonf();
+await konfiguracija.ucitajKonfiguraciju();
+let konf = konfiguracija.dajKonf();
 const server = express();
 const restKorisnik = new RestKorisnik();
-/*server.use(
+const restOsoba = new RestOsoba();
+server.use(
     session({
         secret: konf.tajniKljucSesija,
         resave: false,
         saveUninitialized: false,
         cookie: { secure: false },
     })
-);*/
+);
+declare module 'express-session' {
+    export interface SessionData {
+        korime: string;
+    }
+}
 
 try {
     server.use(express.json());
+    server.use(cors());
+    server.use(express.urlencoded({ extended: true }));
 
     await konfiguracija.ucitajKonfiguraciju();
     console.log("Konfiguracija učitana i provjerena.");
@@ -44,15 +55,21 @@ try {
     console.log(`PortServis: ${portServis}`);
     console.log(`Port: ${port}`);
 
-    server.all("*", (zahtjev, odgovor, dalje)=>{
-        /*if(zahtjev.session.korime == null){
-			odgovor.redirect("/prijava");
+    server.use((req, res, next) => {
+        console.log("Session Data:", req.session);
+        next();
+    });
+    
+
+    /*server.all("*", (zahtjev, odgovor, dalje)=>{
+        if(zahtjev.session.korime == null){
+            return odgovor.redirect("/login");
 		}else{
 			dalje();
-		}*/
+		}
         dalje();
-
-    })
+    })*/
+    
 
     server.get("/", (zahtjev, odgovor) => {
 
@@ -87,12 +104,8 @@ try {
         odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
     });
 
-    const middleware = new Middleware(portServis);
-
-    server.post("/servis/dodaj/osoba", middleware.postOsoba.bind(middleware));
-    server.delete("/servis/obrisi/osoba/:id", (req, res) => middleware.deleteOsoba(req, res));
-    server.get("/servis/apikey", (req, res) => middleware.getApiKey(req, res));
-
+    const slojZaPristupServisu = new SlojZaPristupServisu(portServis);
+    
     server.use("/css", express.static(path.join(__dirname(), "./css")));
     server.use("/jsk", express.static(path.join(__dirname(), "./jsk")));
     server.use("/slike", express.static(path.join(__dirname(), "./resursi/slike")));
@@ -102,6 +115,11 @@ try {
     server.post("/servis/prijava", (req, res) => restKorisnik.prijavaKorisnika(req, res));
     server.get("/servis/korisnici", (req, res) => restKorisnik.getKorisnici(req, res));
     server.get("/servis/tipovi-korisnika", (req, res) => restKorisnik.getTipoviKorisnika(req, res));
+    
+    server.post("/servis/dodaj/osoba", slojZaPristupServisu.postOsoba.bind(slojZaPristupServisu));
+    server.delete("/servis/obrisi/osoba/:id", (req, res) => slojZaPristupServisu.deleteOsoba(req, res));
+
+    server.get("/servis/osobe", (req, res) => restOsoba.getOsobe(req, res));
 
     server.listen(port, () => {
         if (provjeraPorta || port==12222) {

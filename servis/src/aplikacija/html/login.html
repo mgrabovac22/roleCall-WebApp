@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
     <header>
@@ -19,10 +20,22 @@
         </nav>
     </header>
     <main>
+        <form id="loginForm">
+            <div id="error-message"></div>
+            <label for="korime">Korisničko ime:</label>
+            <input type="text" id="korime" name="korime" placeholder="Unesite korisničko ime" required>
+            <label for="lozinka">Lozinka:</label>
+            <input type="password" id="lozinka" name="lozinka" placeholder="Unesite lozinku" required>
+            <button type="submit">Prijava</button>
+        </form>
 
+        <div id="register">
+            <p>Nemate račun? <a href="/registracija">Registrirajte se ovdje</a>.</p>
+        </div>
     </main>
     <footer>
         
-    </footer>   
+    </footer>
+    <script src="/jsk/prijava.js"></script>
 </body>
 </html>

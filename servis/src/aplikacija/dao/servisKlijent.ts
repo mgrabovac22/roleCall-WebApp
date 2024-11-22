@@ -59,14 +59,17 @@ export class RestKorisnik {
       
       if (korisnik && korisnik.lozinka === hashLozinka) {
         
-        //zahtjev.session.korisnik = korisnik;
+        zahtjev.session.korime = korisnik.korime;
         odgovor.status(200).json({ poruka: "Prijava uspješna", korisnik });
+        return;
       } else {
         odgovor.status(401).json({ greska: "Pogrešni podaci za prijavu" });
+        return;
       }
     } catch (err) {
       console.error("Greška prilikom prijave korisnika:", err);
       odgovor.status(500).json({ greska: "Interna greška servera" });
+      return;
     }
   }
 

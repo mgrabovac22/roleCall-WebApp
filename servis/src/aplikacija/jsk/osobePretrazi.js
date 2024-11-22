@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const query = dajFilter();
         if (query.length >= 3) {
             dajOsobe(1);
-            if(poruka.innerHTML == "Unesite barem 3 znaka za pretragu!"){
-              poruka.innerHTML = "";
+            if (poruka.innerHTML == "Unesite barem 3 znaka za pretragu!") {
+                poruka.innerHTML = "";
             }
         } else {
             poruka.innerHTML = "Unesite barem 3 znaka za pretragu!";
@@ -23,10 +23,7 @@ let totalPages = 1;
 
 async function dajOsobe(stranica) {
     const query = dajFilter();
-    const response = await fetch("/servis/apikey");
-    const data = await response.json();
-    const apiKey = data.apiKey;
-    const url = `https://api.themoviedb.org/3/search/person?include_adult=false&language=en-US&page=${stranica}&query=${encodeURIComponent(query)}&api_key=${apiKey}`;
+    const url = `/servis/osobe?query=${encodeURIComponent(query)}&stranica=${stranica}`;
 
     try {
         let odgovor = await fetch(url);
@@ -74,10 +71,9 @@ function prikaziOsobe(osobe) {
     glavna.innerHTML = tablica;
 }
 
-
 async function dodajOsobu(id, ime, izvor_poznatosti, putanja_profila, rang_popularnosti) {
     try {
-        const url = `/servis/dodaj/osoba`; 
+        const url = `/servis/dodaj/osoba`;
         const body = JSON.stringify({
             id,
             ime_prezime: ime,
@@ -98,7 +94,7 @@ async function dodajOsobu(id, ime, izvor_poznatosti, putanja_profila, rang_popul
 
         if (odgovor.ok) {
             alert(`Osoba "${ime}" je uspješno dodana.`);
-            dajOsobe(currentPage); 
+            dajOsobe(currentPage);
         } else {
             const greska = await odgovor.json();
             throw new Error(greska.greska || `Greška: ${odgovor.status}`);
@@ -114,21 +110,20 @@ async function brisiOsobu(id, ime) {
         const potvrda = confirm(`Jeste li sigurni da želite obrisati osobu "${ime}" iz baze?`);
         if (!potvrda) return;
 
-        const url = `/servis/dodaj/osoba`;
+        const url = `/servis/obrisi/osoba/${id}`;
 
         const options = {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ id }),
         };
 
         const odgovor = await fetch(url, options);
 
         if (odgovor.ok) {
             alert(`Osoba "${ime}" je uspješno obrisana.`);
-            dajOsobe(currentPage); 
+            dajOsobe(currentPage);
         } else {
             const greska = await odgovor.json();
             throw new Error(greska.greska || `Greška: ${odgovor.status}`);
@@ -139,39 +134,38 @@ async function brisiOsobu(id, ime) {
     }
 }
 
-
 function prikaziStranicenje(trenutna, ukupno) {
-  let navigacija = document.getElementById("stranicenje");
-  navigacija.innerHTML = "";
+    let navigacija = document.getElementById("stranicenje");
+    navigacija.innerHTML = "";
 
-  const infoStranice = document.createElement("p");
-  infoStranice.textContent = `Stranica ${trenutna} od ${ukupno}`;
-  infoStranice.style.textAlign = "center";
-  navigacija.appendChild(infoStranice);
+    const infoStranice = document.createElement("p");
+    infoStranice.textContent = `Stranica ${trenutna} od ${ukupno}`;
+    infoStranice.style.textAlign = "center";
+    navigacija.appendChild(infoStranice);
 
-  const prvGumb = document.createElement("button");
-  prvGumb.textContent = "Prva";
-  prvGumb.disabled = trenutna === 1;
-  prvGumb.onclick = () => dajOsobe(1);
-  navigacija.appendChild(prvGumb);
+    const prvGumb = document.createElement("button");
+    prvGumb.textContent = "Prva";
+    prvGumb.disabled = trenutna === 1;
+    prvGumb.onclick = () => dajOsobe(1);
+    navigacija.appendChild(prvGumb);
 
-  const prevGumb = document.createElement("button");
-  prevGumb.textContent = "Prethodna";
-  prevGumb.disabled = trenutna === 1;
-  prevGumb.onclick = () => dajOsobe(trenutna - 1);
-  navigacija.appendChild(prevGumb);
+    const prevGumb = document.createElement("button");
+    prevGumb.textContent = "Prethodna";
+    prevGumb.disabled = trenutna === 1;
+    prevGumb.onclick = () => dajOsobe(trenutna - 1);
+    navigacija.appendChild(prevGumb);
 
-  const nextGumb = document.createElement("button");
-  nextGumb.textContent = "Sljedeća";
-  nextGumb.disabled = trenutna === ukupno;
-  nextGumb.onclick = () => dajOsobe(trenutna + 1);
-  navigacija.appendChild(nextGumb);
+    const nextGumb = document.createElement("button");
+    nextGumb.textContent = "Sljedeća";
+    nextGumb.disabled = trenutna === ukupno;
+    nextGumb.onclick = () => dajOsobe(trenutna + 1);
+    navigacija.appendChild(nextGumb);
 
-  const zadGumb = document.createElement("button");
-  zadGumb.textContent = "Zadnja";
-  zadGumb.disabled = trenutna === ukupno;
-  zadGumb.onclick = () => dajOsobe(ukupno);
-  navigacija.appendChild(zadGumb);
+    const zadGumb = document.createElement("button");
+    zadGumb.textContent = "Zadnja";
+    zadGumb.disabled = trenutna === ukupno;
+    zadGumb.onclick = () => dajOsobe(ukupno);
+    navigacija.appendChild(zadGumb);
 }
 
 function dajFilter() {

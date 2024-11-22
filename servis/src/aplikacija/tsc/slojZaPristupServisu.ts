@@ -1,10 +1,9 @@
 import express, { Request, Response } from "express";
-import { Konfiguracija } from "../../moduli/upravljateljKonfiguracije.js";
 
 const server = express();
 server.use(express.json());
 
-export class Middleware {
+export class SlojZaPristupServisu {
     portServis: number;
 
     constructor(portServis: number) {
@@ -82,24 +81,6 @@ export class Middleware {
         } catch (error) {
             console.error("Greška u middleware endpointu za brisanje osobe:", error);
             res.status(500).json({ greska: "Došlo je do greške u posredniku za brisanje." });
-        }
-    }
-
-    async getApiKey(req: Request, res: Response): Promise<void> {
-        try {
-            const konfiguracija = new Konfiguracija();
-            let konf = konfiguracija.dajKonf();
-            const apiKey = konf.tmdbApiKeyV3;
-
-            if (!apiKey) {
-                res.status(500).json({ error: "API key not found." });
-                return;
-            }
-
-            res.status(200).json({ apiKey });
-        } catch (error) {
-            console.error("Error fetching API key:", error);
-            res.status(500).json({ error: "Internal server error." });
         }
     }
     
