@@ -11,37 +11,39 @@ export class RestKorisnik {
 
   async postKorisnik(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
-    const { ime, prezime, adresa, korime, lozinka, email, tip_korisnika_id, status } = zahtjev.body;
+    const { ime, prezime, adresa, korime, lozinka, email } = zahtjev.body;
 
-    if (!korime || !lozinka || !email || !tip_korisnika_id) {
-      odgovor.status(400).json({ greska: "Nedostaju obavezni podaci (korime, lozinka, email, tip_korisnika_id)" });
-      return;
+    if (!korime || !lozinka || !email) {
+        odgovor.status(400).json({ greska: "Nedostaju obavezni podaci (korime, lozinka, email)" });
+        return;
     }
 
     try {
-      let hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
-      const uspjeh = await this.korisnikDAO.dodajKorisnika({
-        id: 0, 
-        ime: ime || null,
-        prezime: prezime || null,
-        adresa: adresa || null,
-        korime,
-        lozinka: hashLozinka,
-        email,
-        tip_korisnika_id,
-        status: status || null,
-      });
+        const hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
 
-      if (uspjeh) {
-        odgovor.status(201).json({ poruka: "Korisnik uspješno dodan" });
-      } else {
-        odgovor.status(400).json({ greska: "Dodavanje korisnika nije uspjelo" });
-      }
+        const uspjeh = await this.korisnikDAO.dodajKorisnika({
+            id: 0, 
+            ime: ime || null,
+            prezime: prezime || null,
+            adresa: adresa || null,
+            korime: korime.trim(),
+            lozinka: hashLozinka,
+            email: email.trim(),
+            tip_korisnika_id: 1,
+            status: "pending",
+        });
+
+        if (uspjeh) {
+            odgovor.status(201).json({ poruka: "Korisnik uspješno dodan" });
+        } else {
+            odgovor.status(400).json({ greska: "Dodavanje korisnika nije uspjelo. Provjerite podatke." });
+        }
     } catch (err) {
-      console.error("Greška prilikom dodavanja korisnika:", err);
-      odgovor.status(500).json({ greska: "Interna greška servera" });
+        console.error("Greška prilikom dodavanja korisnika:", err);
+        odgovor.status(500).json({ greska: "Interna greška servera" });
     }
   }
+
 
   async prijavaKorisnika(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
@@ -58,8 +60,9 @@ export class RestKorisnik {
       const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);
       
       if (korisnik && korisnik.lozinka === hashLozinka) {
-        
-        zahtjev.session.korime = korisnik.korime;
+        if(korisnik.status=="ima pristup"){
+          zahtjev.session.korime = korisnik.korime;
+        }
         odgovor.status(200).json({ poruka: "Prijava uspješna", korisnik });
         return;
       } else {
@@ -94,4 +97,38 @@ export class RestKorisnik {
       odgovor.status(500).json({ greska: "Interna greška servera" });
     }
   }
+
+  async dajPristup(req: Request, res: Response) {
+    const korisnikId = parseInt(req.params["id"] as any);
+    if (!korisnikId) {
+        res.status(400).json({ greska: "Nevažeći ID korisnika" });
+        return;
+    }
+
+    try {
+        await this.korisnikDAO.azurirajStatusKorisnika(korisnikId, "ima pristup");
+        res.status(200).json({ poruka: "Pristup omogućen" });
+    } catch (error) {
+        console.error("Greška prilikom davanja pristupa korisniku:", error);
+        res.status(500).json({ greska: "Interna greška servera" });
+    }
+  }
+
+  async zabraniPristup(req: Request, res: Response) {
+    const korisnikId = parseInt(req.params["id"] as any);
+    if (!korisnikId) {
+        res.status(400).json({ greska: "Nevažeći ID korisnika" });
+        return;
+    }
+
+    try {
+        await this.korisnikDAO.azurirajStatusKorisnika(korisnikId, "nema pristup");
+        res.status(200).json({ poruka: "Pristup zabranjen" });
+    } catch (error) {
+        console.error("Greška prilikom zabrane pristupa korisniku:", error);
+        res.status(500).json({ greska: "Interna greška servera" });
+    }
+  }
+
+
 }

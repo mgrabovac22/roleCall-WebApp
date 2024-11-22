@@ -12,24 +12,30 @@ export class KorisnikDAO {
   }
 
   async dodajKorisnika(korisnik: Korisnik): Promise<boolean> {
-    const sql = `
-      INSERT INTO korisnik (ime, prezime, adresa, korime, lozinka, email, tip_korisnika_id, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-    const podaci = [
-      korisnik.ime,
-      korisnik.prezime,
-      korisnik.adresa,
-      korisnik.korime,
-      korisnik.lozinka,
-      korisnik.email,
-      korisnik.tip_korisnika_id,
-      korisnik.status,
-    ];
+    try {
+        const sql = `
+            INSERT INTO korisnik (ime, prezime, adresa, korime, lozinka, email, tip_korisnika_id, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        const podaci = [
+            korisnik.ime || null,
+            korisnik.prezime || null,
+            korisnik.adresa || null,
+            korisnik.korime,
+            korisnik.lozinka,
+            korisnik.email,
+            korisnik.tip_korisnika_id || 1, 
+            korisnik.status || "pending",
+        ];
 
-    await this.baza.ubaciAzurirajPodatke(sql, podaci);
-    return true;
+        await this.baza.ubaciAzurirajPodatke(sql, podaci);
+        return true; 
+    } catch (err) {
+        console.error("Greška prilikom dodavanja korisnika u bazu:", err);
+        return false; 
+    }
   }
+
 
   async dajKorisnikaPoKorime(korime: string): Promise<Korisnik | null> {
     const sql = "SELECT * FROM korisnik WHERE korime = ?";
@@ -52,4 +58,10 @@ export class KorisnikDAO {
     const podaci = (await this.baza.dajPodatkePromise(sql, [])) as Array<TipKorisnika>;
     return podaci;
   }
+
+  async azurirajStatusKorisnika(id: number, noviStatus: string): Promise<void> {
+    const sql = "UPDATE korisnik SET status = ? WHERE id = ?";
+    await this.baza.ubaciAzurirajPodatke(sql, [noviStatus, id]);
+  }
+
 }

@@ -1,5 +1,6 @@
 document.getElementById("loginForm").addEventListener("submit", async function (event) {
-    event.preventDefault(); 
+    event.preventDefault();
+    let porukica = document.getElementById("porukaLogin");
 
     const korime = document.getElementById("korime").value;
     const lozinka = document.getElementById("lozinka").value;
@@ -15,21 +16,30 @@ document.getElementById("loginForm").addEventListener("submit", async function (
             body,
         });
 
-        if (odgovor.ok) { 
+        if (odgovor.ok) {
             const podaci = await odgovor.json();
             console.log("Odgovor servera:", podaci);
 
-            if (podaci.poruka === "Prijava uspješna") {
-                window.location.href = "/"; 
+            const status = podaci.korisnik?.status;
+            console.log(status);
+            
+
+            if (status === "ima pristup") {
+                porukica.innerHTML = "";
+                window.location.href = "/";
+            } else if (status === "nema pristup") {
+                porukica.innerHTML = "Administrator vam je zabranio pristup!";
+            } else if (status === "pending") {
+                porukica.innerHTML = "Administrator vam još nije odobrio pristup!";
             } else {
-                throw new Error(podaci.poruka || "Greška prilikom prijave.");
+                porukica.innerHTML = "Nepoznat status korisnika. Kontaktirajte podršku.";
             }
         } else {
-            const errorData = await odgovor.json();
-            document.getElementById("error-message").textContent = errorData.poruka || "Pogrešno korisničko ime ili lozinka.";
+            const greska = await odgovor.json();
+            porukica.innerHTML = greska.poruka || "Pogrešno korisničko ime ili lozinka.";
         }
     } catch (error) {
         console.error("Greška prilikom prijave:", error);
-        document.getElementById("error-message").textContent = "Došlo je do greške prilikom prijave.";
+        porukica.innerHTML = "Došlo je do greške prilikom prijave.";
     }
 });

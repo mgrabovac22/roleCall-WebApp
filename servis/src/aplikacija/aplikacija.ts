@@ -115,6 +115,8 @@ try {
     server.post("/servis/prijava", (req, res) => restKorisnik.prijavaKorisnika(req, res));
     server.get("/servis/korisnici", (req, res) => restKorisnik.getKorisnici(req, res));
     server.get("/servis/tipovi-korisnika", (req, res) => restKorisnik.getTipoviKorisnika(req, res));
+    server.put("/servis/korisnici/:id/pristup", (req, res) => restKorisnik.dajPristup(req, res));
+    server.put("/servis/korisnici/:id/zabrani-pristup", (req, res) => restKorisnik.zabraniPristup(req, res));
     
     server.post("/servis/dodaj/osoba", slojZaPristupServisu.postOsoba.bind(slojZaPristupServisu));
     server.delete("/servis/obrisi/osoba/:id", (req, res) => slojZaPristupServisu.deleteOsoba(req, res));

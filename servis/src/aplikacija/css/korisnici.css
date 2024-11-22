@@ -1,0 +1,88 @@
+#korisnici-container {
+    max-width: 800px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+#poruka {
+    text-align: center;
+    color: red;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th,
+table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+td:nth-child(5) {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+td:nth-child(5):contains("ima pristup") {
+    color: green;
+}
+
+td:nth-child(5):contains("nema pristup") {
+    color: red;
+}
+
+td:nth-child(5):contains("pending") {
+    color: orange;
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+button:contains("Daj pristup") {
+    background-color: #4caf50;
+    color: white;
+}
+
+button:contains("Zabrani pristup") {
+    background-color: #f44336;
+    color: white;
+}
+
+button:contains("Obriši") {
+    background-color: #f44336;
+    color: white;
+}
