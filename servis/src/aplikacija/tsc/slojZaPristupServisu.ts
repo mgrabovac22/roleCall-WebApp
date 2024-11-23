@@ -19,16 +19,33 @@ export class SlojZaPristupServisu {
         }
     
         try {
+            const tmdbSlikeResponse = await fetch(`https://api.themoviedb.org/3/person/${id}/images?api_key=1280aa15ece9584768dd84dd4aa3d294`);
+            if (!tmdbSlikeResponse.ok) {
+                const greska = await tmdbSlikeResponse.json();
+                res.status(tmdbSlikeResponse.status).json({
+                    greska: greska.status_message || "Greška prilikom dohvaćanja slika s TMDB-a.",
+                });
+                return;
+            }
+        
+            const tmdbSlikeData = await tmdbSlikeResponse.json();
+            const slike = tmdbSlikeData.profiles.map((slika: any) => slika.file_path);
+        
             const osobaResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id, ime_prezime, izvor_poznatosti, putanja_profila, rang_popularnosti }),
+                body: JSON.stringify({
+                    id,
+                    ime_prezime,
+                    izvor_poznatosti,
+                    putanja_profila,
+                    rang_popularnosti,
+                    slike, 
+                }),
             });
-    
-            if (!osobaResponse.ok) {
-                const greska = await osobaResponse.json();
-                res.status(osobaResponse.status).json({ greska: greska.greska || "Greška prilikom dodavanja osobe u bazu." });
-                return;
+            
+            if(!osobaResponse.ok){
+                console.warn(`Osoba nije uspešno dodan.`);
             }
     
             const tmdbFilmoviResponse = await fetch(`https://api.themoviedb.org/3/person/${id}/movie_credits?api_key=1280aa15ece9584768dd84dd4aa3d294`);
@@ -71,33 +88,6 @@ export class SlojZaPristupServisu {
     
                 if (!poveziFilmResponse.ok) {
                     console.warn(`Veza između osobe ${id} i filma ${film.id} nije uspešno dodana.`);
-                }
-            }
-    
-            const tmdbSlikeResponse = await fetch(`https://api.themoviedb.org/3/person/${id}/images?api_key=1280aa15ece9584768dd84dd4aa3d294`);
-            if (!tmdbSlikeResponse.ok) {
-                res.status(tmdbSlikeResponse.status).json({
-                    greska: "Greška prilikom dohvaćanja slika s TMDB-a.",
-                });
-                return;
-            }
-    
-            const tmdbSlikeData = await tmdbSlikeResponse.json();
-            const slike = tmdbSlikeData.profiles || [];
-    
-            for (const [index, slika] of slike.entries()) {
-                const slikaResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba/slika`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        id: `${id}-${index}`, 
-                        osoba_id: id,
-                        putanja_do_slike: slika.file_path,
-                    }),
-                });
-    
-                if (!slikaResponse.ok) {
-                    console.warn(`Slika s putanjom ${slika.file_path} nije uspešno dodana.`);
                 }
             }
     

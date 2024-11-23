@@ -21,7 +21,7 @@ export interface Osoba {
 
 export interface Slika {
     row_id?: number; 
-    id: number; 
+    id: string; 
     putanja_do_slike: string;
     osoba_id: number;
 }

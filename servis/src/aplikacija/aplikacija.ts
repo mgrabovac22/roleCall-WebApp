@@ -51,14 +51,11 @@ try {
     } else {
         port = dajPort("mgrabovac22");
     }
-
+    
     console.log(`PortServis: ${portServis}`);
     console.log(`Port: ${port}`);
 
-    server.use((req, res, next) => {
-        console.log("Session Data:", req.session);
-        next();
-    });
+    const slojZaPristupServisu = new SlojZaPristupServisu(portServis);
     
     server.use("/css", express.static(path.join(__dirname(), "./css")));
     server.use("/jsk", express.static(path.join(__dirname(), "./jsk")));
@@ -73,13 +70,17 @@ try {
     server.put("/servis/korisnici/:id/zabrani-pristup", (req, res) => restKorisnik.zabraniPristup(req, res));
     server.post("/servis/korisnik/zahtjev", (req, res) => restKorisnik.postZahtjevAdminu(req, res));
     server.get("/servis/korisnici/trenutni", (req, res) => restKorisnik.dohvatiTrenutnogKorisnika(req, res));
-    
+
     server.post("/servis/dodaj/osoba", (req, res) => slojZaPristupServisu.postOsoba(req, res));
     server.delete("/servis/obrisi/osoba/:id", (req, res) => slojZaPristupServisu.deleteOsoba(req, res));
     server.get("/servis/provjera-postojanja/:id", (req, res) => slojZaPristupServisu.provjeriPostojanjeOsobe(req, res));
     
     server.get("/servis/osobe", (req, res) => restOsoba.getOsobe(req, res));
     
+    server.get("/dokumentacija", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
+    });
+
     server.get("/login", (zahtjev, odgovor) => {
         odgovor.sendFile(path.join(__dirname(), "./html/login.html"));
     });
@@ -118,13 +119,6 @@ try {
     server.get("/osobe", (zahtjev, odgovor) => {
         odgovor.sendFile(path.join(__dirname(), "./html/osobe.html"));
     });
-    
-    server.get("/dokumentacija", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
-    });
-    
-    const slojZaPristupServisu = new SlojZaPristupServisu(portServis);
-    
     
     server.listen(port, () => {
         if (provjeraPorta || port==12222) {

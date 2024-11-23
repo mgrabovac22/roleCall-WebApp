@@ -21,7 +21,7 @@ CREATE TABLE "osoba"(
 
 CREATE TABLE "slika"(
   "row_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-  "id" INTEGER NOT NULL UNIQUE,
+  "id" VARCHAR(45) NOT NULL UNIQUE,
   "putanja_do_slike" VARCHAR(500) NOT NULL,
   "osoba_id" INTEGER NOT NULL,                   
   CONSTRAINT "fk_slika_osoba1"

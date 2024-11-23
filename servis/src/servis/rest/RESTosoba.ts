@@ -32,7 +32,7 @@ export class RestOsoba {
         if (Array.isArray(slike)) {
             for (const [index, putanja_do_slike] of slike.entries()) {
                 const novaSlika: Slika = {
-                    id: id * 1000 + index, 
+                    id: `${index}-${id}`, 
                     putanja_do_slike,
                     osoba_id: id,
                 };
@@ -213,7 +213,7 @@ export class RestOsoba {
     }
 
     const slika: Slika = {
-      id: 0,
+      id: " ",
       putanja_do_slike,
       osoba_id,
     };
