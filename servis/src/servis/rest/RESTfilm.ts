@@ -11,18 +11,30 @@ export class RestFilm {
 
   async getFilmove(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
+
+    const dozvoljeniParametri = ["stranica", "datumOd", "datumDo"];
+    const neocekivaniParametri = Object.keys(zahtjev.query).filter(
+        (key) => !dozvoljeniParametri.includes(key)
+    );
+
+    if (neocekivaniParametri.length > 0) {
+        odgovor.status(422).json({ greska: "neočekivani podaci" });
+        return;
+    }
+
     const stranica = parseInt(zahtjev.query["stranica"] as string) || 1;
     const datumOd = zahtjev.query["datumOd"] as string;
     const datumDo = zahtjev.query["datumDo"] as string;
 
     try {
-      const filmovi = await this.filmDAO.dajFilmovePoStranici(stranica, datumOd, datumDo);
-      odgovor.status(200).json(filmovi);
+        const filmovi = await this.filmDAO.dajFilmovePoStranici(stranica, datumOd, datumDo);
+        odgovor.status(200).json(filmovi);
     } catch (err) {
-      console.error("Greška prilikom dohvaćanja filmova:", err);
-      odgovor.status(500).json({ greska: "Greška prilikom dohvaćanja filmova" });
+        console.error("Greška prilikom dohvaćanja filmova:", err);
+        odgovor.status(500).json({ greska: "Greška prilikom dohvaćanja filmova" });
     }
   }
+
 
   async postFilm(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");

@@ -57,6 +57,11 @@ try {
         const baseURL = provjera || port === 12223 ? "http://localhost" : "http://spider.foi.hr";
         console.log(`Server je pokrenut na ${baseURL}:${port}`);
     });
+    
+    server.use((req, res) => {
+        res.status(404).json({ greska: "nepostojeći resurs" });
+    });
+    
 } catch (error) {
     console.error("Greška pri pokretanju servera: ", error);
     process.exit(1);

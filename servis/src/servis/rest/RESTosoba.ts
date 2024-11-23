@@ -73,25 +73,36 @@ export class RestOsoba {
 
   async getOsobePoStranici(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
+
+    const dozvoljeniParametri = ["stranica"];
+    const neocekivaniParametri = Object.keys(zahtjev.query).filter(
+        (key) => !dozvoljeniParametri.includes(key)
+    );
+
+    if (neocekivaniParametri.length > 0) {
+        odgovor.status(422).json({ greska: "neočekivani podaci" });
+        return;
+    }
+
     const stranica = parseInt(zahtjev.query["stranica"] as string) || 1;
 
     try {
       const osobe = await this.osobaDAO.dajSvePoStranici(stranica);
 
       const osobeSaSlikama = await Promise.all(
-        osobe.map(async (osoba) => {
-          const slike = await this.osobaDAO.dajSlikeOsobe(osoba.id);
-          return {
-            ...osoba,
-            slike,
-          };
-        })
+          osobe.map(async (osoba) => {
+              const slike = await this.osobaDAO.dajSlikeOsobe(osoba.id);
+              return {
+                  ...osoba,
+                  slike,
+              };
+          })
       );
 
-      odgovor.status(200).json(osobeSaSlikama);
+        odgovor.status(200).json(osobeSaSlikama);
     } catch (err) {
-      console.error("Greška prilikom dohvaćanja osoba:", err);
-      odgovor.status(500).json({ greska: "Greška prilikom dohvaćanja osoba" });
+        console.error("Greška prilikom dohvaćanja osoba:", err);
+        odgovor.status(500).json({ greska: "Greška prilikom dohvaćanja osoba" });
     }
   }
 
@@ -127,6 +138,17 @@ export class RestOsoba {
 
   async getFilmoveOsobe(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
+
+    const dozvoljeniParametri = ["stranica"];
+    const neocekivaniParametri = Object.keys(zahtjev.query).filter(
+        (key) => !dozvoljeniParametri.includes(key)
+    );
+
+    if (neocekivaniParametri.length > 0) {
+        odgovor.status(422).json({ greska: "neočekivani podaci" });
+        return;
+    }
+
     const id = parseInt(zahtjev.params["id"] || "0");
     const stranica = parseInt(zahtjev.query["stranica"] as string) || 1;
 

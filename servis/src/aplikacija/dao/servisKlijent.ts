@@ -30,7 +30,7 @@ export class RestKorisnik {
         lozinka: hashLozinka,
         email: email.trim(),
         tip_korisnika_id: 1, 
-        status: "pending", 
+        status: "nema statusa", 
         drzava: drzava || null,
         telefon: telefon || null,
         grad: grad || null,
