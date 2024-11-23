@@ -24,15 +24,11 @@ document.getElementById("loginForm").addEventListener("submit", async function (
             console.log(status);
             
 
-            if (status === "ima pristup") {
-                porukica.innerHTML = "";
-                window.location.href = "/";
-            } else if (status === "nema pristup") {
+            if (status === "nema pristup") {
                 porukica.innerHTML = "Administrator vam je zabranio pristup!";
-            } else if (status === "pending") {
-                porukica.innerHTML = "Administrator vam još nije odobrio pristup!";
             } else {
-                porukica.innerHTML = "Nepoznat status korisnika. Kontaktirajte podršku.";
+                window.location.href = "/";
+                porukica.innerHTML = ""
             }
         } else {
             const greska = await odgovor.json();

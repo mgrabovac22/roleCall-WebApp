@@ -20,7 +20,7 @@ export class RestKorisnik {
 
     try {
       const hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
-
+      zahtjev.session.korime = korime;
       const uspjeh = await this.korisnikDAO.dodajKorisnika({
         id: 0,
         ime: ime || null,
@@ -61,9 +61,7 @@ export class RestKorisnik {
       const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);
 
       if (korisnik && korisnik.lozinka === hashLozinka) {
-        if (korisnik.status === "ima pristup") {
           zahtjev.session.korime = korisnik.korime;
-        }
         odgovor.status(200).json({ poruka: "Prijava uspješna", korisnik });
       } else {
         odgovor.status(401).json({ greska: "Pogrešni podaci za prijavu ili korisnik nema pristup." });
@@ -148,6 +146,37 @@ export class RestKorisnik {
         console.error("Greška prilikom dohvaćanja trenutnog korisnika:", err);
         res.status(500).json({ greska: "Interna greška servera" });
     }
-}
+  }
+
+  async postZahtjevAdminu(req: Request, res: Response) {
+    const korime = req.session.korime;
+
+    if (!korime) {
+        res.status(400).json({ greska: "Korisničko ime je obavezno za slanje zahtjeva." });
+        return;
+    }
+
+    try {
+        const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);
+        if (!korisnik) {
+            res.status(404).json({ greska: "Korisnik ne postoji." });
+            return;
+        }
+
+        if (korisnik.status === "ima pristup") {
+            res.status(409).json({ greska: "Korisnik već ima ovlasti." });
+            return;
+        }
+
+        await this.korisnikDAO.postaviStatusZahtjeva(korime, "pending");
+
+        res.status(200).json({ poruka: "Zahtjev je uspješno poslan adminu." });
+    } catch (err) {
+        console.error("Greška prilikom slanja zahtjeva adminu:", err);
+        res.status(500).json({ greska: "Interna greška servera." });
+    }
+  }
+
+
 
 }

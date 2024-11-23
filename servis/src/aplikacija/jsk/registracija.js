@@ -31,9 +31,7 @@ document.getElementById("registracija-form").addEventListener("submit", async (e
     });
 
     if (odgovor.ok) {
-      document.getElementById("poruka").textContent = 
-        "Registracija uspješna! Pričekajte dok vam Administrator ne odobri pristup, zatim se možete ulogirati.";
-      document.getElementById("poruka").style.color = "green";
+      window.location.href="/";
     } else {
       const greska = await odgovor.json();
       document.getElementById("poruka").textContent = greska.greska || "Greška prilikom registracije!";

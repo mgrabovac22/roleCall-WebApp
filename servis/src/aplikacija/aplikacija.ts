@@ -117,6 +117,7 @@ try {
     server.get("/servis/tipovi-korisnika", (req, res) => restKorisnik.getTipoviKorisnika(req, res));
     server.put("/servis/korisnici/:id/pristup", (req, res) => restKorisnik.dajPristup(req, res));
     server.put("/servis/korisnici/:id/zabrani-pristup", (req, res) => restKorisnik.zabraniPristup(req, res));
+    server.post("/servis/korisnik/zahtjev", (req, res) => restKorisnik.postZahtjevAdminu(req, res));
     server.get("/servis/korisnici/trenutni", (req, res) => restKorisnik.dohvatiTrenutnogKorisnika(req, res));
     
     server.post("/servis/dodaj/osoba", (req, res) => slojZaPristupServisu.postOsoba(req, res));

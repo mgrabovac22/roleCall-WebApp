@@ -100,4 +100,20 @@ export class KorisnikDAO {
     const sql = "DELETE FROM korisnik WHERE id = ?";
     await this.baza.ubaciAzurirajPodatke(sql, [id]);
   }
+
+  async postaviStatusZahtjeva(korime: string, noviStatus: string): Promise<void> {
+    const sql = `
+        UPDATE korisnik
+        SET status = ?
+        WHERE korime = ?
+    `;
+    console.log(`Postavljam status korisnika ${korime} na ${noviStatus}`);
+    try {
+        await this.baza.ubaciAzurirajPodatke(sql, [noviStatus, korime]);
+    } catch (err) {
+        console.error("Greška prilikom ažuriranja statusa korisnika:", err);
+        throw err;
+    }
+  }
+
 }
