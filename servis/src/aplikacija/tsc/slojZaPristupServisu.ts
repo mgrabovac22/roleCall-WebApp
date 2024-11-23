@@ -57,9 +57,10 @@ export class SlojZaPristupServisu {
                         datum_izdavanja: film.release_date,
                     }),
                 });
-    
+                
                 if (!filmResponse.ok) {
                     console.warn(`Film s ID-jem ${film.id} nije uspešno dodan.`);
+                    continue;
                 }
     
                 const poveziFilmResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba/${id}/film`, {
