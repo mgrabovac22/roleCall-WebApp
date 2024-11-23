@@ -35,11 +35,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 zahtjevAdminuBtn.textContent = "Zahtjev poslan";
             } catch (err) {
                 console.error(err);
-                alert("Došlo je do greške prilikom slanja zahtjeva.");
             }
         });        
     } catch (err) {
         console.error(err);
-        alert("Došlo je do greške prilikom dohvaćanja podataka korisnika.");
     }
 });

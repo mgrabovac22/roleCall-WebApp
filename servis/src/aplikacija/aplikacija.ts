@@ -60,52 +60,6 @@ try {
         next();
     });
     
-
-    /*server.all("*", (zahtjev, odgovor, dalje)=>{
-        if(zahtjev.session.korime == null){
-            return odgovor.redirect("/login");
-		}else{
-			dalje();
-		}
-        dalje();
-    })*/
-    
-
-    server.get("/", (zahtjev, odgovor) => {
-
-        odgovor.sendFile(path.join(__dirname(), "./html/index.html"));
-    });
-
-    server.get("/login", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/login.html"));
-    });
-
-    server.get("/registracija", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/registracija.html"));
-    });
-
-    server.get("/dodavanje", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/dodavanje.html"));
-    });
-
-    server.get("/detalji", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/detalji.html"));
-    });
-
-    server.get("/korisnici", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/korisnici.html"));
-    });
-
-    server.get("/osobe", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/osobe.html"));
-    });
-
-    server.get("/dokumentacija", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
-    });
-
-    const slojZaPristupServisu = new SlojZaPristupServisu(portServis);
-    
     server.use("/css", express.static(path.join(__dirname(), "./css")));
     server.use("/jsk", express.static(path.join(__dirname(), "./jsk")));
     server.use("/slike", express.static(path.join(__dirname(), "./resursi/slike")));
@@ -123,9 +77,55 @@ try {
     server.post("/servis/dodaj/osoba", (req, res) => slojZaPristupServisu.postOsoba(req, res));
     server.delete("/servis/obrisi/osoba/:id", (req, res) => slojZaPristupServisu.deleteOsoba(req, res));
     server.get("/servis/provjera-postojanja/:id", (req, res) => slojZaPristupServisu.provjeriPostojanjeOsobe(req, res));
-
+    
     server.get("/servis/osobe", (req, res) => restOsoba.getOsobe(req, res));
-
+    
+    server.get("/login", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/login.html"));
+    });
+    
+    server.all("*", (zahtjev, odgovor, dalje)=>{
+        
+        if(zahtjev.session.korime == null){
+            odgovor.redirect("/login");
+            return;
+        }else{
+            dalje();
+        }
+    })
+    
+    server.get("/", (zahtjev, odgovor) => {
+        
+        odgovor.sendFile(path.join(__dirname(), "./html/index.html"));
+    });
+    
+    server.get("/registracija", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/registracija.html"));
+    });
+    
+    server.get("/dodavanje", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/dodavanje.html"));
+    });
+    
+    server.get("/detalji", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/detalji.html"));
+    });
+    
+    server.get("/korisnici", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/korisnici.html"));
+    });
+    
+    server.get("/osobe", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/osobe.html"));
+    });
+    
+    server.get("/dokumentacija", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
+    });
+    
+    const slojZaPristupServisu = new SlojZaPristupServisu(portServis);
+    
+    
     server.listen(port, () => {
         if (provjeraPorta || port==12222) {
             console.log(`Server je pokrenut na http://localhost:${port}`);
