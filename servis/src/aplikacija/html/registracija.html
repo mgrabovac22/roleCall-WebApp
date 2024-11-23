@@ -29,6 +29,15 @@
           
             <label for="adresa">Adresa:</label>
             <input type="text" id="adresa" name="adresa" />
+
+            <label for="grad">Grad:</label>
+            <input type="text" id="grad" name="grad" />
+
+            <label for="drzava">Država:</label>
+            <input type="text" id="drzava" name="drzava" />
+          
+            <label for="telefon">Broj telefona:</label>
+            <input type="tel" id="telefon" name="telefon" />
           
             <label for="korime">Korisničko ime:</label>
             <input type="text" id="korime" name="korime" required />
@@ -40,12 +49,13 @@
             <input type="email" id="email" name="email" required />
           
             <button type="submit">Registriraj se</button>
-          </form>
-          <div id="poruka"></div>          
-          
+            <p class="login-link">
+                Već imate račun? <a href="/login">Prijavite se ovdje</a>.
+            </p>     
+        </form>
+        <div id="poruka"></div>
     </main>
     <footer>
-        
     </footer>
     <script src="/jsk/registracija.js"></script>
 </body>

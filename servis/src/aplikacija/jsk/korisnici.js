@@ -1,5 +1,3 @@
-let poruka1 = document.getElementById("poruka");
-
 document.addEventListener("DOMContentLoaded", async () => {
     dajKorisnike();
 });
@@ -8,17 +6,40 @@ async function dajKorisnike() {
     const url = "/servis/korisnici";
 
     try {
-        let odgovor = await fetch(url);
+        const odgovor = await fetch(url);
 
         if (odgovor.status === 200) {
-            let korisnici = await odgovor.json();
-            prikaziKorisnike(korisnici);
+            const korisnici = await odgovor.json();
+
+            const trenutniKorisnik = await dohvatiTrenutnogKorisnika();
+
+            const filtriraniKorisnici = korisnici.filter(
+                (korisnik) => korisnik.korime !== trenutniKorisnik.korime
+            );
+
+            prikaziKorisnike(filtriraniKorisnici);
         } else {
             throw new Error(`Greška: ${odgovor.status}`);
         }
     } catch (error) {
         console.error("Greška prilikom dohvaćanja korisnika:", error);
         poruka1.innerHTML = "Došlo je do greške prilikom dohvaćanja korisnika!";
+    }
+}
+
+async function dohvatiTrenutnogKorisnika() {
+    const url = "/servis/korisnici/trenutni"; 
+
+    try {
+        const odgovor = await fetch(url);
+        if (odgovor.ok) {
+            return await odgovor.json();
+        } else {
+            throw new Error("Greška prilikom dohvaćanja trenutnog korisnika");
+        }
+    } catch (error) {
+        console.error("Greška prilikom dohvaćanja trenutnog korisnika:", error);
+        return null;
     }
 }
 
@@ -96,3 +117,4 @@ async function zabraniPristup(id) {
         poruka1.innerHTML = "Došlo je do greške prilikom zabrane pristupa korisniku!";
     }
 }
+

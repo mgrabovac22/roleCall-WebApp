@@ -11,68 +11,66 @@ export class RestKorisnik {
 
   async postKorisnik(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
-    const { ime, prezime, adresa, korime, lozinka, email } = zahtjev.body;
+    const { ime, prezime, adresa, korime, lozinka, email, drzava, telefon, grad } = zahtjev.body;
 
     if (!korime || !lozinka || !email) {
-        odgovor.status(400).json({ greska: "Nedostaju obavezni podaci (korime, lozinka, email)" });
-        return;
+      odgovor.status(400).json({ greska: "Nedostaju obavezni podaci (korime, lozinka, email)" });
+      return;
     }
 
     try {
-        const hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
+      const hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
 
-        const uspjeh = await this.korisnikDAO.dodajKorisnika({
-            id: 0, 
-            ime: ime || null,
-            prezime: prezime || null,
-            adresa: adresa || null,
-            korime: korime.trim(),
-            lozinka: hashLozinka,
-            email: email.trim(),
-            tip_korisnika_id: 1,
-            status: "pending",
-        });
+      const uspjeh = await this.korisnikDAO.dodajKorisnika({
+        id: 0,
+        ime: ime || null,
+        prezime: prezime || null,
+        adresa: adresa || null,
+        korime: korime.trim(),
+        lozinka: hashLozinka,
+        email: email.trim(),
+        tip_korisnika_id: 1, 
+        status: "pending", 
+        drzava: drzava || null,
+        telefon: telefon || null,
+        grad: grad || null,
+      });
 
-        if (uspjeh) {
-            odgovor.status(201).json({ poruka: "Korisnik uspješno dodan" });
-        } else {
-            odgovor.status(400).json({ greska: "Dodavanje korisnika nije uspjelo. Provjerite podatke." });
-        }
+      if (uspjeh) {
+        odgovor.status(201).json({ poruka: "Korisnik uspješno dodan" });
+      } else {
+        odgovor.status(400).json({ greska: "Dodavanje korisnika nije uspjelo. Provjerite podatke." });
+      }
     } catch (err) {
-        console.error("Greška prilikom dodavanja korisnika:", err);
-        odgovor.status(500).json({ greska: "Interna greška servera" });
+      console.error("Greška prilikom dodavanja korisnika:", err);
+      odgovor.status(500).json({ greska: "Interna greška servera" });
     }
   }
-
 
   async prijavaKorisnika(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
     const { korime, lozinka } = zahtjev.body;
-    
-    let hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
-    
+
     if (!korime || !lozinka) {
       odgovor.status(400).json({ greska: "Nedostaju podaci za prijavu (korime, lozinka)" });
       return;
     }
 
     try {
+      const hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
       const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);
-      
+
       if (korisnik && korisnik.lozinka === hashLozinka) {
-        if(korisnik.status=="ima pristup"){
+        if (korisnik.status === "ima pristup") {
           zahtjev.session.korime = korisnik.korime;
         }
         odgovor.status(200).json({ poruka: "Prijava uspješna", korisnik });
-        return;
       } else {
-        odgovor.status(401).json({ greska: "Pogrešni podaci za prijavu" });
-        return;
+        odgovor.status(401).json({ greska: "Pogrešni podaci za prijavu ili korisnik nema pristup." });
       }
     } catch (err) {
       console.error("Greška prilikom prijave korisnika:", err);
       odgovor.status(500).json({ greska: "Interna greška servera" });
-      return;
     }
   }
 
@@ -99,36 +97,57 @@ export class RestKorisnik {
   }
 
   async dajPristup(req: Request, res: Response) {
-    const korisnikId = parseInt(req.params["id"] as any);
+    const korisnikId = parseInt(req.params["id"] as string, 10);
     if (!korisnikId) {
-        res.status(400).json({ greska: "Nevažeći ID korisnika" });
-        return;
+      res.status(400).json({ greska: "Nevažeći ID korisnika" });
+      return;
     }
 
     try {
-        await this.korisnikDAO.azurirajStatusKorisnika(korisnikId, "ima pristup");
-        res.status(200).json({ poruka: "Pristup omogućen" });
-    } catch (error) {
-        console.error("Greška prilikom davanja pristupa korisniku:", error);
-        res.status(500).json({ greska: "Interna greška servera" });
+      await this.korisnikDAO.azurirajStatusKorisnika(korisnikId, "ima pristup");
+      res.status(200).json({ poruka: "Pristup omogućen" });
+    } catch (err) {
+      console.error("Greška prilikom davanja pristupa korisniku:", err);
+      res.status(500).json({ greska: "Interna greška servera" });
     }
   }
 
   async zabraniPristup(req: Request, res: Response) {
-    const korisnikId = parseInt(req.params["id"] as any);
+    const korisnikId = parseInt(req.params["id"] as string, 10);
     if (!korisnikId) {
-        res.status(400).json({ greska: "Nevažeći ID korisnika" });
+      res.status(400).json({ greska: "Nevažeći ID korisnika" });
+      return;
+    }
+
+    try {
+      await this.korisnikDAO.azurirajStatusKorisnika(korisnikId, "nema pristup");
+      res.status(200).json({ poruka: "Pristup zabranjen" });
+    } catch (err) {
+      console.error("Greška prilikom zabrane pristupa korisniku:", err);
+      res.status(500).json({ greska: "Interna greška servera" });
+    }
+  }
+
+  async dohvatiTrenutnogKorisnika(req: Request, res: Response) {
+    res.type("application/json");
+    const korime = req.session.korime;
+
+    if (!korime) {
+        res.status(401).json({ greska: "Niste prijavljeni" });
         return;
     }
 
     try {
-        await this.korisnikDAO.azurirajStatusKorisnika(korisnikId, "nema pristup");
-        res.status(200).json({ poruka: "Pristup zabranjen" });
-    } catch (error) {
-        console.error("Greška prilikom zabrane pristupa korisniku:", error);
+        const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);
+        if (!korisnik) {
+            res.status(404).json({ greska: "Korisnik nije pronađen" });
+        } else {
+            res.status(200).json(korisnik);
+        }
+    } catch (err) {
+        console.error("Greška prilikom dohvaćanja trenutnog korisnika:", err);
         res.status(500).json({ greska: "Interna greška servera" });
     }
-  }
-
+}
 
 }

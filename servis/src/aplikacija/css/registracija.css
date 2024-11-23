@@ -3,8 +3,11 @@ main {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 80vh;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
 }
+
 form {
     background-color: white;
     padding: 20px;
@@ -12,17 +15,21 @@ form {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
+    box-sizing: border-box;
 }
+
 form h1 {
     margin-bottom: 20px;
     font-size: 24px;
     text-align: center;
 }
+
 label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
+
 input, button {
     width: 100%;
     padding: 10px;
@@ -30,7 +37,9 @@ input, button {
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
+    box-sizing: border-box;
 }
+
 button {
     background-color: #007bff;
     color: white;
@@ -38,12 +47,31 @@ button {
     cursor: pointer;
     transition: background-color 0.3s;
 }
+
 button:hover {
     background-color: #0056b3;
 }
+
 .message {
     margin-top: 10px;
     font-size: 14px;
     text-align: center;
     color: red;
 }
+
+.login-link {
+    text-align: center;
+    font-size: 14px;
+}
+
+.login-link a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.login-link a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
