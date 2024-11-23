@@ -69,26 +69,30 @@ export class RestFilm {
     }
   }
 
-  async deleteFilm(zahtjev: Request, odgovor: Response) {
-    odgovor.type("application/json");
-    const id = parseInt(zahtjev.params["id"] || "0");
-    if (id === 0) {
-      odgovor.status(400).json({ greska: "Nevažeći ID filma" });
-      return;
+  async deleteFilm(req: Request, res: Response) {
+    res.type("application/json");
+    const id = parseInt(req.params["id"] || "0", 10);
+
+    if (!id || isNaN(id)) {
+        res.status(400).json({ greska: "Nevažeći ID filma" });
+        return;
     }
 
     try {
-      const success = await this.filmDAO.obrisiFilm(id);
-      if (success) {
-        odgovor.status(200).json({ poruka: "Film uspešno obrisan" });
-      }
+        const success = await this.filmDAO.obrisiFilm(id);
+        if (success) {
+            res.status(200).json({ poruka: "Film uspešno obrisan." });
+        } else {
+            res.status(404).json({ greska: "Film nije pronađen." });
+        }
     } catch (err) {
-      if (err instanceof Error && err.message === "Film ima povezane osobe i ne može biti obrisan.") {
-        odgovor.status(409).json({ greska: err.message });
-      } else {
-        console.error("Greška prilikom brisanja filma:", err);
-        odgovor.status(500).json({ greska: "Greška prilikom brisanja filma" });
-      }
+        if (err instanceof Error && err.message === "Film ima povezane osobe i ne može biti obrisan.") {
+            res.status(409).json({ greska: err.message });
+        } else {
+            console.error("Greška prilikom brisanja filma:", err);
+            res.status(500).json({ greska: "Došlo je do greške prilikom brisanja filma." });
+        }
     }
   }
+
 }

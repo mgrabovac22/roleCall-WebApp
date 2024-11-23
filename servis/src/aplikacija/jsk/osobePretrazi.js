@@ -129,7 +129,7 @@ async function brisiOsobu(id, ime) {
         const odgovor = await fetch(url, options);
 
         if (odgovor.ok) {
-            alert(`Osoba "${ime}" je uspješno obrisana.`);
+            alert(`Osoba "${ime}" i povezani filmovi su uspješno obrisani.`);
             dajOsobe(currentPage);
         } else {
             const greska = await odgovor.json();

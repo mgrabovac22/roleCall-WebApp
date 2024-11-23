@@ -53,9 +53,6 @@ try {
     server.get("/servis/film/:id", (req, res) => restFilm.getFilm(req, res));
     server.delete("/servis/film/:id", (req, res) => restFilm.deleteFilm(req, res));
 
-    //Endpointi za slike
-    server.post("/servis/osoba/slika", (req, res) => restOsoba.postSlika(req, res));
-
     server.listen(port, () => {
         const baseURL = provjera || port === 12223 ? "http://localhost" : "http://spider.foi.hr";
         console.log(`Server je pokrenut na ${baseURL}:${port}`);

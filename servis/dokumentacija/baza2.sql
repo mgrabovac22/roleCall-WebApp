@@ -58,3 +58,9 @@ CREATE TABLE "korisnik"(
     FOREIGN KEY("tip_korisnika_id")
     REFERENCES "tip_korisnika"("id")
 );
+
+
+DELETE from film_osoba;
+DELETE from film;
+DELETE from slika;
+DELETE from osoba;

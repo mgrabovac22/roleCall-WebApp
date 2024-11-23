@@ -112,17 +112,25 @@ export class OsobaDAO {
     }));
   }
 
-  async poveziOsobuFilmove(osobaId: number, filmovi: FilmOsoba[]): Promise<boolean> {
-    const sql = `
-      INSERT INTO film_osoba (film_id, osoba_id, lik)
-      VALUES (?, ?, ?)
-    `;
+  async poveziOsobuFilmove(osobaId: number, filmovi: FilmOsoba[]): Promise<void> {
+    const sqlProveriFilm = "SELECT COUNT(*) AS broj FROM film WHERE id = ?";
+    const sqlProveriOsobu = "SELECT COUNT(*) AS broj FROM osoba WHERE id = ?";
+    const sqlDodavanjeVeze = "INSERT INTO film_osoba (film_id, osoba_id, lik) VALUES (?, ?, ?)";
 
     for (const film of filmovi) {
-      await this.baza.ubaciAzurirajPodatke(sql, [film.film_id, osobaId, film.lik]);
-    }
+        const filmPostoji = (await this.baza.dajPodatkePromise(sqlProveriFilm, [film.film_id])) as any;
+        const osobaPostoji = (await this.baza.dajPodatkePromise(sqlProveriOsobu, [osobaId])) as any;
 
-    return true;
+        if (filmPostoji[0].broj === 0) {
+            throw new Error(`Film s ID-jem ${film.film_id} ne postoji u bazi.`);
+        }
+
+        if (osobaPostoji[0].broj === 0) {
+            throw new Error(`Osoba s ID-jem ${osobaId} ne postoji u bazi.`);
+        }
+
+        await this.baza.ubaciAzurirajPodatke(sqlDodavanjeVeze, [film.film_id, osobaId, film.lik || null]);
+    }
   }
 
   async obrisiVezeOsobaFilmove(osobaId: number, filmovi: number[]): Promise<boolean> {
@@ -160,5 +168,33 @@ export class OsobaDAO {
     `;
     await this.baza.ubaciAzurirajPodatke(sql, [slika.id, slika.putanja_do_slike, slika.osoba_id]);
     return true;
+  }
+
+  async obrisiSliku(id: number): Promise<void> {
+    const sql = `
+        DELETE FROM slika
+        WHERE osoba_id = ?
+    `;
+
+    try {
+        await this.baza.ubaciAzurirajPodatke(sql, [id]);
+    } catch (err) {
+        console.error(`Greška prilikom brisanja slike s ID-jem ${id}:`, err);
+        throw new Error(`Neuspješno brisanje slike s ID-jem ${id}`);
+    }
+  }
+
+  async obrisiSveVezeFilmova(idOsobe: number): Promise<void> {
+    const sql = `
+        DELETE FROM film_osoba
+        WHERE osoba_id = ?
+    `;
+    try {
+        await this.baza.ubaciAzurirajPodatke(sql, [idOsobe]);
+        console.log(`Sve veze između filmova i osobe s ID-jem ${idOsobe} su obrisane.`);
+    } catch (err) {
+        console.error(`Greška prilikom brisanja veza između filmova i osobe s ID-jem ${idOsobe}:`, err);
+        throw new Error("Greška prilikom brisanja veza između filmova i osobe.");
+    }
   }
 }

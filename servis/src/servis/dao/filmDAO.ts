@@ -86,15 +86,27 @@ export class FilmDAO {
   }
 
   async obrisiFilm(id: number): Promise<boolean> {
+    if (!id) {
+        throw new Error("ID filma nije validan.");
+    }
+
     const sqlVeze = "SELECT COUNT(*) as veze FROM film_osoba WHERE film_id = ?";
     const sqlBrisanje = "DELETE FROM film WHERE id = ?";
 
     const veze = (await this.baza.dajPodatkePromise(sqlVeze, [id])) as Array<any>;
-    if (veze[0].veze > 0) {
-      throw new Error("Film ima povezane osobe i ne može biti obrisan.");
+
+    if (veze.length > 0 && veze[0].veze > 0) {
+        throw new Error("Film ima povezane osobe i ne može biti obrisan.");
     }
 
-    await this.baza.ubaciAzurirajPodatke(sqlBrisanje, [id]);
-    return true;
+    try {
+        await this.baza.ubaciAzurirajPodatke(sqlBrisanje, [id]);
+        console.log(`Film s ID-jem ${id} uspešno obrisan iz baze.`);
+        return true;
+    } catch (error) {
+        console.error(`Greška prilikom brisanja filma s ID-jem ${id}:`, error);
+        throw new Error("Došlo je do greške prilikom brisanja filma.");
+    }
   }
+
 }

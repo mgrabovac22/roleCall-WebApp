@@ -10,79 +10,185 @@ export class SlojZaPristupServisu {
         this.portServis = portServis;
     }
 
-    async postOsoba(req: Request, res: Response): Promise<void> {
+    async postOsoba(req: Request, res: Response) {
+        const { id, ime_prezime, izvor_poznatosti, putanja_profila, rang_popularnosti } = req.body;
+    
+        if (!id || !ime_prezime || !izvor_poznatosti) {
+            res.status(400).json({ greska: "Nedostaju obavezni podaci za dodavanje osobe." });
+            return;
+        }
+    
         try {
-            const { id, ime_prezime, izvor_poznatosti, putanja_profila, rang_popularnosti } = req.body;
-
-            if (!id || !ime_prezime || !izvor_poznatosti) {
-                res.status(400).json({ greska: "Nedostaju obavezni podaci za dodavanje osobe." });
+            const osobaResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, ime_prezime, izvor_poznatosti, putanja_profila, rang_popularnosti }),
+            });
+    
+            if (!osobaResponse.ok) {
+                const greska = await osobaResponse.json();
+                res.status(osobaResponse.status).json({ greska: greska.greska || "Greška prilikom dodavanja osobe u bazu." });
                 return;
             }
-
-            const url = `http://localhost:${this.portServis}/servis/osoba`;
-            const body = JSON.stringify({
-                id,
-                ime_prezime,
-                izvor_poznatosti,
-                putanja_profila,
-                rang_popularnosti,
-            });
-
-            const options = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body,
-            };
-
-            const odgovor = await fetch(url, options);
-
-            if (odgovor.ok) {
-                const responseData = await odgovor.json();
-                res.status(201).json({ poruka: responseData.poruka || "Osoba uspješno dodana na server." });
-            } else {
-                const greska = await odgovor.json();
-                res.status(odgovor.status).json({ greska: greska.greska || "Greška prilikom poziva drugog servera." });
+    
+            const tmdbFilmoviResponse = await fetch(`https://api.themoviedb.org/3/person/${id}/movie_credits?api_key=1280aa15ece9584768dd84dd4aa3d294`);
+            if (!tmdbFilmoviResponse.ok) {
+                const greska = await tmdbFilmoviResponse.json();
+                res.status(tmdbFilmoviResponse.status).json({
+                    greska: greska.status_message || "Greška prilikom dohvaćanja filmova s TMDB-a.",
+                });
+                return;
             }
+    
+            const tmdbFilmoviData = await tmdbFilmoviResponse.json();
+            const filmovi = tmdbFilmoviData.cast || [];
+    
+            const filmoviZaDodavanje = filmovi.slice(0, 20); 
+    
+            for (const film of filmoviZaDodavanje) {
+                const filmResponse = await fetch(`http://localhost:${this.portServis}/servis/film`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        id: film.id,
+                        org_naslov: film.original_title,
+                        naslov: film.title,
+                        jezik: film.original_language,
+                        datum_izdavanja: film.release_date,
+                    }),
+                });
+    
+                if (!filmResponse.ok) {
+                    console.warn(`Film s ID-jem ${film.id} nije uspešno dodan.`);
+                }
+    
+                const poveziFilmResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba/${id}/film`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify([{ film_id: film.id }]),
+                });
+    
+                if (!poveziFilmResponse.ok) {
+                    console.warn(`Veza između osobe ${id} i filma ${film.id} nije uspešno dodana.`);
+                }
+            }
+    
+            const tmdbSlikeResponse = await fetch(`https://api.themoviedb.org/3/person/${id}/images?api_key=1280aa15ece9584768dd84dd4aa3d294`);
+            if (!tmdbSlikeResponse.ok) {
+                res.status(tmdbSlikeResponse.status).json({
+                    greska: "Greška prilikom dohvaćanja slika s TMDB-a.",
+                });
+                return;
+            }
+    
+            const tmdbSlikeData = await tmdbSlikeResponse.json();
+            const slike = tmdbSlikeData.profiles || [];
+    
+            for (const [index, slika] of slike.entries()) {
+                const slikaResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba/slika`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        id: `${id}-${index}`, 
+                        osoba_id: id,
+                        putanja_do_slike: slika.file_path,
+                    }),
+                });
+    
+                if (!slikaResponse.ok) {
+                    console.warn(`Slika s putanjom ${slika.file_path} nije uspešno dodana.`);
+                }
+            }
+    
+            res.status(201).json({ poruka: "Osoba, filmovi i slike uspješno dodani." });
         } catch (error) {
-            console.error("Greška u middleware endpointu:", error);
-            res.status(500).json({ greska: "Došlo je do greške u posredniku." });
+            console.error("Greška prilikom dodavanja osobe s filmovima i slikama:", error);
+            res.status(500).json({ greska: "Interna greška servera." });
         }
     }
+    
 
-    async deleteOsoba(req: Request, res: Response): Promise<void> {
+    async deleteOsoba(req: Request, res: Response) {
         try {
             const { id } = req.params;
-
+    
             if (!id) {
                 res.status(400).json({ greska: "ID osobe je obavezan za brisanje." });
                 return;
             }
-
-            const url = `http://localhost:${this.portServis}/servis/osoba/${id}`;
-
-            const options = {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            };
-
-            const odgovor = await fetch(url, options);
-
-            if (odgovor.ok) {
-                const responseData = await odgovor.json();
-                res.status(200).json({ poruka: responseData.poruka || "Osoba uspješno obrisana sa servera." });
-            } else {
-                const greska = await odgovor.json();
-                res.status(odgovor.status).json({ greska: greska.greska || "Greška prilikom poziva drugog servera za brisanje." });
+    
+            console.log(`Brisanje osobe s ID-jem: ${id}`);
+    
+            const vezeUrl = `http://localhost:${this.portServis}/servis/osoba/${id}/film`;
+            const vezeOdgovor = await fetch(vezeUrl, { method: "DELETE", headers: { "Content-Type": "application/json" } });
+    
+            if (!vezeOdgovor.ok) {
+                console.error(`Greška prilikom brisanja veza između osobe i filmova: ${vezeOdgovor.status}`);
+                res.status(500).json({ greska: "Greška prilikom brisanja veza između osobe i filmova." });
+                return;
             }
+    
+            console.log(`Veze između osobe ${id} i filmova uspješno obrisane.`);
+    
+            const osobaUrl = `http://localhost:${this.portServis}/servis/osoba/${id}`;
+            const osobaOdgovor = await fetch(osobaUrl, { method: "DELETE", headers: { "Content-Type": "application/json" } });
+    
+            if (!osobaOdgovor.ok) {
+                console.error(`Greška prilikom brisanja osobe: ${osobaOdgovor.status}`);
+                res.status(500).json({ greska: "Greška prilikom brisanja osobe." });
+                return;
+            }
+    
+            console.log(`Osoba s ID-jem ${id} uspješno obrisana.`);
+
+            const filmoviUrl = `http://localhost:${this.portServis}/servis/film`;
+            const filmovi = await fetch(filmoviUrl, { method: "GET" });
+            const filmoviJSON = await filmovi.json();
+    
+            for (const film of filmoviJSON) {
+                const filmId = film.id;
+            
+                if (!filmId) {
+                    console.warn(`Film nema validan ID: ${JSON.stringify(film)}`);
+                    continue;
+                }
+            
+                try {
+                    const povezanostUrl = `http://localhost:${this.portServis}/servis/film/${filmId}/osoba`;
+                    const povezanostOdgovor = await fetch(povezanostUrl, { method: "GET" });
+            
+                    if (!povezanostOdgovor.ok) {
+                        console.warn(`Greška prilikom provjere povezanosti filma ${filmId}: ${povezanostOdgovor.status}`);
+                        continue;
+                    }
+            
+                    const povezaneOsobe = await povezanostOdgovor.json();
+                    if (povezaneOsobe.length > 0) {
+                        console.log(`Film s ID-jem ${filmId} je povezan s drugim osobama, neće biti obrisan.`);
+                        continue;
+                    }
+            
+                    const filmUrl = `http://localhost:${this.portServis}/servis/film/${filmId}`;
+                    const filmOdgovor = await fetch(filmUrl, { method: "DELETE", headers: { "Content-Type": "application/json" } });
+            
+                    if (filmOdgovor.ok) {
+                        console.log(`Film s ID-jem ${filmId} uspešno obrisan.`);
+                    } else {
+                        const greska = await filmOdgovor.json();
+                        console.warn(`Film s ID-jem ${filmId} nije obrisan. Status: ${filmOdgovor.status}, Greška: ${greska.greska}`);
+                    }
+                } catch (err) {
+                    console.error(`Greška prilikom obrade filma s ID-jem ${filmId}:`, err);
+                }
+            }            
+    
+            res.status(200).json({ poruka: "Osoba i povezani filmovi uspješno obrisani." });
         } catch (error) {
-            console.error("Greška u middleware endpointu za brisanje osobe:", error);
-            res.status(500).json({ greska: "Došlo je do greške u posredniku za brisanje." });
+            console.error("Greška u aplikacijskom sloju prilikom brisanja osobe:", error);
+            res.status(500).json({ greska: "Došlo je do greške prilikom brisanja osobe." });
         }
-    }
+    }      
+       
 
     async provjeriPostojanjeOsobe(zahtjev: Request, odgovor: Response) {
         odgovor.type("application/json");

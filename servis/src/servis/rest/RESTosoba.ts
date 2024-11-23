@@ -11,27 +11,39 @@ export class RestOsoba {
 
   async postOsoba(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
-    const { id, ime_prezime, izvor_poznatosti, putanja_profila, rang_popularnosti } = zahtjev.body;
+    const { id, ime_prezime, izvor_poznatosti, putanja_profila, rang_popularnosti, slike } = zahtjev.body;
 
     if (!id || !ime_prezime || !izvor_poznatosti || !putanja_profila) {
-      odgovor.status(400).json({ greska: "Nedostaju obavezni podaci" });
-      return;
+        odgovor.status(400).json({ greska: "Nedostaju obavezni podaci za dodavanje osobe." });
+        return;
     }
 
     const osoba: Osoba = {
-      id,
-      ime_prezime,
-      izvor_poznatosti,
-      putanja_profila,
-      rang_popularnosti: rang_popularnosti || null,
+        id,
+        ime_prezime,
+        izvor_poznatosti,
+        putanja_profila,
+        rang_popularnosti: rang_popularnosti || null,
     };
 
     try {
-      await this.osobaDAO.dodaj(osoba);
-      odgovor.status(201).json({ poruka: "Osoba uspešno dodana" });
+        await this.osobaDAO.dodaj(osoba);
+
+        if (Array.isArray(slike)) {
+            for (const [index, putanja_do_slike] of slike.entries()) {
+                const novaSlika: Slika = {
+                    id: id * 1000 + index, 
+                    putanja_do_slike,
+                    osoba_id: id,
+                };
+                await this.osobaDAO.dodajSliku(novaSlika);
+            }
+        }
+
+        odgovor.status(201).json({ poruka: "Osoba i slike uspešno dodani." });
     } catch (err) {
-      console.error("Greška prilikom dodavanja osobe:", err);
-      odgovor.status(500).json({ greska: "Greška prilikom dodavanja osobe" });
+        console.error("Greška prilikom dodavanja osobe i slika:", err);
+        odgovor.status(500).json({ greska: "Greška prilikom dodavanja osobe i slika." });
     }
   }
 
@@ -40,18 +52,24 @@ export class RestOsoba {
     const id = parseInt(zahtjev.params["id"] || "0");
 
     if (!id) {
-      odgovor.status(400).json({ greska: "Nedostaje ID osobe" });
-      return;
+        odgovor.status(400).json({ greska: "Nedostaje ID osobe." });
+        return;
     }
 
     try {
-      await this.osobaDAO.obrisi(id);
-      odgovor.status(200).json({ poruka: "Osoba uspešno obrisana" });
+        await this.osobaDAO.obrisiSveVezeFilmova(id);
+
+        await this.osobaDAO.obrisiSliku(id);
+
+        await this.osobaDAO.obrisi(id);
+
+        odgovor.status(200).json({ poruka: "Osoba i povezani podaci uspešno obrisani." });
     } catch (err) {
-      console.error("Greška prilikom brisanja osobe:", err);
-      odgovor.status(500).json({ greska: "Greška prilikom brisanja osobe" });
+        console.error("Greška prilikom brisanja osobe:", err);
+        odgovor.status(500).json({ greska: "Greška prilikom brisanja osobe." });
     }
   }
+
 
   async getOsobePoStranici(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
@@ -148,15 +166,14 @@ export class RestOsoba {
   async obrisiVezeOsobaFilmove(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
     const id = parseInt(zahtjev.params["id"] || "0");
-    const filmovi: number[] = zahtjev.body;
 
-    if (!id || !Array.isArray(filmovi)) {
-      odgovor.status(400).json({ greska: "Nedostaje ID osobe ili podaci o filmovima" });
+    if (!id) {
+      odgovor.status(400).json({ greska: "Nedostaje ID" });
       return;
     }
 
     try {
-      await this.osobaDAO.obrisiVezeOsobaFilmove(id, filmovi);
+      await this.osobaDAO.obrisiSveVezeFilmova(id);
       odgovor.status(200).json({ poruka: "Veze između osobe i filmova uspešno obrisane" });
     } catch (err) {
       console.error("Greška prilikom brisanja veza između osobe i filmova:", err);
