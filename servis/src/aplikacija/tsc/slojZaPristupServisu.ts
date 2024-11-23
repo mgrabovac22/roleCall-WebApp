@@ -154,20 +154,6 @@ export class SlojZaPristupServisu {
                 }
             
                 try {
-                    const povezanostUrl = `http://localhost:${this.portServis}/servis/film/${filmId}/osoba`;
-                    const povezanostOdgovor = await fetch(povezanostUrl, { method: "GET" });
-            
-                    if (!povezanostOdgovor.ok) {
-                        console.warn(`Greška prilikom provjere povezanosti filma ${filmId}: ${povezanostOdgovor.status}`);
-                        continue;
-                    }
-            
-                    const povezaneOsobe = await povezanostOdgovor.json();
-                    if (povezaneOsobe.length > 0) {
-                        console.log(`Film s ID-jem ${filmId} je povezan s drugim osobama, neće biti obrisan.`);
-                        continue;
-                    }
-            
                     const filmUrl = `http://localhost:${this.portServis}/servis/film/${filmId}`;
                     const filmOdgovor = await fetch(filmUrl, { method: "DELETE", headers: { "Content-Type": "application/json" } });
             
