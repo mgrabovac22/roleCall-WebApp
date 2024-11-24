@@ -63,13 +63,13 @@ document.addEventListener("DOMContentLoaded", () => {
             osobaDiv.className = "osoba";
 
             osobaDiv.innerHTML = `
-                <img src="${osoba.profilSlika || '/images/default-profile.png'}" alt="${osoba.imePrezime}" />
+                <img src="${osoba.profilSlika || '/slike/avatar.jpg'}" alt="${osoba.imePrezime}" />
                 <h4>${osoba.imePrezime}</h4>
                 <p>${osoba.poznatPo || "Nepoznato"}</p>
             `;
 
             osobaDiv.addEventListener("click", () => {
-                window.location.href = `/osoba/detalji/${osoba.id}`;
+                window.location.href = `/detalji/${osoba.id}`;
             });
 
             osobeContainer.appendChild(osobaDiv);

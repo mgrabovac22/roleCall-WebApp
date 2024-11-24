@@ -75,6 +75,9 @@ try {
     server.delete("/servis/obrisi/osoba/:id", (req, res) => slojZaPristupServisu.deleteOsoba(req, res));
     server.get("/servis/provjera-postojanja/:id", (req, res) => slojZaPristupServisu.provjeriPostojanjeOsobe(req, res));
     server.get("/servis/osobe/prikaz", (req, res) => slojZaPristupServisu.getOsobe(req, res));
+    server.get("/servis/osoba/:id", (req, res) => slojZaPristupServisu.getDetaljeOsobe(req, res));
+    server.get("/servis/osoba/:id/film", (req, res) => slojZaPristupServisu.getFilmoveOsobe(req, res));
+
     
     server.get("/servis/osobe", (req, res) => restOsoba.getOsobe(req, res));
     
@@ -109,7 +112,7 @@ try {
         odgovor.sendFile(path.join(__dirname(), "./html/dodavanje.html"));
     });
     
-    server.get("/detalji", (zahtjev, odgovor) => {
+    server.get("/detalji/:id", (zahtjev, odgovor) => {
         odgovor.sendFile(path.join(__dirname(), "./html/detalji.html"));
     });
     

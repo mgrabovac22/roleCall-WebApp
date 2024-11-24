@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalji</title>
+    <title>Detalji Osobe</title>
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/detalji.css">
 </head>
 <body>
     <header>
@@ -12,7 +13,7 @@
             <a href="/">
                 <img src="/slike/headerIkona.jpg" alt="RoleCall">
             </a>
-            <h1>Detalji</h1>
+            <h1>Detalji Osobe</h1>
         </div>
         <nav>
             <a href="/">Početna</a>
@@ -24,10 +25,32 @@
         </nav>
     </header>
     <main>
-
+        <section id="detaljiOsobe" class="detalji-osobe"></section>
+        <section id="galerija" class="galerija-slika">
+            <h2>Galerija</h2>
+        </section>
+        <section id="filmovi" class="filmovi-lista">
+            <h2>Filmovi</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jezik</th>
+                        <th>Originalni Naslov</th>
+                        <th>Naslov</th>
+                        <th>Popularnost</th>
+                        <th>Poster</th>
+                        <th>Datum Izdavanja</th>
+                        <th>Lik</th>
+                    </tr>
+                </thead>
+                <tbody id="filmovi"></tbody>
+            </table>
+            <button id="ucitajJos">Učitaj Još</button>
+        </section>
     </main>
     <footer>
-
+        <p>RoleCall &copy; 2024</p>
     </footer>
+    <script src="/jsk/detalji.js"></script>
 </body>
 </html>

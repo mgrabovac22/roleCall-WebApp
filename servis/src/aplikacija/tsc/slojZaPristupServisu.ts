@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { Konfiguracija } from "../../moduli/upravljateljKonfiguracije.js";
 
 const server = express();
 server.use(express.json());
@@ -9,6 +10,9 @@ export class SlojZaPristupServisu {
     constructor(portServis: number) {
         this.portServis = portServis;
     }
+    private konfiguracija = new Konfiguracija();
+    
+
 
     async postOsoba(req: Request, res: Response) {
         const { id, ime_prezime, izvor_poznatosti, putanja_profila, rang_popularnosti } = req.body;
@@ -229,6 +233,81 @@ export class SlojZaPristupServisu {
             });
         } catch (err) {
             console.error("Greška prilikom dohvaćanja osoba:", err);
+            res.status(500).json({ greska: "Interna greška servera." });
+        }
+    }
+
+    async getDetaljeOsobe(req: Request, res: Response) {
+        const id = parseInt(req.params["id"] as string);
+        await this.konfiguracija.ucitajKonfiguraciju();
+    
+        if (!id) {
+            res.status(400).json({ greska: "Nevažeći ID osobe." });
+            return;
+        }
+    
+        try {
+            const osobaResponse = await fetch(
+                `https://api.themoviedb.org/3/person/${id}?api_key=${this.konfiguracija.dajKonf().tmdbApiKeyV3}&language=hr-HR`
+            );
+            if (!osobaResponse.ok) {
+                res.status(osobaResponse.status).json({ greska: "Greška prilikom dohvaćanja osobe." });
+                return;
+            }
+            const osoba = await osobaResponse.json();
+    
+            const slikeResponse = await fetch(
+                `https://api.themoviedb.org/3/person/${id}/images?api_key=${this.konfiguracija.dajKonf().tmdbApiKeyV3}`
+            );
+            if (!slikeResponse.ok) {
+                res.status(slikeResponse.status).json({ greska: "Greška prilikom dohvaćanja slika osobe." });
+                return;
+            }
+            const slike = await slikeResponse.json();
+    
+            const rezultat = {
+                ...osoba,
+                slike: slike.profiles || [], 
+            };
+    
+            res.status(200).json(rezultat);
+        } catch (err) {
+            console.error("Greška prilikom dohvaćanja osobe:", err);
+            res.status(500).json({ greska: "Interna greška servera." });
+        }
+    }
+    
+    async getFilmoveOsobe(req: Request, res: Response) {
+        const id = parseInt(req.params["id"] as string);
+        const page = parseInt(req.query["stranica"] as string) || 1;
+        await this.konfiguracija.ucitajKonfiguraciju();
+    
+        if (!id || isNaN(page) || page < 1) {
+            res.status(400).json({ greska: "Nevažeći parametri." });
+            return;
+        }
+    
+        try {
+            const filmoviResponse = await fetch(
+                `https://api.themoviedb.org/3/person/${id}/movie_credits?api_key=${this.konfiguracija.dajKonf().tmdbApiKeyV3}&language=hr-HR&page=${page}`
+            );
+            if (!filmoviResponse.ok) {
+                res.status(filmoviResponse.status).json({ greska: "Greška prilikom dohvaćanja filmova osobe." });
+                return;
+            }
+            const filmovi = await filmoviResponse.json();
+    
+            const pocetak = (page - 1) * 20;
+            const kraj = pocetak + 20;
+            const filmoviZaSlanje = filmovi.cast.slice(pocetak, kraj);
+    
+            res.status(200).json({
+                ukupno: filmovi.cast.length,
+                trenutnaStranica: page,
+                filmovi: filmoviZaSlanje,
+            });
+        } catch (err) {
+            console.error("Greška prilikom dohvaćanja filmova osobe:", err);
             res.status(500).json({ greska: "Interna greška servera." });
         }
     }
