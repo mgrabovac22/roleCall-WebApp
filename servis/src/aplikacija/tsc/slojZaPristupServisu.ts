@@ -194,5 +194,47 @@ export class SlojZaPristupServisu {
         }
     }
     
+    async getOsobe(req: Request, res: Response) {
+        const stranica = parseInt(req.query["stranica"] as string) || 1;
+    
+        try {
+            const response = await fetch(`http://localhost:${this.portServis}/servis/osoba?stranica=${stranica}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+    
+            if (!response.ok) {
+                res.status(response.status).json({ greska: `Greška prilikom dohvaćanja osoba: ${response.statusText}` });
+                return;
+            }
+    
+            const osobeSaSlikama = await response.json();
+    
+            if (!Array.isArray(osobeSaSlikama)) {
+                res.status(500).json({ greska: "Neispravan format odgovora sa servisa." });
+                return;
+            }
+    
+            const formatiraneOsobe = osobeSaSlikama.map((osoba: any) => ({
+                id: osoba.id,
+                imePrezime: osoba.ime_prezime,
+                poznatPo: osoba.izvor_poznatosti,
+                profilSlika: osoba.putanja_profila || "/images/default-profile.png",
+            }));
+    
+            const ukupnoZapisa = 100; 
+            const poStranici = 20; 
+            const ukupnoStranica = Math.ceil(ukupnoZapisa / poStranici);
+    
+            res.status(200).json({
+                osobe: formatiraneOsobe,
+                trenutnaStranica: stranica,
+                ukupnoStranica,
+            });
+        } catch (err) {
+            console.error("Greška prilikom dohvaćanja osoba:", err);
+            res.status(500).json({ greska: "Interna greška servera." });
+        }
+    }
     
 }

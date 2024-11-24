@@ -87,17 +87,17 @@ export class RestOsoba {
     const stranica = parseInt(zahtjev.query["stranica"] as string) || 1;
 
     try {
-      const osobe = await this.osobaDAO.dajSvePoStranici(stranica);
+        const osobe = await this.osobaDAO.dajSvePoStranici(stranica);
 
-      const osobeSaSlikama = await Promise.all(
-          osobe.map(async (osoba) => {
-              const slike = await this.osobaDAO.dajSlikeOsobe(osoba.id);
-              return {
-                  ...osoba,
-                  slike,
-              };
-          })
-      );
+        const osobeSaSlikama = await Promise.all(
+            osobe.map(async (osoba) => {
+                const slike = await this.osobaDAO.dajSlikeOsobe(osoba.id);
+                return {
+                    ...osoba,
+                    slike,
+                };
+            })
+        );
 
         odgovor.status(200).json(osobeSaSlikama);
     } catch (err) {
@@ -105,6 +105,7 @@ export class RestOsoba {
         odgovor.status(500).json({ greska: "Greška prilikom dohvaćanja osoba" });
     }
   }
+
 
   async getOsoba(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
