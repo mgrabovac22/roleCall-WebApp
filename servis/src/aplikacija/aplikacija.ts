@@ -74,7 +74,7 @@ try {
     server.post("/servis/dodaj/osoba", (req, res) => slojZaPristupServisu.postOsoba(req, res));
     server.delete("/servis/obrisi/osoba/:id", (req, res) => slojZaPristupServisu.deleteOsoba(req, res));
     server.get("/servis/provjera-postojanja/:id", (req, res) => slojZaPristupServisu.provjeriPostojanjeOsobe(req, res));
-    server.get("/api/osobe", (req, res) => slojZaPristupServisu.getOsobe(req, res));
+    server.get("/servis/osobe/prikaz", (req, res) => slojZaPristupServisu.getOsobe(req, res));
     
     server.get("/servis/osobe", (req, res) => restOsoba.getOsobe(req, res));
     
