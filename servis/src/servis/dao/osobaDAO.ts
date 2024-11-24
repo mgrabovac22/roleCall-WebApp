@@ -197,4 +197,11 @@ export class OsobaDAO {
         throw new Error("Greška prilikom brisanja veza između filmova i osobe.");
     }
   }
+
+  async dajUkupanBrojOsoba(): Promise<number> {
+    const sql = "SELECT COUNT(*) as total FROM osoba";
+    const rezultat = await this.baza.dajPodatkePromise(sql, []) as any;
+    return rezultat[0].total;
+  }
+
 }

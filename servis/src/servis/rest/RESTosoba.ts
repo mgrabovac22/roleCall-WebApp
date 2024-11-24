@@ -85,9 +85,13 @@ export class RestOsoba {
     }
 
     const stranica = parseInt(zahtjev.query["stranica"] as string) || 1;
+    const poStranici = 20; 
 
     try {
         const osobe = await this.osobaDAO.dajSvePoStranici(stranica);
+
+        const ukupnoZapisa = await this.osobaDAO.dajUkupanBrojOsoba();
+        const ukupnoStranica = Math.ceil(ukupnoZapisa / poStranici);
 
         const osobeSaSlikama = await Promise.all(
             osobe.map(async (osoba) => {
@@ -99,12 +103,17 @@ export class RestOsoba {
             })
         );
 
-        odgovor.status(200).json(osobeSaSlikama);
+        odgovor.status(200).json({
+            osobe: osobeSaSlikama,
+            trenutnaStranica: stranica,
+            ukupnoStranica,
+        });
     } catch (err) {
         console.error("Greška prilikom dohvaćanja osoba:", err);
         odgovor.status(500).json({ greska: "Greška prilikom dohvaćanja osoba" });
     }
   }
+
 
 
   async getOsoba(zahtjev: Request, odgovor: Response) {

@@ -208,33 +208,30 @@ export class SlojZaPristupServisu {
                 return;
             }
     
-            const osobeSaSlikama = await response.json();
+            const podaciServisa = await response.json();
     
-            if (!Array.isArray(osobeSaSlikama)) {
+            if (!podaciServisa.osobe || typeof podaciServisa.trenutnaStranica !== "number" || typeof podaciServisa.ukupnoStranica !== "number") {
                 res.status(500).json({ greska: "Neispravan format odgovora sa servisa." });
                 return;
             }
     
-            const formatiraneOsobe = osobeSaSlikama.map((osoba: any) => ({
+            const formatiraneOsobe = podaciServisa.osobe.map((osoba: any) => ({
                 id: osoba.id,
                 imePrezime: osoba.ime_prezime,
                 poznatPo: osoba.izvor_poznatosti,
                 profilSlika: osoba.putanja_profila || "/images/default-profile.png",
             }));
     
-            const ukupnoZapisa = 100; 
-            const poStranici = 20; 
-            const ukupnoStranica = Math.ceil(ukupnoZapisa / poStranici);
-    
             res.status(200).json({
                 osobe: formatiraneOsobe,
-                trenutnaStranica: stranica,
-                ukupnoStranica,
+                trenutnaStranica: podaciServisa.trenutnaStranica,
+                ukupnoStranica: podaciServisa.ukupnoStranica,
             });
         } catch (err) {
             console.error("Greška prilikom dohvaćanja osoba:", err);
             res.status(500).json({ greska: "Interna greška servera." });
         }
     }
+    
     
 }
