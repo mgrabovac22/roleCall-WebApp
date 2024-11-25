@@ -90,7 +90,7 @@ export class SlojZaPristupServisu {
                 const poveziFilmResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba/${id}/film`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify([{ film_id: film.id }]),
+                    body: JSON.stringify([{ film_id: film.id, lik: film.character }]),
                 });
     
                 if (!poveziFilmResponse.ok) {

@@ -91,7 +91,7 @@ export class OsobaDAO {
     const offset = (stranica - 1) * limit;
 
     const sql = `
-      SELECT f.row_id, f.*
+      SELECT f.row_id, f.*, fo.lik
       FROM film f
       JOIN film_osoba fo ON f.id = fo.film_id
       WHERE fo.osoba_id = ?
@@ -109,6 +109,7 @@ export class OsobaDAO {
       putanja_postera: p.putanja_postera,
       datum_izdavanja: p.datum_izdavanja,
       opis: p.opis,
+      lik: p.lik
     }));
   }
 

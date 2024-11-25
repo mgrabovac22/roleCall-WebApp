@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <td>${film.rang_popularnosti} || "Nepoznato"}</td>
                     <td>${film.putanja_postera? `<img src="https://image.tmdb.org/t/p/w92${film.putanja_postera}" alt="${film.naslov}">` : "N/A"}</td>
                     <td>${film.datum_izdavanja || "Nepoznato"}</td>
-                    <td>${film.character || "Nepoznato"}</td>
+                    <td>${film.lik || "Nepoznato"}</td>
                 `;
                 filmoviContainer.appendChild(row);
             });
