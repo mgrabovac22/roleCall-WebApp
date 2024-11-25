@@ -14,40 +14,39 @@ document.addEventListener("DOMContentLoaded", async () => {
         const osoba = await osobaResponse.json();
 
         detaljiContainer.innerHTML = `
-            <img src="${osoba.profil_path || '/images/default-profile.png'}" alt="${osoba.name}">
-            <h1>${osoba.name}</h1>
-            <p>Poznat po: ${osoba.known_for_department || "Nepoznato"}</p>
-            <p>Popularnost: ${osoba.popularity || "Nepoznato"}</p>
+            <img src="${osoba.putanja_profila || '/images/default-profile.png'}" alt="${osoba.name}">
+            <h1>${osoba.ime_prezime}</h1>
+            <p>Poznat po: ${osoba.izvor_poznatosti || "Nepoznato"}</p>
+            <p>Popularnost: ${osoba.rang_popularnosti || "Nepoznato"}</p>
         `;
 
         osoba.slike.forEach(slika => {
             const img = document.createElement("img");
-            img.src = `https://image.tmdb.org/t/p/w200${slika.file_path}`;
+            img.src = slika.putanja_do_slike.startsWith("http") ? slika.putanja_do_slike : `https://image.tmdb.org/t/p/w200${slika.putanja_do_slike}`;
             galerijaContainer.appendChild(img);
         });
 
         async function ucitajFilmove() {
             const filmoviResponse = await fetch(`/servis/osoba/${osobaId}/film?stranica=${trenutnaStranicaFilmova}`);
             if (!filmoviResponse.ok) throw new Error("Greška prilikom dohvaćanja filmova.");
-            const { filmovi, trenutnaStranica, ukupno } = await filmoviResponse.json();
-
+            const filmovi = await filmoviResponse.json();
+            console.log(filmovi);
+            
             filmovi.forEach(film => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${film.original_language}</td>
-                    <td><span title="${film.overview}">${film.original_title}</span></td>
-                    <td>${film.title}</td>
-                    <td>${film.popularity.toFixed(2)}</td>
-                    <td><img src="https://image.tmdb.org/t/p/w92${film.poster_path}" alt="${film.title}"></td>
-                    <td>${film.release_date || "Nepoznato"}</td>
+                    <td>${film.jezik || "Nepoznato"}</td>
+                    <td><span title="${film.opis || "Nema opisa"}">${film.org_naslov || "Nepoznato"}</span></td>
+                    <td>${film.naslov || "Nepoznato"}</td>
+                    <td>${film.rang_popularnosti} || "Nepoznato"}</td>
+                    <td>${film.putanja_postera? `<img src="https://image.tmdb.org/t/p/w92${film.putanja_postera}" alt="${film.naslov}">` : "N/A"}</td>
+                    <td>${film.datum_izdavanja || "Nepoznato"}</td>
                     <td>${film.character || "Nepoznato"}</td>
                 `;
                 filmoviContainer.appendChild(row);
             });
 
-            if (trenutnaStranica * 20 >= ukupno) {
-                ucitajJosBtn.disabled = true;
-            }
+            
         }
 
         await ucitajFilmove();
