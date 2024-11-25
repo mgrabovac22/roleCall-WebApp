@@ -287,8 +287,5 @@ export class SlojZaPristupServisu {
             console.error("Greška prilikom dohvaćanja filmova osobe:", err);
             res.status(500).json({ greska: "Interna greška servera." });
         }
-    }
-    
-    
-    
+    }    
 }

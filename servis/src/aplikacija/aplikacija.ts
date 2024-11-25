@@ -77,8 +77,8 @@ try {
     server.get("/servis/osobe/prikaz", (req, res) => slojZaPristupServisu.getOsobe(req, res));
     server.get("/servis/osoba/:id", (req, res) => slojZaPristupServisu.getDetaljeOsobe(req, res));
     server.get("/servis/osoba/:id/film", (req, res) => slojZaPristupServisu.getFilmoveOsobe(req, res));
-
     
+    server.get("/servis/osoba/:id/filmOd21", (req, res) => restOsoba.getFilmoveOsobeOd21(req, res));
     server.get("/servis/osobe", (req, res) => restOsoba.getOsobe(req, res));
     
     server.get("/dokumentacija", (zahtjev, odgovor) => {
