@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import {Request} from "express";
 
-export function kreirajToken(korisnik:{korime:string}, tajniKljucJWT:string){
+export function kreirajToken(korisnik:{korime:string | undefined}, tajniKljucJWT:string){
 	let token = jwt.sign({ korime: korisnik.korime }, tajniKljucJWT, { expiresIn: "15s" });
 	//console.log(token);
   return token;

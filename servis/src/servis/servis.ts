@@ -29,9 +29,6 @@ try {
         port = dajPortServis("mgrabovac22");
     }
 
-    //Default
-    server.get("/", (req, res) => {res.send("Hello world!")});
-
     //Endpointi za korisnika
     server.post("/servis/korisnici", (req, res) => restKorisnik.postKorisnici(req, res));
     server.delete("/servis/korisnici/:korime", (req, res) => restKorisnik.deleteKorisnik(req, res));

@@ -65,6 +65,53 @@ try {
     
     server.post("/servis/korisnici", (req, res) => restKorisnik.postKorisnik(req, res));
     server.post("/servis/prijava", (req, res) => restKorisnik.prijavaKorisnika(req, res));
+    
+    server.get("/dokumentacija", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
+    });
+    
+    server.get("/login", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/login.html"));
+    });
+    
+    server.get("/registracija", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/registracija.html"));
+    });
+    
+    server.use((req, res, next) => {
+        if (req.session) {
+            console.log("Sadržaj sesije:", req.session);
+        } else {
+            console.log("Nema aktivne sesije.");
+        }
+        next();
+    });
+    
+    server.get("/odjava", (req, res) => {
+        if (req.session) {
+            req.session.destroy((err) => {
+                if (err) {
+                    console.error("Greška prilikom uništavanja sesije:", err);
+                    res.status(500).json({ greska: "Neuspješno odjavljivanje." });
+                } else {
+                    res.clearCookie("connect.sid");
+                    res.status(200).json({ poruka: "Uspješno odjavljeni." });
+                }
+            });
+        } else {
+            res.status(400).json({ greska: "Sesija nije aktivna." });
+        }
+    });    
+    
+    server.all("*", (zahtjev, odgovor, dalje)=>{
+        
+        if(zahtjev.session.korime == null){
+            odgovor.redirect("/login");
+            return;
+        }else{
+            dalje();
+        }
+    })
     server.get("/servis/korisnici", (req, res) => restKorisnik.getKorisnici(req, res));
     server.get("/servis/tipovi-korisnika", (req, res) => restKorisnik.getTipoviKorisnika(req, res));
     server.put("/servis/korisnici/:id/pristup", (req, res) => restKorisnik.dajPristup(req, res));
@@ -82,58 +129,10 @@ try {
     server.get("/servis/osoba/:id/filmOd21", (req, res) => restOsoba.getFilmoveOsobeOd21(req, res));
     server.get("/servis/osobe", (req, res) => restOsoba.getOsobe(req, res));
     
-    server.get("/dokumentacija", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
-    });
-
-    server.get("/login", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/login.html"));
-    });
-    
-    server.get("/registracija", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/registracija.html"));
-    });
-
-    server.use((req, res, next) => {
-        if (req.session) {
-            console.log("Sadržaj sesije:", req.session);
-        } else {
-            console.log("Nema aktivne sesije.");
-        }
-        next();
-    });
-
-    server.get("/odjava", (req, res) => {
-        if (req.session) {
-            req.session.destroy((err) => {
-                if (err) {
-                    console.error("Greška prilikom uništavanja sesije:", err);
-                    res.status(500).json({ greska: "Neuspješno odjavljivanje." });
-                } else {
-                    res.clearCookie("connect.sid");
-                    res.status(200).json({ poruka: "Uspješno odjavljeni." });
-                }
-            });
-        } else {
-            res.status(400).json({ greska: "Sesija nije aktivna." });
-        }
-    });    
-
-    server.all("*", (zahtjev, odgovor, dalje)=>{
-        
-        if(zahtjev.session.korime == null){
-            odgovor.redirect("/login");
-            return;
-        }else{
-            dalje();
-        }
-    })
-    
     server.get("/", (zahtjev, odgovor) => {
         
         odgovor.sendFile(path.join(__dirname(), "./html/index.html"));
     });
-    
     
     server.get("/dodavanje", (zahtjev, odgovor) => {
         odgovor.sendFile(path.join(__dirname(), "./html/dodavanje.html"));
