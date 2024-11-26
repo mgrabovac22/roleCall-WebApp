@@ -1,8 +1,13 @@
 import jwt from "jsonwebtoken";
 import {Request} from "express";
+import { Konfiguracija } from "./upravljateljKonfiguracije.js";
+
+
+const konfiguracija = new Konfiguracija();
+await konfiguracija.ucitajKonfiguraciju();
 
 export function kreirajToken(korisnik:{korime:string}, tajniKljucJWT:string){
-	let token = jwt.sign({ korime: korisnik.korime }, tajniKljucJWT, { expiresIn: "15s" });
+	let token = jwt.sign({ korime: korisnik.korime }, tajniKljucJWT, { expiresIn: `${konfiguracija.dajKonf().jwtValjanost}s` });
 	console.log(token);
   return token;
 }

@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { Konfiguracija } from "../../moduli/upravljateljKonfiguracije.js";
+import { kreirajToken } from "./dohavatiJWT.js";
 
 const server = express();
 server.use(express.json());
@@ -34,10 +35,19 @@ export class SlojZaPristupServisu {
         
             const tmdbSlikeData = await tmdbSlikeResponse.json();
             const slike = tmdbSlikeData.profiles.map((slika: any) => slika.file_path);
+
+            let headers = new Headers();
+            if(req.session.korime!=null){
+                headers.set("Authorization", `Bearer ${kreirajToken({korime: req.session.korime}, konfiguracija.dajKonf().jwtTajniKljuc)}`);
+                headers.set("Content-Type", "application/json");
+            }
+            else{
+                res.status(401).json({greska: "Nije kreirana sesija"});
+            }
         
             const osobaResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: headers,
                 body: JSON.stringify({
                     id,
                     ime_prezime,
@@ -69,7 +79,7 @@ export class SlojZaPristupServisu {
             for (const film of filmoviZaDodavanje) {
                 const filmResponse = await fetch(`http://localhost:${this.portServis}/servis/film`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: headers,
                     body: JSON.stringify({
                         id: film.id,
                         org_naslov: film.original_title,
@@ -89,7 +99,7 @@ export class SlojZaPristupServisu {
     
                 const poveziFilmResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba/${id}/film`, {
                     method: "PUT",
-                    headers: { "Content-Type": "application/json" },
+                    headers: headers,
                     body: JSON.stringify([{ film_id: film.id, lik: film.character }]),
                 });
     
@@ -114,9 +124,17 @@ export class SlojZaPristupServisu {
                 res.status(400).json({ greska: "ID osobe je obavezan za brisanje." });
                 return;
             }
+            let headers = new Headers();
+            if(req.session.korime!=null){
+                headers.set("Authorization", `Bearer ${kreirajToken({korime: req.session.korime}, konfiguracija.dajKonf().jwtTajniKljuc)}`);
+                headers.set("Content-Type", "application/json");
+            }
+            else{
+                res.status(401).json({greska: "Nije kreirana sesija"});
+            }
         
             const vezeUrl = `http://localhost:${this.portServis}/servis/osoba/${id}/film`;
-            const vezeOdgovor = await fetch(vezeUrl, { method: "DELETE", headers: { "Content-Type": "application/json" } });
+            const vezeOdgovor = await fetch(vezeUrl, { method: "DELETE", headers: headers });
     
             if (!vezeOdgovor.ok) {
                 console.error(`Greška prilikom brisanja veza između osobe i filmova: ${vezeOdgovor.status}`);
@@ -125,7 +143,7 @@ export class SlojZaPristupServisu {
             }
         
             const osobaUrl = `http://localhost:${this.portServis}/servis/osoba/${id}`;
-            const osobaOdgovor = await fetch(osobaUrl, { method: "DELETE", headers: { "Content-Type": "application/json" } });
+            const osobaOdgovor = await fetch(osobaUrl, { method: "DELETE", headers: headers });
     
             if (!osobaOdgovor.ok) {
                 console.error(`Greška prilikom brisanja osobe: ${osobaOdgovor.status}`);
@@ -134,7 +152,7 @@ export class SlojZaPristupServisu {
             }
     
             const filmoviUrl = `http://localhost:${this.portServis}/servis/film`;
-            const filmovi = await fetch(filmoviUrl, { method: "GET" });
+            const filmovi = await fetch(filmoviUrl, { method: "GET", headers: headers });
             const filmoviJSON = await filmovi.json();
     
             for (const film of filmoviJSON) {
@@ -147,7 +165,7 @@ export class SlojZaPristupServisu {
             
                 try {
                     const filmUrl = `http://localhost:${this.portServis}/servis/film/${filmId}`;
-                    const filmOdgovor = await fetch(filmUrl, { method: "DELETE", headers: { "Content-Type": "application/json" } });
+                    const filmOdgovor = await fetch(filmUrl, { method: "DELETE", headers: headers });
             
                     if (filmOdgovor.ok) {
                         console.log(`Film s ID-jem ${filmId} uspešno obrisan.`);
@@ -171,6 +189,15 @@ export class SlojZaPristupServisu {
     async provjeriPostojanjeOsobe(zahtjev: Request, odgovor: Response) {
         odgovor.type("application/json");
 
+        let headers = new Headers();
+        if(zahtjev.session.korime!=null){
+            headers.set("Authorization", `Bearer ${kreirajToken({korime: zahtjev.session.korime}, konfiguracija.dajKonf().jwtTajniKljuc)}`);
+            headers.set("Content-Type", "application/json");
+        }
+        else{
+            odgovor.status(401).json({greska: "Nije kreirana sesija"});
+        }
+
         const id = parseInt(zahtjev.params["id"] as string);
         if (isNaN(id) || id <= 0) {
             odgovor.status(400).json({ greska: "Nevažeći ID osobe" });
@@ -180,7 +207,7 @@ export class SlojZaPristupServisu {
         const vanjskiServisUrl = `http://localhost:`+ this.portServis +`/servis/osoba/${id}`;
 
         try {
-            const vanjskiOdgovor = await fetch(vanjskiServisUrl, { method: "GET" });
+            const vanjskiOdgovor = await fetch(vanjskiServisUrl, { method: "GET", headers: headers });
 
             if (vanjskiOdgovor.status === 200) {
                 odgovor.status(200).json({ poruka: "Osoba postoji u bazi" });
@@ -199,18 +226,27 @@ export class SlojZaPristupServisu {
         const stranica = parseInt(req.query["stranica"] as string) || 1;
     
         try {
+            let headers = new Headers();
+            if(req.session.korime!=null){
+                headers.set("Authorization", `Bearer ${kreirajToken({korime: req.session.korime}, konfiguracija.dajKonf().jwtTajniKljuc)}`);
+                headers.set("Content-Type", "application/json");
+            }
+            else{
+                res.status(401).json({greska: "Nije kreirana sesija"});
+            }
+
             const response = await fetch(`http://localhost:${this.portServis}/servis/osoba?stranica=${stranica}`, {
                 method: "GET",
-                headers: { "Content-Type": "application/json" },
+                headers: headers,
             });
-    
+
             if (!response.ok) {
                 res.status(response.status).json({ greska: `Greška prilikom dohvaćanja osoba: ${response.statusText}` });
                 return;
             }
     
             const podaciServisa = await response.json();
-    
+
             if (!podaciServisa.osobe || typeof podaciServisa.trenutnaStranica !== "number" || typeof podaciServisa.ukupnoStranica !== "number") {
                 res.status(500).json({ greska: "Neispravan format odgovora sa servisa." });
                 return;
@@ -243,7 +279,18 @@ export class SlojZaPristupServisu {
         }
     
         try {
-            const osobaResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba/${id}`);
+            let headers = new Headers();
+            if(req.session.korime!=null){
+                headers.set("Authorization", `Bearer ${kreirajToken({korime: req.session.korime}, konfiguracija.dajKonf().jwtTajniKljuc)}`);
+                headers.set("Content-Type", "application/json");
+            }
+            else{
+                res.status(401).json({greska: "Nije kreirana sesija"});
+            }
+
+            const osobaResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba/${id}`, {
+                headers: headers
+            });
             if (!osobaResponse.ok) {
                 res.status(osobaResponse.status).json({ greska: "Greška prilikom dohvaćanja osobe." });
                 return;
@@ -268,7 +315,18 @@ export class SlojZaPristupServisu {
         }
     
         try {
-            const filmoviResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba/${id}/film?stranica=${stranica}`);
+            let headers = new Headers();
+            if(req.session.korime!=null){
+                headers.set("Authorization", `Bearer ${kreirajToken({korime: req.session.korime}, konfiguracija.dajKonf().jwtTajniKljuc)}`);
+                headers.set("Content-Type", "application/json");
+            }
+            else{
+                res.status(401).json({greska: "Nije kreirana sesija"});
+            }
+
+            const filmoviResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba/${id}/film?stranica=${stranica}`, {
+                headers: headers
+            });
             if (!filmoviResponse.ok) {
                 res.status(filmoviResponse.status).json({ greska: "Greška prilikom dohvaćanja filmova osobe." });
                 return;
@@ -292,11 +350,18 @@ export class SlojZaPristupServisu {
         }
     
         try {
+            let headers = new Headers();
+            if(req.session.korime!=null){
+                headers.set("Authorization", `Bearer ${kreirajToken({korime: req.session.korime}, konfiguracija.dajKonf().jwtTajniKljuc)}`);
+                headers.set("Content-Type", "application/json");
+            }
+            else{
+                res.status(401).json({greska: "Nije kreirana sesija"});
+            }
+
             const korisnikResponse = await fetch(`http://localhost:${this.portServis}/servis/korisnici`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: headers,
                 body: JSON.stringify({
                     korime,
                     status,
@@ -327,8 +392,18 @@ export class SlojZaPristupServisu {
         }
     
         try {
+            let headers = new Headers();
+            if(req.session.korime!=null){
+                headers.set("Authorization", `Bearer ${kreirajToken({korime: req.session.korime}, konfiguracija.dajKonf().jwtTajniKljuc)}`);
+                headers.set("Content-Type", "application/json");
+            }
+            else{
+                res.status(401).json({greska: "Nije kreirana sesija"});
+            }
+
             const apiResponse = await fetch(`http://localhost:${this.portServis}/servis/korisnici/${korime}`, {
                 method: "DELETE",
+                headers: headers
             });
     
             if (!apiResponse.ok) {

@@ -6,6 +6,7 @@ import { RestKorisnik } from "./rest/RESTkorisnik.js";
 import { RestOsoba } from "./rest/RESTosoba.js";
 import { RestFilm } from "./rest/RESTfilm.js";
 import cors from "cors";
+import { provjeriToken } from "../moduli/jwtModul.js";
 
 let port = 3000;
 const konfiguracija = new Konfiguracija();
@@ -29,6 +30,22 @@ try {
     } else {
         port = dajPortServis("mgrabovac22");
     }
+
+    server.all("*", (zahtjev, odgovor, dalje) => {
+        try {    
+            const tokenValidan = provjeriToken(zahtjev, konfiguracija.dajKonf().jwtTajniKljuc);
+    
+            if (!tokenValidan) {
+                odgovor.status(406).json({ greska: "Nevažeći token" }); 
+                return;
+            }
+    
+            dalje(); 
+        } catch (err) {
+            odgovor.status(422).json({ greska: "Token je istekao." }); 
+        }
+    });
+    
 
     server.post("/servis/korisnici", (req, res) => restKorisnik.postKorisnici(req, res));
     server.get("/servis/korisnici", metodaNijeImplementirana);
