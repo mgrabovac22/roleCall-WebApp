@@ -11,9 +11,10 @@ export class RestKorisnik {
 
   async postKorisnici(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
-    const { korime, status, korisnici_id } = zahtjev.body;
+    const { korime, status, tip_korisnika_id } = zahtjev.body;
+    
 
-    if (!korime || !status || !korisnici_id) {
+    if (!korime || !status || !tip_korisnika_id) {
       odgovor.status(400).json({ greska: "Nedostaju obavezni podaci" });
       return;
     }
@@ -22,8 +23,11 @@ export class RestKorisnik {
       id: 0, 
       korime,
       status,
-      korisnici_id,
+      tip_korisnika: tip_korisnika_id,
     };
+
+    console.log("restk: ", korisnik);
+    
 
     try {
       await this.kdao.dodaj(korisnik);

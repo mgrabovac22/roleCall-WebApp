@@ -132,4 +132,21 @@ export class KorisnikDAO {
     }
   }
 
+  async dajKorisnikaPoId(korisnikId: number): Promise<Korisnik | null> {
+    const sql = `
+        SELECT id, korime, status, tip_korisnika_id, email
+        FROM korisnik
+        WHERE id = ?
+    `;
+
+    const podaci = (await this.baza.dajPodatkePromise(sql, [korisnikId])) as Array<any>;
+
+    if (podaci.length === 1) {
+        return podaci[0] as Korisnik;
+    }
+
+    return null;
+  }
+
+
 }

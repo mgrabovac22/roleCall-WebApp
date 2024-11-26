@@ -60,7 +60,7 @@ CREATE TABLE "korisnik"(
 );
 
 
-DELETE from film_osoba;
-DELETE from film;
-DELETE from slika;
-DELETE from osoba;
+INSERT INTO "tip_korisnika"("naziv")
+VALUES ('Registrirani korisnik'),
+       ('Administrator'),
+       ('Gost');

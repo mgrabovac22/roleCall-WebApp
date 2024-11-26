@@ -287,5 +287,41 @@ export class SlojZaPristupServisu {
             console.error("Greška prilikom dohvaćanja filmova osobe:", err);
             res.status(500).json({ greska: "Interna greška servera." });
         }
-    }    
+    }
+    
+    async dodajKorisnika(req: Request, res: Response) {
+        const { korime, status, tip_korisnika_id } = req.body;
+    
+        if (!korime || !status || !tip_korisnika_id) {
+            res.status(400).json({ greska: "Nedostaju obavezni podaci za dodavanje korisnika." });
+            return;
+        }
+    
+        try {
+            const korisnikResponse = await fetch(`http://localhost:${this.portServis}/servis/korisnici`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    korime,
+                    status,
+                    tip_korisnika_id,
+                }),
+            });
+    
+            if (!korisnikResponse.ok) {
+                const greska = await korisnikResponse.json();
+                res.status(korisnikResponse.status).json({ greska: greska.greska || "Greška prilikom dodavanja korisnika." });
+                return;
+            }
+    
+            const odgovor = await korisnikResponse.json();
+            res.status(201).json(odgovor);
+        } catch (err) {
+            console.error("Greška prilikom dodavanja korisnika putem API-ja:", err);
+            res.status(500).json({ greska: "Interna greška servera." });
+        }
+    }
+    
 }

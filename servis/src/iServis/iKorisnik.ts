@@ -7,7 +7,7 @@ export interface Korisnici {
     id: number;
     korime: string; 
     status: string; 
-    korisnici_id: number; 
+    tip_korisnika: number; 
   }
   
   

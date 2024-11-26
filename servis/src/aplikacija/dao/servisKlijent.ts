@@ -182,4 +182,34 @@ export class RestKorisnik {
     }
   }
 
+  async getKorisnik(req: Request, res: Response) {
+    const korisnikId = parseInt(req.params["id"] as string, 10);
+
+    if (isNaN(korisnikId) || korisnikId <= 0) {
+        res.status(400).json({ greska: "Nevažeći ID korisnika." });
+        return;
+    }
+
+    try {
+        const korisnik = await this.korisnikDAO.dajKorisnikaPoId(korisnikId);
+
+        if (!korisnik) {
+            res.status(404).json({ greska: "Korisnik nije pronađen." });
+            return;
+        }
+
+        res.status(200).json({
+            id: korisnik.id,
+            korime: korisnik.korime,
+            status: korisnik.status,
+            tip_korisnika_id: korisnik.tip_korisnika_id,
+            email: korisnik.email,
+        });
+    } catch (err) {
+        console.error("Greška prilikom dohvaćanja korisnika:", err);
+        res.status(500).json({ greska: "Interna greška servera." });
+    }
+  }
+
+
 }

@@ -12,15 +12,17 @@ export class KorisnikDAO {
   }
 
   async dodaj(korisnik: Korisnik): Promise<boolean> {
-    if (!korisnik.korime || !korisnik.status || !korisnik.korisnici_id) {
+    if (!korisnik.korime || !korisnik.status || !korisnik.tip_korisnika) {
       throw new Error("Nedostaju obavezni podaci za dodavanje korisnika.");
     }
 
     const sql = `
-      INSERT INTO korisnik (korime, status, Korisnici_id)
+      INSERT INTO korisnik (korime, status, tip_korisnika_id)
       VALUES (?, ?, ?)
     `;
-    const podaci = [korisnik.korime, korisnik.status, korisnik.korisnici_id];
+    const podaci = [korisnik.korime, korisnik.status, korisnik.tip_korisnika];
+    console.log(korisnik.korime);
+    
 
     await this.baza.ubaciAzurirajPodatke(sql, podaci);
     return true;
@@ -44,7 +46,7 @@ export class KorisnikDAO {
       id: p.id,
       korime: p.korime,
       status: p.status,
-      korisnici_id: p.Korisnici_id,
+      tip_korisnika: p.tip_korisnika,
     }));
   }
 
@@ -62,7 +64,7 @@ export class KorisnikDAO {
         id: p.id,
         korime: p.korime,
         status: p.status,
-        korisnici_id: p.Korisnici_id,
+        tip_korisnika: p.tip_korisnika,
       };
     }
 

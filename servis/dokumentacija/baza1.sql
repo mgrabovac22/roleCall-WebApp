@@ -23,9 +23,8 @@ CREATE TABLE "korisnik"(
 
 INSERT INTO "tip_korisnika"("naziv", "opis")
 VALUES ('Registrirani korisnik', 'Korisnik koji ima samo određena prava'),
-       ('Administrator', 'Korisnik koji nema ograničenja prava');
-INSERT INTO "tip_korisnika"("naziv", "opis")
-VALUES ('Gost', 'Korisnik koji nema prava.');
+       ('Administrator', 'Korisnik koji nema ograničenja prava'),
+       ('Gost', 'Korisnik koji nema prava.');
 
 
 INSERT INTO "korisnik" (

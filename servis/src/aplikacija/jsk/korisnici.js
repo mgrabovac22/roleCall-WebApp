@@ -91,25 +91,56 @@ function prikaziKorisnike(korisnici) {
 
 async function dajPristup(id) {
     try {
-        const url = `/servis/korisnici/${id}/pristup`;
-        const options = {
+        const urlPristup = `/servis/korisnici/${id}/pristup`;
+        const optionsPristup = {
             method: "PUT",
         };
 
-        const odgovor = await fetch(url, options);
+        const odgovorPristup = await fetch(urlPristup, optionsPristup);
 
-        if (odgovor.ok) {
-            alert("Pristup je omogućen korisniku.");
-            dajKorisnike(); 
-        } else {
-            const greska = await odgovor.json();
-            throw new Error(greska.greska || `Greška: ${odgovor.status}`);
+        if (!odgovorPristup.ok) {
+            const greska = await odgovorPristup.json();
+            throw new Error(greska.greska || `Greška prilikom omogućavanja pristupa: ${odgovorPristup.status}`);
         }
+
+        const urlDohvatiKorisnika = `/servis/korisnici/${id}`;
+        const odgovorDohvatiKorisnika = await fetch(urlDohvatiKorisnika);
+
+        if (!odgovorDohvatiKorisnika.ok) {
+            const greska = await odgovorDohvatiKorisnika.json();
+            throw new Error(greska.greska || `Greška prilikom dohvaćanja korisnika: ${odgovorDohvatiKorisnika.status}`);
+        }
+
+        const korisnik = await odgovorDohvatiKorisnika.json();
+
+        const urlDodajKorisnika = `/servis/korisnici/rest`;
+        const optionsDodajKorisnika = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                korime: korisnik.korime,
+                status: "ima pristup",
+                tip_korisnika_id: korisnik.tip_korisnika_id,
+            }),
+        };
+
+        const odgovorDodajKorisnika = await fetch(urlDodajKorisnika, optionsDodajKorisnika);
+
+        if (!odgovorDodajKorisnika.ok) {
+            const greska = await odgovorDodajKorisnika.json();
+            throw new Error(greska.greska || `Greška prilikom dodavanja korisnika: ${odgovorDodajKorisnika.status}`);
+        }
+
+        alert("Pristup je omogućen korisniku i korisnik je dodan u bazu.");
+        dajKorisnike(); 
     } catch (error) {
         console.error("Greška prilikom dodavanja pristupa korisniku:", error);
         poruka1.innerHTML = "Došlo je do greške prilikom dodavanja pristupa korisniku!";
     }
 }
+
 
 async function zabraniPristup(id) {
     try {

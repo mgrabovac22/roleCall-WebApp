@@ -113,13 +113,15 @@ try {
     server.put("/servis/korisnici/:id/zabrani-pristup", (req, res) => restKorisnik.zabraniPristup(req, res));
     server.post("/servis/korisnik/zahtjev", (req, res) => restKorisnik.postZahtjevAdminu(req, res));
     server.get("/servis/korisnici/trenutni", (req, res) => restKorisnik.dohvatiTrenutnogKorisnika(req, res));
-
+    server.get("/servis/korisnici/:id", (req, res) => restKorisnik.getKorisnik(req, res));
+    
     server.post("/servis/dodaj/osoba", (req, res) => slojZaPristupServisu.postOsoba(req, res));
     server.delete("/servis/obrisi/osoba/:id", (req, res) => slojZaPristupServisu.deleteOsoba(req, res));
     server.get("/servis/provjera-postojanja/:id", (req, res) => slojZaPristupServisu.provjeriPostojanjeOsobe(req, res));
     server.get("/servis/osobe/prikaz", (req, res) => slojZaPristupServisu.getOsobe(req, res));
     server.get("/servis/osoba/:id", (req, res) => slojZaPristupServisu.getDetaljeOsobe(req, res));
     server.get("/servis/osoba/:id/film", (req, res) => slojZaPristupServisu.getFilmoveOsobe(req, res));
+    server.post("/servis/korisnici/rest", (req, res) => slojZaPristupServisu.dodajKorisnika(req, res));
     
     server.get("/servis/osoba/:id/filmOd21", (req, res) => restOsoba.getFilmoveOsobeOd21(req, res));
     server.get("/servis/osobe", (req, res) => restOsoba.getOsobe(req, res));
