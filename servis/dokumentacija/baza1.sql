@@ -8,7 +8,7 @@ CREATE TABLE "korisnik"(
   "ime" VARCHAR(50),
   "prezime" VARCHAR(100),
   "adresa" TEXT,
-  "korime" VARCHAR(50) NOT NULL,
+  "korime" VARCHAR(50) NOT NULL UNIQUE,
   "lozinka" VARCHAR(1000) NOT NULL,
   "email" VARCHAR(100) NOT NULL,
   "tip_korisnika_id" INTEGER NOT NULL,
@@ -41,8 +41,8 @@ INSERT INTO "korisnik" (
   "država"
 )
 VALUES
-  ('Test', 'Korisnik', 'Adresa 3', 'admin', '9bf8be4d1bdf4f31acca2c7fc3172cc57e0a49e25110ef21be0df6fe859ce112', 'test1@primjer.com', 2, 'ima pristup', '0913334444', 'Vitez', 'Bosna i Hercegovina'),
-  ('Drugi', 'Admin', 'Adresa 4', 'obican', '906a472189a22ab504c0ab208135954cd5e2873d76ef5b1d3873b60b1ff06cdd', 'admin2@primjer.com', 1, 'pending', '0915556666', 'Rijeka', 'Hrvatska');
+  ('Marin', 'Grabovac', 'Adresa 3', 'admin', '9bf8be4d1bdf4f31acca2c7fc3172cc57e0a49e25110ef21be0df6fe859ce112', 'test1@primjer.com', 2, 'ima pristup', '0913334444', 'Vitez', 'Bosna i Hercegovina'),
+  ('Dario', 'Ljubas', 'Adresa 4', 'obican', '906a472189a22ab504c0ab208135954cd5e2873d76ef5b1d3873b60b1ff06cdd', 'admin2@primjer.com', 1, 'pending', '0915556666', 'Rijeka', 'Hrvatska');
 
 
 SELECT * FROM tip_korisnika;
