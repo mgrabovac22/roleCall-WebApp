@@ -122,6 +122,7 @@ try {
     server.get("/servis/osoba/:id", (req, res) => slojZaPristupServisu.getDetaljeOsobe(req, res));
     server.get("/servis/osoba/:id/film", (req, res) => slojZaPristupServisu.getFilmoveOsobe(req, res));
     server.post("/servis/korisnici/rest", (req, res) => slojZaPristupServisu.dodajKorisnika(req, res));
+    server.delete("/servis/korisnici/:korime", (req, res) => slojZaPristupServisu.deleteKorisnik(req, res));
     
     server.get("/servis/osoba/:id/filmOd21", (req, res) => restOsoba.getFilmoveOsobeOd21(req, res));
     server.get("/servis/osobe", (req, res) => restOsoba.getOsobe(req, res));

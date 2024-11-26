@@ -114,9 +114,7 @@ export class SlojZaPristupServisu {
                 res.status(400).json({ greska: "ID osobe je obavezan za brisanje." });
                 return;
             }
-    
-            console.log(`Brisanje osobe s ID-jem: ${id}`);
-    
+        
             const vezeUrl = `http://localhost:${this.portServis}/servis/osoba/${id}/film`;
             const vezeOdgovor = await fetch(vezeUrl, { method: "DELETE", headers: { "Content-Type": "application/json" } });
     
@@ -125,9 +123,7 @@ export class SlojZaPristupServisu {
                 res.status(500).json({ greska: "Greška prilikom brisanja veza između osobe i filmova." });
                 return;
             }
-    
-            console.log(`Veze između osobe ${id} i filmova uspješno obrisane.`);
-    
+        
             const osobaUrl = `http://localhost:${this.portServis}/servis/osoba/${id}`;
             const osobaOdgovor = await fetch(osobaUrl, { method: "DELETE", headers: { "Content-Type": "application/json" } });
     
@@ -137,8 +133,6 @@ export class SlojZaPristupServisu {
                 return;
             }
     
-            console.log(`Osoba s ID-jem ${id} uspješno obrisana.`);
-
             const filmoviUrl = `http://localhost:${this.portServis}/servis/film`;
             const filmovi = await fetch(filmoviUrl, { method: "GET" });
             const filmoviJSON = await filmovi.json();
@@ -323,5 +317,32 @@ export class SlojZaPristupServisu {
             res.status(500).json({ greska: "Interna greška servera." });
         }
     }
+
+    async deleteKorisnik(req: Request, res: Response) {
+        const korime = req.params['korime'];
+    
+        if (!korime) {
+            res.status(400).json({ greska: "Korisničko ime nije navedeno." });
+            return;
+        }
+    
+        try {
+            const apiResponse = await fetch(`http://localhost:${this.portServis}/servis/korisnici/${korime}`, {
+                method: "DELETE",
+            });
+    
+            if (!apiResponse.ok) {
+                const greska = await apiResponse.json();
+                res.status(apiResponse.status).json({ greska: greska.greska || "Greška prilikom brisanja korisnika." });
+                return;
+            }
+    
+            res.status(200).json({ poruka: "Korisnik uspješno obrisan." });
+        } catch (err) {
+            console.error("Greška prilikom brisanja korisnika putem API-ja:", err);
+            res.status(500).json({ greska: "Interna greška servera." });
+        }
+    }
+    
     
 }

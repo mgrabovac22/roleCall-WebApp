@@ -147,23 +147,46 @@ async function zabraniPristup(id) {
         const potvrda = confirm("Jeste li sigurni da želite zabraniti pristup korisniku?");
         if (!potvrda) return;
 
-        const url = `/servis/korisnici/${id}/zabrani-pristup`;
-        const options = {
+        const urlZabraniPristup = `/servis/korisnici/${id}/zabrani-pristup`;
+        const optionsZabraniPristup = {
             method: "PUT",
         };
 
-        const odgovor = await fetch(url, options);
+        const odgovorZabraniPristup = await fetch(urlZabraniPristup, optionsZabraniPristup);
 
-        if (odgovor.ok) {
-            alert("Pristup je zabranjen korisniku.");
-            dajKorisnike(); 
-        } else {
-            const greska = await odgovor.json();
-            throw new Error(greska.greska || `Greška: ${odgovor.status}`);
+        if (!odgovorZabraniPristup.ok) {
+            const greska = await odgovorZabraniPristup.json();
+            throw new Error(greska.greska || `Greška prilikom zabrane pristupa: ${odgovorZabraniPristup.status}`);
         }
+
+        const urlDohvatiKorisnika = `/servis/korisnici/${id}`;
+        const odgovorDohvatiKorisnika = await fetch(urlDohvatiKorisnika);
+
+        if (!odgovorDohvatiKorisnika.ok) {
+            const greska = await odgovorDohvatiKorisnika.json();
+            throw new Error(greska.greska || `Greška prilikom dohvaćanja korisnika: ${odgovorDohvatiKorisnika.status}`);
+        }
+
+        const korisnik = await odgovorDohvatiKorisnika.json();
+
+        const urlBrisanjeKorisnika = `/servis/korisnici/${korisnik.korime}`;
+        const optionsBrisanjeKorisnika = {
+            method: "DELETE",
+        };
+
+        const odgovorBrisanjeKorisnika = await fetch(urlBrisanjeKorisnika, optionsBrisanjeKorisnika);
+
+        if (!odgovorBrisanjeKorisnika.ok) {
+            const greska = await odgovorBrisanjeKorisnika.json();
+            throw new Error(greska.greska || `Greška prilikom brisanja korisnika: ${odgovorBrisanjeKorisnika.status}`);
+        }
+
+        alert("Pristup je zabranjen i korisnik je uspješno obrisan.");
+        dajKorisnike(); 
     } catch (error) {
         console.error("Greška prilikom zabrane pristupa korisniku:", error);
         poruka1.innerHTML = "Došlo je do greške prilikom zabrane pristupa korisniku!";
     }
 }
+
 
