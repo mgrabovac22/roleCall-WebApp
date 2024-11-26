@@ -53,7 +53,7 @@ export class RestFilm {
       }
 
       await this.filmDAO.dodajFilm(film);
-      odgovor.status(201).json({ poruka: "Film uspešno dodan" });
+      odgovor.status(201).json({ status :"uspjeh" });
     } catch (err) {
       console.error("Greška prilikom dodavanja filma:", err);
       odgovor.status(500).json({ greska: "Greška prilikom dodavanja filma" });
@@ -93,7 +93,7 @@ export class RestFilm {
     try {
         const success = await this.filmDAO.obrisiFilm(id);
         if (success) {
-            res.status(200).json({ poruka: "Film uspešno obrisan." });
+            res.status(201).json({ status :"uspjeh" });
         } else {
             res.status(404).json({ greska: "Film nije pronađen." });
         }

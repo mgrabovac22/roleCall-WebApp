@@ -40,7 +40,7 @@ export class RestOsoba {
             }
         }
 
-        odgovor.status(201).json({ poruka: "Osoba i slike uspešno dodani." });
+        odgovor.status(201).json({ status :"uspjeh" });
     } catch (err) {
         console.error("Greška prilikom dodavanja osobe i slika:", err);
         odgovor.status(500).json({ greska: "Greška prilikom dodavanja osobe i slika." });
@@ -63,7 +63,7 @@ export class RestOsoba {
 
         await this.osobaDAO.obrisi(id);
 
-        odgovor.status(200).json({ poruka: "Osoba i povezani podaci uspešno obrisani." });
+        odgovor.status(201).json({ status :"uspjeh" });
     } catch (err) {
         console.error("Greška prilikom brisanja osobe:", err);
         odgovor.status(500).json({ greska: "Greška prilikom brisanja osobe." });
@@ -113,8 +113,6 @@ export class RestOsoba {
         odgovor.status(500).json({ greska: "Greška prilikom dohvaćanja osoba" });
     }
   }
-
-
 
   async getOsoba(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
@@ -188,7 +186,7 @@ export class RestOsoba {
 
     try {
       await this.osobaDAO.poveziOsobuFilmove(id, filmovi);
-      odgovor.status(200).json({ poruka: "Osoba uspešno povezana s filmovima" });
+      odgovor.status(201).json({ status :"uspjeh" });
     } catch (err) {
       console.error("Greška prilikom povezivanja osobe s filmovima:", err);
       odgovor.status(500).json({ greska: "Greška prilikom povezivanja osobe s filmovima" });
@@ -206,7 +204,7 @@ export class RestOsoba {
 
     try {
       await this.osobaDAO.obrisiSveVezeFilmova(id);
-      odgovor.status(200).json({ poruka: "Veze između osobe i filmova uspešno obrisane" });
+      odgovor.status(201).json({ status :"uspjeh" });
     } catch (err) {
       console.error("Greška prilikom brisanja veza između osobe i filmova:", err);
       odgovor.status(500).json({ greska: "Greška prilikom brisanja veza između osobe i filmova" });
@@ -230,7 +228,7 @@ export class RestOsoba {
 
     try {
       await this.osobaDAO.dodajSliku(slika);
-      odgovor.status(201).json({ poruka: "Slika uspešno dodana" });
+      odgovor.status(201).json({ status :"uspjeh" });
     } catch (err) {
       console.error("Greška prilikom dodavanja slike:", err);
       odgovor.status(500).json({ greska: "Greška prilikom dodavanja slike" });

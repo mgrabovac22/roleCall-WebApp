@@ -27,7 +27,7 @@ export class RestKorisnik {
 
     try {
       await this.kdao.dodaj(korisnik);
-      odgovor.status(201).json({ poruka: "Korisnik uspešno dodan" });
+      odgovor.status(201).json({ status :"uspjeh" });
     } catch (err) {
       console.error("Greška prilikom dodavanja korisnika:", err);
       odgovor.status(500).json({ greska: "Greška prilikom dodavanja korisnika" });
@@ -45,20 +45,10 @@ export class RestKorisnik {
 
     try {
       await this.kdao.obrisi(korime);
-      odgovor.status(200).json({ poruka: "Korisnik uspešno obrisan" });
+      odgovor.status(201).json({ status :"uspjeh" });
     } catch (err) {
       console.error("Greška prilikom brisanja korisnika:", err);
       odgovor.status(500).json({ greska: "Greška prilikom brisanja korisnika" });
     }
-  }
-
-  getKorisnici(zahtjev: Request, odgovor: Response) {
-    odgovor.type("application/json");
-    odgovor.status(405).json({ greska: "GET metoda nije dopuštena" });
-  }
-
-  putKorisnici(zahtjev: Request, odgovor: Response) {
-    odgovor.type("application/json");
-    odgovor.status(405).json({ greska: "PUT metoda nije dopuštena" });
   }
 }

@@ -104,6 +104,7 @@ export class RestKorisnik {
     }
 
     try {
+      
       await this.korisnikDAO.azurirajStatusKorisnika(korisnikId, "ima pristup");
       await this.korisnikDAO.postaviTipKorisnikaPoID(korisnikId, 1);
       res.status(200).json({ poruka: "Pristup omogućen" });
