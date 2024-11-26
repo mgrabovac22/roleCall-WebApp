@@ -29,13 +29,11 @@ try {
         port = dajPortServis("mgrabovac22");
     }
 
-    //Endpointi za korisnika
     server.post("/servis/korisnici", (req, res) => restKorisnik.postKorisnici(req, res));
     server.delete("/servis/korisnici/:korime", (req, res) => restKorisnik.deleteKorisnik(req, res));
     server.get("/servis/korisnici", (req, res) => restKorisnik.getKorisnici(req, res));
     server.put("/servis/korisnici/:korime", (req, res) => restKorisnik.putKorisnici(req, res));
 
-    //Endpointi za osobe
     server.post("/servis/osoba", (req, res) => restOsoba.postOsoba(req, res));
     server.delete("/servis/osoba/:id", (req, res) => restOsoba.deleteOsoba(req, res));
     server.get("/servis/osoba", (req, res) => restOsoba.getOsobePoStranici(req, res));
@@ -44,7 +42,6 @@ try {
     server.put("/servis/osoba/:id/film", (req, res) => restOsoba.poveziOsobuFilmove(req, res));
     server.delete("/servis/osoba/:id/film", (req, res) => restOsoba.obrisiVezeOsobaFilmove(req, res));
 
-    //Endpointi za filmove
     server.get("/servis/film", (req, res) => restFilm.getFilmove(req, res));
     server.post("/servis/film", (req, res) => restFilm.postFilm(req, res));
     server.get("/servis/film/:id", (req, res) => restFilm.getFilm(req, res));

@@ -82,15 +82,6 @@ try {
         odgovor.sendFile(path.join(__dirname(), "./html/registracija.html"));
     });
     
-    server.use((req, res, next) => {
-        if (req.session) {
-            console.log("Sadržaj sesije:", req.session);
-        } else {
-            console.log("Nema aktivne sesije.");
-        }
-        next();
-    });
-    
     server.get("/odjava", (req, res) => {
         if (req.session) {
             req.session.destroy((err) => {
@@ -106,7 +97,6 @@ try {
             res.redirect("/login"); 
         }
     });
-    
     
     server.all("*", (zahtjev, odgovor, dalje)=>{
         
@@ -140,7 +130,12 @@ try {
     });
     
     server.get("/dodavanje", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/dodavanje.html"));
+        if(zahtjev.session.tip_korisnika==2){
+            odgovor.sendFile(path.join(__dirname(), "./html/dodavanje.html"));
+        }
+        else{
+            odgovor.status(401).send({greska: "Neovlašten pristup!"})
+        }
     });
     
     server.get("/detalji/:id", (zahtjev, odgovor) => {
@@ -148,7 +143,12 @@ try {
     });
     
     server.get("/korisnici", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/korisnici.html"));
+        if(zahtjev.session.tip_korisnika==2){
+            odgovor.sendFile(path.join(__dirname(), "./html/korisnici.html"));
+        }
+        else{
+            odgovor.status(401).send({greska: "Neovlašten pristup!"})
+        }
     });
     
     server.get("/osobe", (zahtjev, odgovor) => {
