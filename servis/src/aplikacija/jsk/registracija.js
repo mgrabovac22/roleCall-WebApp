@@ -10,6 +10,24 @@ document.getElementById("registracija-form").addEventListener("submit", async (e
   const korime = document.getElementById("korime").value;
   const lozinka = document.getElementById("lozinka").value;
   const email = document.getElementById("email").value;
+  const navElement = document.getElementById("navigacija");
+
+    nav();
+
+    async function nav() {
+        const response = await fetch("/servis/navigacija");
+        if (!response.ok) {
+            throw new Error("Greška prilikom dohvaćanja navigacije.");
+        }
+
+        const data = await response.json();
+
+        let navigationHTML = data.navigacija
+            .map((item) => `<a href="${item.link}">${item.naziv}</a>`)
+            .join("");
+
+        navElement.innerHTML = navigationHTML;
+    }
 
   const body = JSON.stringify({ 
     ime, 

@@ -4,6 +4,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const sljedecaBtn = document.getElementById("sljedeca");
     const trenutnaStranicaEl = document.getElementById("trenutnaStranica");
     const brojPoStraniciSelect = document.getElementById("brojPoStranici");
+    const navElement = document.getElementById("navigacija");
+
+    nav();
+
+    async function nav() {
+        const response = await fetch("/servis/navigacija");
+        if (!response.ok) {
+            throw new Error("Greška prilikom dohvaćanja navigacije.");
+        }
+
+        const data = await response.json();
+
+        let navigationHTML = data.navigacija
+            .map((item) => `<a href="${item.link}">${item.naziv}</a>`)
+            .join("");
+
+        navElement.innerHTML = navigationHTML;
+    }
 
     let stranica = 1; 
     let ukupnoStranica = 1; 

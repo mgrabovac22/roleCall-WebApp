@@ -6,6 +6,7 @@ import { Konfiguracija } from "../moduli/upravljateljKonfiguracije.js";
 import { RestKorisnik } from "./dao/servisKlijent.js";
 import { SlojZaPristupServisu } from "./tsc/slojZaPristupServisu.js";
 import { RestOsoba } from "./tsc/tmdbKlijent.js";
+import { NavigacijaServis } from "./tsc/upravljajNavigacija.js";
 import cors from "cors";
 
 let port: number;
@@ -17,6 +18,7 @@ let konf = konfiguracija.dajKonf();
 const server = express();
 const restKorisnik = new RestKorisnik();
 const restOsoba = new RestOsoba();
+const navigacijaServis = new NavigacijaServis();
 server.use(
     session({
         secret: konf.tajniKljucSesija,
@@ -65,6 +67,8 @@ try {
     
     server.post("/servis/korisnici", (req, res) => restKorisnik.postKorisnik(req, res));
     server.post("/servis/prijava", (req, res) => restKorisnik.prijavaKorisnika(req, res));
+
+    server.get("/servis/navigacija", (req, res) => navigacijaServis.getNavigaciju(req, res));
     
     server.get("/dokumentacija", (zahtjev, odgovor) => {
         odgovor.sendFile(path.join(__dirname(), "../../dokumentacija/dokumentacija.html"));
@@ -94,14 +98,15 @@ try {
                     console.error("Greška prilikom uništavanja sesije:", err);
                     res.status(500).json({ greska: "Neuspješno odjavljivanje." });
                 } else {
-                    res.clearCookie("connect.sid");
-                    res.status(200).json({ poruka: "Uspješno odjavljeni." });
+                    res.clearCookie("connect.sid"); 
+                    res.redirect("/login"); 
                 }
             });
         } else {
-            res.status(400).json({ greska: "Sesija nije aktivna." });
+            res.redirect("/login"); 
         }
-    });    
+    });
+    
     
     server.all("*", (zahtjev, odgovor, dalje)=>{
         
