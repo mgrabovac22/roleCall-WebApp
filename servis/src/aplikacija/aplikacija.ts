@@ -101,6 +101,22 @@ try {
             console.log("Nema aktivne sesije.");
         }
         next();
+    });
+
+    server.get("/odjava", (req, res) => {
+        if (req.session) {
+            req.session.destroy((err) => {
+                if (err) {
+                    console.error("Greška prilikom uništavanja sesije:", err);
+                    res.status(500).json({ greska: "Neuspješno odjavljivanje." });
+                } else {
+                    res.clearCookie("connect.sid");
+                    res.status(200).json({ poruka: "Uspješno odjavljeni." });
+                }
+            });
+        } else {
+            res.status(400).json({ greska: "Sesija nije aktivna." });
+        }
     });    
 
     server.all("*", (zahtjev, odgovor, dalje)=>{
