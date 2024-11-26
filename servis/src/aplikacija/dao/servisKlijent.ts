@@ -20,7 +20,6 @@ export class RestKorisnik {
 
     try {
       const hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
-      zahtjev.session.korime = korime;
       const uspjeh = await this.korisnikDAO.dodajKorisnika({
         id: 0,
         ime: ime || null,
@@ -29,14 +28,16 @@ export class RestKorisnik {
         korime: korime.trim(),
         lozinka: hashLozinka,
         email: email.trim(),
-        tip_korisnika_id: 1, 
+        tip_korisnika_id: 3, 
         status: "nema statusa", 
         drzava: drzava || null,
         telefon: telefon || null,
         grad: grad || null,
       });
-
+      
       if (uspjeh) {
+        zahtjev.session.korime = korime;
+        zahtjev.session.tip_korisnika = 3;
         odgovor.status(201).json({ poruka: "Korisnik uspješno dodan" });
       } else {
         odgovor.status(400).json({ greska: "Dodavanje korisnika nije uspjelo. Provjerite podatke." });
@@ -62,6 +63,7 @@ export class RestKorisnik {
 
       if (korisnik && korisnik.lozinka === hashLozinka) {
           zahtjev.session.korime = korisnik.korime;
+          zahtjev.session.tip_korisnika = korisnik.tip_korisnika_id;
         odgovor.status(200).json({ poruka: "Prijava uspješna", korisnik });
       } else {
         odgovor.status(401).json({ greska: "Pogrešni podaci za prijavu ili korisnik nema pristup." });
@@ -103,6 +105,7 @@ export class RestKorisnik {
 
     try {
       await this.korisnikDAO.azurirajStatusKorisnika(korisnikId, "ima pristup");
+      await this.korisnikDAO.postaviTipKorisnikaPoID(korisnikId, 1);
       res.status(200).json({ poruka: "Pristup omogućen" });
     } catch (err) {
       console.error("Greška prilikom davanja pristupa korisniku:", err);
@@ -119,6 +122,7 @@ export class RestKorisnik {
 
     try {
       await this.korisnikDAO.azurirajStatusKorisnika(korisnikId, "nema pristup");
+      await this.korisnikDAO.postaviTipKorisnikaPoID(korisnikId, 3);
       res.status(200).json({ poruka: "Pristup zabranjen" });
     } catch (err) {
       console.error("Greška prilikom zabrane pristupa korisniku:", err);
@@ -176,7 +180,5 @@ export class RestKorisnik {
         res.status(500).json({ greska: "Interna greška servera." });
     }
   }
-
-
 
 }

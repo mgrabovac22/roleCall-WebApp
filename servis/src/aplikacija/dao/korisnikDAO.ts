@@ -66,6 +66,22 @@ export class KorisnikDAO {
     await this.baza.ubaciAzurirajPodatke(sql, [noviStatus, id]);
   }
 
+  async postaviTipKorisnikaPoID(korisnikID: number, noviTip: number): Promise<void> {
+    const sql = `
+        UPDATE korisnik
+        SET tip_korisnika_ID = ?
+        WHERE id = ?
+    `;
+    console.log(`Ažuriram tip korisnika s ID ${korisnikID} na ${noviTip}`);
+    try {
+        await this.baza.ubaciAzurirajPodatke(sql, [noviTip, korisnikID]);
+    } catch (err) {
+        console.error("Greška prilikom ažuriranja tipa korisnika:", err);
+        throw err;
+    }
+  }
+
+
   async azurirajKorisnika(korisnik: Korisnik): Promise<boolean> {
     try {
       const sql = `

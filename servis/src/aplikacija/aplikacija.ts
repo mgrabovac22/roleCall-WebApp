@@ -28,6 +28,7 @@ server.use(
 declare module 'express-session' {
     export interface SessionData {
         korime: string;
+        tip_korisnika: number;
     }
 }
 
@@ -89,6 +90,19 @@ try {
         odgovor.sendFile(path.join(__dirname(), "./html/login.html"));
     });
     
+    server.get("/registracija", (zahtjev, odgovor) => {
+        odgovor.sendFile(path.join(__dirname(), "./html/registracija.html"));
+    });
+
+    server.use((req, res, next) => {
+        if (req.session) {
+            console.log("Sadržaj sesije:", req.session);
+        } else {
+            console.log("Nema aktivne sesije.");
+        }
+        next();
+    });    
+
     server.all("*", (zahtjev, odgovor, dalje)=>{
         
         if(zahtjev.session.korime == null){
@@ -104,9 +118,6 @@ try {
         odgovor.sendFile(path.join(__dirname(), "./html/index.html"));
     });
     
-    server.get("/registracija", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/registracija.html"));
-    });
     
     server.get("/dodavanje", (zahtjev, odgovor) => {
         odgovor.sendFile(path.join(__dirname(), "./html/dodavanje.html"));
