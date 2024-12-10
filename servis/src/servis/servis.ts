@@ -27,8 +27,12 @@ try {
     if (process.argv[3] && process.argv[3] !== "") {
         port = parseInt(process.argv[3]);
         provjera = true;
-    } else {
+    } 
+    else {
         port = dajPortServis("mgrabovac22");
+    }
+    if(process.argv.length>4){        
+        throw new Error("Previše argumenata naredbenog retka!");
     }
 
     server.all("*", (zahtjev, odgovor, dalje) => {
