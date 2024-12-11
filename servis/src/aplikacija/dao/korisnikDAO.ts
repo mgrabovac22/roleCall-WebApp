@@ -25,7 +25,7 @@ export class KorisnikDAO {
         korisnik.lozinka,
         korisnik.email,
         korisnik.tip_korisnika_id || 1, 
-        korisnik.status || "pending",  
+        korisnik.status || "Poslan zahtjev",  
         korisnik.telefon || null,      
         korisnik.grad || null,         
         korisnik.drzava || null,       

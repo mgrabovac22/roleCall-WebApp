@@ -13,7 +13,7 @@ export interface Korisnik {
   lozinka: string;
   email: string;
   tip_korisnika_id: number;
-  status: string | null;
+  status: string;
   telefon: string | null;
   grad: string | null;    
   drzava: string | null;  

@@ -24,7 +24,26 @@ export class NavigacijaServis {
                   { naziv: "Dokumentacija", link: "/dokumentacija" },
                   { naziv: "Odjava", link: "/odjava" }
               ];
-          } else {
+          } else if(req.session.status==="Poslan zahtjev"){
+            navigacija = [
+                { naziv: "Početna", link: "/" },
+                { naziv: "Dokumentacija", link: "/dokumentacija" },
+                { naziv: "Odjava", link: "/odjava" }
+            ];
+          } else if(req.session.status==="Zabranjen mu je pristup"){
+            navigacija = [
+                { naziv: "Početna", link: "/" },
+                { naziv: "Dokumentacija", link: "/dokumentacija" },
+                { naziv: "Odjava", link: "/odjava" }
+            ];
+          } else if(req.session.status==="Nije poslan zahtjev"){
+            navigacija = [
+                { naziv: "Početna", link: "/" },
+                { naziv: "Dokumentacija", link: "/dokumentacija" },
+                { naziv: "Odjava", link: "/odjava" }
+            ];
+          }
+          else {
               navigacija = [
                   { naziv: "Login", link: "/login" },
                   { naziv: "Dokumentacija", link: "/dokumentacija" }

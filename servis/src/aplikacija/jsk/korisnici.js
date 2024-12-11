@@ -72,12 +72,23 @@ function prikaziKorisnike(korisnici) {
         tablica += "<tr>";
         tablica += `<td>${korisnik.korime}</td>`;
         tablica += `<td>${korisnik.email}</td>`;
-        tablica += `<td>${status}</td>`;
+        if(status==="Poslan zahtjev"){
+            tablica += `<td style="color:yellow;">${status}</td>`;
+        }
+        else if(status==="Zabranjen mu je pristup"){
+            tablica += `<td style="color:red;">${status}</td>`;
+        }
+        else if(status==="Nije poslan zahtjev"){
+            tablica += `<td style="color:orange;">${status}</td>`;
+        }
+        else{
+            tablica += `<td style="color:green;">${status}</td>`;
+        }
         tablica += `<td>
             ${
-                status === "pending"
+                status === "Poslan zahtjev" || status === "Zabranjen mu je pristup"
                     ? `<button onclick="dajPristup(${korisnik.id})">Daj pristup</button>`
-                    : status === "ima pristup"
+                    : status === "Ima pristup"
                     ? `<button onclick="zabraniPristup(${korisnik.id})">Zabrani pristup</button>`
                     : "Nema dostupnih radnji"
             }
@@ -121,7 +132,7 @@ async function dajPristup(id) {
             },
             body: JSON.stringify({
                 korime: korisnik.korime,
-                status: "ima pristup",
+                status: "Ima pristup",
                 tip_korisnika_id: korisnik.tip_korisnika_id,
             }),
         };

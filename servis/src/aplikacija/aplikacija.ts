@@ -30,6 +30,7 @@ server.use(
 declare module 'express-session' {
     export interface SessionData {
         korime: string;
+        status: string;
         tip_korisnika: number;
     }
 }
@@ -137,12 +138,17 @@ try {
             odgovor.sendFile(path.join(__dirname(), "./html/dodavanje.html"));
         }
         else{
-            odgovor.status(401).send({greska: "Neovlašten pristup!"})
+            odgovor.status(401).sendFile(path.join(__dirname(), "./html/neovlastenPristup.html"));
         }
     });
     
     server.get("/detalji/:id", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/detalji.html"));
+        if(zahtjev.session.status==="Ima pristup"){
+            odgovor.sendFile(path.join(__dirname(), "./html/detalji.html"));
+        }
+        else{
+            odgovor.status(401).sendFile(path.join(__dirname(), "./html/neovlastenPristup.html"));
+        }
     });
     
     server.get("/korisnici", (zahtjev, odgovor) => {
@@ -150,12 +156,17 @@ try {
             odgovor.sendFile(path.join(__dirname(), "./html/korisnici.html"));
         }
         else{
-            odgovor.status(401).send({greska: "Neovlašten pristup!"})
+            odgovor.status(401).sendFile(path.join(__dirname(), "./html/neovlastenPristup.html"));
         }
     });
     
     server.get("/osobe", (zahtjev, odgovor) => {
-        odgovor.sendFile(path.join(__dirname(), "./html/osobe.html"));
+        if(zahtjev.session.status==="Ima pristup"){
+            odgovor.sendFile(path.join(__dirname(), "./html/osobe.html"));
+        }
+        else{
+            odgovor.status(401).sendFile(path.join(__dirname(), "./html/neovlastenPristup.html"));
+        }
     });
     
     server.listen(port, () => {

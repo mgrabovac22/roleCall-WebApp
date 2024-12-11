@@ -31,9 +31,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         imePrezimeEl.textContent = `${korisnik.ime} ${korisnik.prezime}`;
         korisnickoImeEl.textContent = korisnik.korime;
         emailEl.textContent = korisnik.email;
-        statusEl.textContent = korisnik.status === "ima pristup" ? "Imate ovlasti" : "Nemate ovlasti";
+        if(korisnik.status === "Poslan zahtjev"){
+            statusEl.textContent = "Status je poslan";
+        } else if(korisnik.status === "Ima pristup"){
+            statusEl.textContent = "Imate ovlasti";
+        } else if(korisnik.status === "Zabranjen mu je pristup"){
+            statusEl.textContent = "Admin vam je zabranio pristup, za vraćanje prava kontaktirajte podršku";
+        } else if(korisnik.status === "Nije poslan zahtjev"){
+            statusEl.textContent = "Ne postoji aktivan zahtjev za pristup";
+        }
+        
 
-        if (korisnik.status !== "ima pristup") {
+        if (korisnik.status === "Ima pristup" || korisnik.status === "Poslan zahtjev" || korisnik.status === "Zabranjen mu je pristup") {
+            zahtjevAdminuBtn.style.display = "none";
+        }
+        else{
             zahtjevAdminuBtn.style.display = "block";
         }
 
