@@ -94,32 +94,27 @@ export class Konfiguracija {
 			throw new Error("Fali TMDB API kljuc u tmdbApiKeyV4");
 		}
 
-		if (
-			isNaN(parseInt(this.konf.jwtValjanost)) || 
-			parseInt(this.konf.jwtValjanost) < 15 || 
-			parseInt(this.konf.jwtValjanost) > 300
-		) {
-			throw new Error("Ne valja duljina jwtValjanosti");
-		}
-		
+		const jwtValjanostBroj = parseInt(this.konf.jwtValjanost, 10);
+        if (isNaN(jwtValjanostBroj) || jwtValjanostBroj < 15 || jwtValjanostBroj > 300) {
+            throw new Error("Ne valja duljina jwtValjanosti (15-300 sekundi)");
+        }
 
-		if (
-			this.konf.jwtTajniKljuc.length < 100 ||
-			this.konf.jwtTajniKljuc.length > 200 ||
-			!/^[a-z0-9!%$]+$/.test(this.konf.jwtTajniKljuc)
-		) {
-			throw new Error("Ne valja format jwtTajnogKljuca");
-		}
+        if (
+            !this.konf.jwtTajniKljuc ||
+            this.konf.jwtTajniKljuc.length < 100 ||
+            this.konf.jwtTajniKljuc.length > 200 ||
+            !/^[a-z0-9!%$]+$/.test(this.konf.jwtTajniKljuc)
+        ) {
+            throw new Error("Ne valja format jwtTajnog ključa (mala slova, brojke, specijalni znakovi)");
+        }
 
-		if (
-			this.konf.tajniKljucSesija.length < 100 ||
-			this.konf.tajniKljucSesija.length > 200 ||
-			!/^[a-z0-9!%$]+$/.test(this.konf.jwtTajniKljuc)
-		) {
-			throw new Error("Ne valja format jwtTajnogKljuca");
-		}
-		
-
-
+        if (
+            !this.konf.tajniKljucSesija ||
+            this.konf.tajniKljucSesija.length < 100 ||
+            this.konf.tajniKljucSesija.length > 200 ||
+            !/^[a-z0-9!%$]+$/.test(this.konf.tajniKljucSesija)
+        ) {
+            throw new Error("Ne valja format tajnog ključa sesije");
+        }
 	}
 }
