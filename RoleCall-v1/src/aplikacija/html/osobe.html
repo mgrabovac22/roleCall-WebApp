@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osobe</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/osobe.css">
+</head>
+<body>
+    <header>
+        <div id="contHeader1">
+            <a href="/">
+                <img src="/slike/headerIkona.jpg" alt="RoleCall">
+            </a>
+            <h1>RoleCall</h1>
+        </div>
+        <nav id="navigacija"></nav>
+    </header>
+    <main>
+        <div class="kontrola">
+            <label for="brojPoStranici">Broj osoba po stranici:</label>
+            <select id="brojPoStranici">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+        </div>        
+        <div id="osobeContainer" class="osobe-container"></div>
+    <div class="pagination">
+        <button id="prethodna">Prethodna</button>
+        <span id="trenutnaStranica">Stranica: 1</span>
+        <button id="sljedeca">Sljedeća</button>
+    </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 RoleCall. Sva prava pridržana.</p>
+            <div class="social-links">
+                <a href="https://www.facebook.com" target="_blank">Facebook</a> |
+                <a href="https://www.twitter.com" target="_blank">Twitter</a> |
+                <a href="https://www.instagram.com" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </footer>    
+    <script src="/jsk/osobePrikaz.js"></script>
+</body>
+</html>
