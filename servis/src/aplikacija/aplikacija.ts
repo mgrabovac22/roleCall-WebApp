@@ -115,6 +115,7 @@ try {
     server.post("/servis/korisnik/zahtjev", (req, res) => restKorisnik.postZahtjevAdminu(req, res));
     server.get("/servis/korisnici/trenutni", (req, res) => restKorisnik.dohvatiTrenutnogKorisnika(req, res));
     server.get("/servis/korisnici/:id", (req, res) => restKorisnik.getKorisnik(req, res));
+    server.delete("/servis/korisnici/:id/obrisi", (req, res) => restKorisnik.deleteKorisnik(req, res));
     
     server.post("/servis/dodaj/osoba", (req, res) => slojZaPristupServisu.postOsoba(req, res));
     server.delete("/servis/obrisi/osoba/:id", (req, res) => slojZaPristupServisu.deleteOsoba(req, res));

@@ -31,11 +31,7 @@ async function dajKorisnike() {
 
             const trenutniKorisnik = await dohvatiTrenutnogKorisnika();
 
-            const filtriraniKorisnici = korisnici.filter(
-                (korisnik) => korisnik.korime !== trenutniKorisnik.korime
-            );
-
-            prikaziKorisnike(filtriraniKorisnici);
+            prikaziKorisnike(korisnici, trenutniKorisnik);
         } else {
             throw new Error(`Greška: ${odgovor.status}`);
         }
@@ -61,10 +57,10 @@ async function dohvatiTrenutnogKorisnika() {
     }
 }
 
-function prikaziKorisnike(korisnici) {
+function prikaziKorisnike(korisnici, trenutniKorisnik) {
     let glavna = document.getElementById("sadrzaj");
     let tablica = "<table>";
-    tablica += "<tr><th>Korisničko ime</th><th>Email</th><th>Status</th><th>Radnje</th></tr>";
+    tablica += "<tr><th>Korisničko ime</th><th>Email</th><th>Status</th><th>Radnje</th><th>Brisanje</th></tr>";
 
     for (let korisnik of korisnici) {
         const status = korisnik.status;
@@ -84,15 +80,24 @@ function prikaziKorisnike(korisnici) {
         else{
             tablica += `<td style="color:green;">${status}</td>`;
         }
-        tablica += `<td>
-            ${
-                status === "Poslan zahtjev" || status === "Zabranjen mu je pristup"
-                    ? `<button onclick="dajPristup(${korisnik.id})">Daj pristup</button>`
-                    : status === "Ima pristup"
-                    ? `<button onclick="zabraniPristup(${korisnik.id})">Zabrani pristup</button>`
-                    : "Nema dostupnih radnji"
-            }
-        </td>`;
+        if (korisnik.korime !== trenutniKorisnik.korime) {
+            tablica += `<td>
+                ${
+                    status === "Poslan zahtjev" || status === "Zabranjen mu je pristup"
+                        ? `<button onclick="dajPristup(${korisnik.id})">Daj pristup</button>`
+                        : status === "Ima pristup"
+                        ? `<button onclick="zabraniPristup(${korisnik.id})">Zabrani pristup</button>`
+                        : "Nema dostupnih radnji"
+                }
+            </td>`;
+            tablica += `<td>
+                <button onclick="obrisiKorisnika(${korisnik.id})">Obriši</button>
+            </td>`;
+        } else {
+            tablica += `<td>Trenutni korisnik</td>`;
+            tablica += `<td></td>`;
+        }
+
         tablica += "</tr>";
     }
     tablica += "</table>";
@@ -200,4 +205,49 @@ async function zabraniPristup(id) {
     }
 }
 
+async function obrisiKorisnika(id) {
+    try {
+        const potvrda = confirm("Jeste li sigurni da želite obrisati korisnika?");
+        if (!potvrda) return;
 
+        const urlDohvatiKorisnika = `/servis/korisnici/${id}`;
+        const odgovorDohvatiKorisnika = await fetch(urlDohvatiKorisnika);
+
+        if (!odgovorDohvatiKorisnika.ok) {
+            const greska = await odgovorDohvatiKorisnika.json();
+            throw new Error(greska.greska || `Greška prilikom dohvaćanja korisnika: ${odgovorDohvatiKorisnika.status}`);
+        }
+
+        const urlBrisanjeKorisnika = `/servis/korisnici/${id}/obrisi`;
+        const optionsBrisanjeKorisnika = {
+            method: "DELETE",
+        };
+
+        const odgovorBrisanjeKorisnika = await fetch(urlBrisanjeKorisnika, optionsBrisanjeKorisnika);
+
+        if (!odgovorBrisanjeKorisnika.ok) {
+            const greska = await odgovorBrisanjeKorisnika.json();
+            throw new Error(greska.greska || `Greška prilikom brisanja korisnika: ${odgovorBrisanjeKorisnika.status}`);
+        }
+
+        const korisnik = await odgovorDohvatiKorisnika.json();
+
+        const urlBrisanjeKorisnikaPoImenu = `/servis/korisnici/${korisnik.korime}`;
+        const optionsBrisanjeKorisnikaPoImenu = {
+            method: "DELETE",
+        };
+
+        const odgovorBrisanjeKorisnikaPoImenu = await fetch(urlBrisanjeKorisnikaPoImenu, optionsBrisanjeKorisnikaPoImenu);
+
+        if (!odgovorBrisanjeKorisnikaPoImenu.ok) {
+            const greska = await odgovorBrisanjeKorisnikaPoImenu.json();
+            throw new Error(greska.greska || `Greška prilikom brisanja korisnika: ${odgovorBrisanjeKorisnikaPoImenu.status}`);
+        }
+
+        alert("Korisnik je uspješno obrisan.");
+        dajKorisnike(); 
+    } catch (error) {
+        console.error("Greška prilikom brisanja korisnika:", error);
+        poruka1.innerHTML = "Došlo je do greške prilikom brisanja korisnika!";
+    }
+}

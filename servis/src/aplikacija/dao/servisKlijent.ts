@@ -155,6 +155,25 @@ export class RestKorisnik {
     }
   }
 
+  async deleteKorisnik(req: Request, res: Response) {
+    res.type("application/json");
+    const korisnikId = parseInt(req.params["id"] as string, 10);
+
+    if (!korisnikId || isNaN(korisnikId)) {
+        res.status(400).json({ greska: "ID korisnika nije valjan ili nije dostavljen" });
+        return;
+    }
+
+    try {
+        await this.korisnikDAO.obrisiKorisnika(korisnikId);
+        
+          res.status(200).json({ status: "uspjeh" });
+    } catch (err) {
+        console.error("Greška prilikom brisanja korisnika:", err);
+        res.status(500).json({ greska: "Interna greška servera" });
+    }
+  }
+
   async postZahtjevAdminu(req: Request, res: Response) {
     const korime = req.session.korime;
 
@@ -212,6 +231,4 @@ export class RestKorisnik {
         res.status(500).json({ greska: "Interna greška servera." });
     }
   }
-
-
 }
