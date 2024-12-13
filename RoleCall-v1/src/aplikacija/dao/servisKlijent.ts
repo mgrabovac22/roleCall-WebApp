@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { KorisnikDAO } from "../dao/korisnikDAO.js";
+import { KorisnikDAO } from "./korisnikDAO.js";
 import { kreirajSHA256 } from "../../moduli/generatori.js";
 
 export class RestKorisnik {
