@@ -1,0 +1,123 @@
+main {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#search-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#pretrazivanje {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 16px;
+}
+
+#pretrazi-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: lightblue;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#pretrazi-button:hover {
+  background-color: cyan;
+}
+
+#poruka {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
+
+#sadrzaj table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+#sadrzaj th, #sadrzaj td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+#sadrzaj th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+#sadrzaj img {
+  border-radius: 5px;
+  max-width: 50px;
+}
+
+#stranicenje {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+#stranicenje button {
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: #ddd;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#stranicenje button:disabled {
+  background-color: #eee;
+  cursor: not-allowed;
+}
+
+#stranicenje button:hover:not(:disabled) {
+  background-color: #bbb;
+}
+
+footer {
+  bottom: 0;
+  width: 100%;
+  background-color: #f5f5f5;
+  border-top: 1px solid #ccc;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+footer .footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+footer .social-links {
+  display: flex;
+  gap: 10px;
+}
+
+footer .social-links a {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer .social-links a:hover {
+  color: #007acc;
+}
