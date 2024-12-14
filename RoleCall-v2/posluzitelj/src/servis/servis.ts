@@ -6,7 +6,8 @@ import { RestKorisnik } from "./rest/RESTkorisnik.js";
 import { RestOsoba } from "./rest/RESTosoba.js";
 import { RestFilm } from "./rest/RESTfilm.js";
 import cors from "cors";
-import { provjeriToken } from "../moduli/jwtModul.js";
+//import { provjeriToken } from "../moduli/jwtModul.js";
+import { RestTMDB } from "./rest/RESTtmdb.js";
 
 let port = 3000;
 const konfiguracija = new Konfiguracija();
@@ -14,6 +15,7 @@ const server = express();
 const restKorisnik = new RestKorisnik();
 const restOsoba = new RestOsoba();
 const restFilm = new RestFilm();
+const restTMDB = new RestTMDB();
 let provjera: Boolean = false;
 
 try {
@@ -35,7 +37,7 @@ try {
         throw new Error("Previše argumenata naredbenog retka!");
     }
 
-    server.all("*", (zahtjev, odgovor, dalje) => {
+    /*server.all("*", (zahtjev, odgovor, dalje) => {
         try {    
             const tokenValidan = provjeriToken(zahtjev, konfiguracija.dajKonf().jwtTajniKljuc);
     
@@ -48,7 +50,7 @@ try {
         } catch (err) {
             odgovor.status(422).json({ greska: "Token je istekao." }); 
         }
-    });
+    });*/
     
 
     server.post("/servis/korisnici", (req, res) => restKorisnik.postKorisnici(req, res));
@@ -86,9 +88,12 @@ try {
     server.put("/servis/osoba/:id/film", (req, res) => restOsoba.poveziOsobuFilmove(req, res));
     server.delete("/servis/osoba/:id/film", (req, res) => restOsoba.obrisiVezeOsobaFilmove(req, res));
 
+    server.get("/servis/app/pretrazi", (req, res) => restTMDB.getOsobe(req, res));
+    server.get("/servis/app/pretrazi", (req, res) => restTMDB.getFilmoveOsobeOd21(req, res));
+
 
     server.listen(port, () => {
-        const baseURL = provjera || port === 12223 ? "http://localhost" : "http://spider.foi.hr";
+        const baseURL = provjera || port === 12222 ? "http://localhost" : "http://spider.foi.hr";
         console.log(`Server je pokrenut na ${baseURL}:${port}`);
     });
     

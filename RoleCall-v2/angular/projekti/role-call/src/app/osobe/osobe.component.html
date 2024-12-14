@@ -1,1 +1,14 @@
-<p>osobe works!</p>
+<div class="pagination">
+    <button (click)="prethodnaStranica()" [disabled]="stranica === 1">Prethodna</button>
+    <span>Stranica {{ stranica }} / {{ ukupnoStranica }}</span>
+    <button (click)="sljedecaStranica()" [disabled]="stranica === ukupnoStranica">Sljedeća</button>
+  </div>
+  
+  <div class="osobe-container">
+    <div *ngFor="let osoba of osobe" class="osoba">
+      <img [src]="osoba.putanja_profila || '/slike/avatar.jpg'" alt="{{ osoba.imePrezime }}" />
+      <h4>{{ osoba.ime_prezime }}</h4>
+      <p>{{ osoba.izvor_poznatosti || 'Nepoznato' }}</p>
+    </div>
+  </div>
+  

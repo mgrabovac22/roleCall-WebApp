@@ -47,7 +47,7 @@ export function dajPortServis(korime:string){
 	const HOST = os.hostname();
 	let port = null;
 	if(HOST != "spider"){
-    	port = 12223;
+    	port = 12222;
 	} else {
     	const portovi = require ("/var/www/RWA/2024/portovi_servis.js");
     	port = portovi[korime];
