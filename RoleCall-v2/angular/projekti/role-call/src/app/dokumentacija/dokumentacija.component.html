@@ -1,0 +1,169 @@
+<main>
+    <div id="mojeInfo">
+        <img id="mojaSlika" src="assets/mgrabovac22.jpg" alt="Marin Grabovac">
+        <h3>Marin Grabovac</h3>
+        <h4>mgrabovac22&#64;student.foi.hr</h4>
+    </div>
+
+    <hr>
+
+    <div id="eraModelKor">
+        <h3>ERA model korisnika</h3>
+        <img src="assets/baza1_era.png" alt="Model baze korisnika">
+    </div>
+
+    <div id="eraModelTMDB">
+        <h3>ERA model REST servisa</h3>
+        <img src="assets/baza2_era.png" alt="Model REST servisa">
+    </div>
+
+    <div id="tablica1">
+        <table>
+            <caption>Pregled resursa, metoda i parametara REST servisa</caption>
+            <thead>
+                <tr>
+                    <th>Resurs parametri</th>
+                    <th>GET čitanje</th>
+                    <th>POST kreiranje</th>
+                    <th>PUT ažuriranje</th>
+                    <th>DELETE brisanje</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>servis/korisnici</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>servis/korisnici/{{ '{' }}korime{{ '}' }}</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>servis/osoba?stranica=broj</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>servis/osoba/{{ '{' }}id{{ '}' }}</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>servis/osoba/{{ '{' }}id{{ '}' }}/film?stranica=broj</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>servis/film?stranica=broj&[datumOd=timestamp&datumDo=timestamp]</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>servis/film/{{ '{' }}id{{ '}' }}</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                    <td>Napravljeno</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">Sve je potrebno kreirati</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div id="tablica2">
+        <table>
+            <caption>Pregled funkcionalnosti Web aplikacije</caption>
+            <thead>
+                <tr>
+                    <th>Uloga</th>
+                    <th>Stranica/e</th>
+                    <th>Opis</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Gost</td>
+                    <td>Početna</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>Gost</td>
+                    <td>Dokumentacija</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>Gost</td>
+                    <td>Prijava, Odjava</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>Gost</td>
+                    <td>Registracija</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>Korisnik</td>
+                    <td>Početna</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>Korisnik</td>
+                    <td>Osobe</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>Korisnik</td>
+                    <td>Detalji</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>Admin</td>
+                    <td>Korisnici</td>
+                    <td>Napravljeno</td>
+                </tr>
+                <tr>
+                    <td>Admin</td>
+                    <td>Dodavanje</td>
+                    <td>Napravljeno</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">Sve je potrebno kreirati</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="lista">
+        <h2>Pregled koraka dokumentacije</h2>
+      
+        <ul>
+          <li *ngFor="let korak of koraci">
+            <strong>{{ korak.broj }}.</strong> {{ korak.opis }} 
+            <span class="tip">{{ korak.tip }}</span>
+            - <span [ngClass]="{
+              'status-gotovo': korak.status === '✅ Gotovo',
+              'status-izradi': korak.status === '🔧 U izradi'
+            }">{{ korak.status }}</span>
+          </li>
+        </ul>
+      </div>
+      
+</main>

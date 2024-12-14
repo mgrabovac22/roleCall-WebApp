@@ -3,15 +3,16 @@
   "version": 1,
   "newProjectRoot": "projekti",
   "projects": {
-    "demoProjekt": {
+    "roleCall": {
       "projectType": "application",
       "schematics": {
-        "@schematics/angular:class": {
-          "skipTests": true
-        },
         "@schematics/angular:component": {
+          "style": "scss",
           "skipTests": true,
           "standalone": false
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
         },
         "@schematics/angular:directive": {
           "skipTests": true,
@@ -34,28 +35,31 @@
           "skipTests": true
         }
       },
-      "root": "projekti/demo-projekt",
-      "sourceRoot": "projekti/demo-projekt/src",
+      "root": "projekti/role-call",
+      "sourceRoot": "projekti/role-call/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/demo-projekt",
-            "index": "projekti/demo-projekt/src/index.html",
-            "browser": "projekti/demo-projekt/src/main.ts",
+            "outputPath": "dist/role-call",
+            "index": "projekti/role-call/src/index.html",
+            "browser": "projekti/role-call/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projekti/demo-projekt/tsconfig.app.json",
+            "tsConfig": "projekti/role-call/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
+              "projekti/role-call/src/favicon.ico",
+              "projekti/role-call/src/assets",
               {
                 "glob": "**/*",
-                "input": "projekti/demo-projekt/public"
+                "input": "projekti/role-call/public"
               }
             ],
             "styles": [
-              "projekti/demo-projekt/src/styles.css"
+              "projekti/role-call/src/styles.scss"
             ],
             "scripts": []
           },
@@ -87,10 +91,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "demoProjekt:build:production"
+              "buildTarget": "roleCall:build:production"
             },
             "development": {
-              "buildTarget": "demoProjekt:build:development"
+              "buildTarget": "roleCall:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -105,20 +109,22 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projekti/demo-projekt/tsconfig.spec.json",
+            "tsConfig": "projekti/role-call/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projekti/demo-projekt/public"
+                "input": "projekti/role-call/public"
               }
             ],
             "styles": [
-              "projekti/demo-projekt/src/styles.css"
+              "projekti/role-call/src/styles.scss"
             ],
             "scripts": []
           }
         }
       }
     }
+    
   }
 }
