@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentacija</title>
+    <link rel="stylesheet" href="/css/dokumentacija.css">
+    <link rel="stylesheet" href="/css/header.css">
+</head>
+<body>
+    <header>
+        <div id="contHeader1">
+            <a href="/">
+                <img src="/slike/headerIkona.jpg" alt="RoleCall">
+            </a>
+            <h1>Dokumentacija</h1>
+        </div>
+        <nav id="navigacija"></nav>
+    </header>
+    <main>
+        <div id="mojeInfo">
+            <img id="mojaSlika" src="/slike/mgrabovac22.jpg" alt="Marin Grabovac">
+            <h3>Marin Grabovac</h3>
+            <h4 mailto="mgrabovac22@student.foi.hr">mgrabovac22@student.foi.hr</h4>
+        </div>
+        <hr>
+        <div id="eraModelKor">
+            <h3>ERA model korisnika</h3>
+            <img src="/dok/baza1_era.png" alt="Model baze korisnika">
+        </div>
+        <div id="eraModelTMDB">
+            <h3>ERA model restServisa</h3>
+            <img src="/dok/baza2_era.png" alt="Model baze restServisa">
+        </div>
+        <div id="tablica1">
+            <table>
+                <caption>Pregled resursa, metoda i parametara REST servisa</caption>
+                <thead>
+                    <tr>
+                        <th>Resurs parametri</th>
+                        <th>GET čitanje</th>
+                        <th>POST kreiranje</th>
+                        <th>PUT ažuriranje</th>
+                        <th>DELETE brisanje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>servis/korisnici</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>servis/korisnici/{korime}</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>servis/osoba?stranica=broj</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>servis/osoba/{id}</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>servis/osoba/{id}/film?stranica=broj</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>servis/film?stranica=broj&[datumOd=timestamp&datumDo=timestamp]</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>servis/film/{id}</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">Sve je potrebno kreirati</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div id="tablica2">
+            <table>
+                <caption>Pregled funkcionalnosti Web aplikacije</caption>
+                <thead>
+                    <tr>
+                        <th>Uloga</th>
+                        <th>Stranica/e</th>
+                        <th>Opis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Gost</td>
+                        <td>Početna</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>Gost</td>
+                        <td>Dokumentacija</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>Gost</td>
+                        <td>Prijava, Odjava</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>Gost</td>
+                        <td>Registracija</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>Korisnik</td>
+                        <td>Početna</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>Korisnik</td>
+                        <td>Osobe</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>Korisnik</td>
+                        <td>Detalji</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>Admin</td>
+                        <td>Korisnici</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                    <tr>
+                        <td>Admin</td>
+                        <td>Dodavanje</td>
+                        <td>Napravljeno</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">Sve je potrebno kreirati</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </main>
+    <footer>
+
+    </footer>
+    <script src="/jsk/dokumentacija.js"></script>
+</body>
+</html>
