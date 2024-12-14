@@ -5,9 +5,11 @@ import { metodaNijeImplementirana } from "./errors/notImplemented.js";
 import { RestKorisnik } from "./rest/RESTkorisnik.js";
 import { RestOsoba } from "./rest/RESTosoba.js";
 import { RestFilm } from "./rest/RESTfilm.js";
+import session from "express-session";
 import cors from "cors";
-//import { provjeriToken } from "../moduli/jwtModul.js";
+import { provjeriToken } from "../moduli/jwtModul.js";
 import { RestTMDB } from "./rest/RESTtmdb.js";
+import { kreirajToken } from "../moduli/jwtModul.js";
 
 let port = 3000;
 const konfiguracija = new Konfiguracija();
@@ -18,14 +20,27 @@ const restFilm = new RestFilm();
 const restTMDB = new RestTMDB();
 let provjera: Boolean = false;
 
+
+declare module 'express-session' {
+    export interface SessionData {
+        korime: string;
+        status: string;
+        tip_korisnika: number;
+    }
+}
+
 try {
-    server.use(cors());
+    server.use(cors({
+        origin: ['http://localhost:4200', 'http://localhost:12222']
+    }));
+
+
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
-
+    
     await konfiguracija.ucitajKonfiguraciju();
     console.log("Konfiguracija učitana i provjerena.");
-
+    
     if (process.argv[3] && process.argv[3] !== "") {
         port = parseInt(process.argv[3]);
         provjera = true;
@@ -37,7 +52,30 @@ try {
         throw new Error("Previše argumenata naredbenog retka!");
     }
 
-    /*server.all("*", (zahtjev, odgovor, dalje) => {
+    server.use(
+        session({
+            secret: konfiguracija.dajKonf().tajniKljucSesija,
+            resave: false,
+            saveUninitialized: false,
+            cookie: { secure: false },
+        })
+    );
+    
+    //TODO: nakon logina, postaviti da se korime uzima iz sesije
+    server.get("/servis/app/getJWT", (req, res) => {
+        req.session.korime = "Marin";
+        if(req.session.korime!=null){
+            const korime = req.session.korime as any;
+            const token = kreirajToken({ korime: korime }, konfiguracija.dajKonf().jwtTajniKljuc);
+            res.status(200).json({ token: `Bearer ${token}` });
+        }
+        else{
+            res.status(401).json({greska: "Nije kreirana sesija"});
+        }
+    });    
+
+
+    server.all("*", (zahtjev, odgovor, dalje) => {
         try {    
             const tokenValidan = provjeriToken(zahtjev, konfiguracija.dajKonf().jwtTajniKljuc);
     
@@ -50,7 +88,7 @@ try {
         } catch (err) {
             odgovor.status(422).json({ greska: "Token je istekao." }); 
         }
-    });*/
+    });
     
 
     server.post("/servis/korisnici", (req, res) => restKorisnik.postKorisnici(req, res));
@@ -89,8 +127,7 @@ try {
     server.delete("/servis/osoba/:id/film", (req, res) => restOsoba.obrisiVezeOsobaFilmove(req, res));
 
     server.get("/servis/app/pretrazi", (req, res) => restTMDB.getOsobe(req, res));
-    server.get("/servis/app/pretrazi", (req, res) => restTMDB.getFilmoveOsobeOd21(req, res));
-
+    server.get("/servis/app/filmoviTmdb", (req, res) => restTMDB.getFilmoveOsobeOd21(req, res));
 
     server.listen(port, () => {
         const baseURL = provjera || port === 12222 ? "http://localhost" : "http://spider.foi.hr";
