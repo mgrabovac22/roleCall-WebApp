@@ -68,7 +68,6 @@ export class OsobeComponent implements OnInit {
     const kraj = this.stranica * this.brojPoStranici;
     this.ukupnoStranicaPrikaz = Math.ceil(this.ukupniPodaci.length / this.brojPoStranici);
     this.osobe = this.sveOsobe.slice(pocetak, kraj);
-    this.prikaziOsobe();
   }
 
   async prethodnaStranica(): Promise<void> {
@@ -91,15 +90,5 @@ export class OsobeComponent implements OnInit {
     this.azurirajPrikaz();
   }
 
-  prikaziOsobe() {
-    const osobeHTML = this.osobe.map(osoba => `
-      <div class="osoba">
-        <img src="${osoba.putanja_profila || '/slike/avatar.jpg'}" alt="${osoba.ime_prezime}" />
-        <h4>${osoba.ime_prezime}</h4>
-        <p>${osoba.izvor_poznatosti || 'Nepoznato'}</p>
-      </div>
-    `).join('');
-
-    this.osobeContainer.nativeElement.innerHTML = osobeHTML;
-  }
+  
 }

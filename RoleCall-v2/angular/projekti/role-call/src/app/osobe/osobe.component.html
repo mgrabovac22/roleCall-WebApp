@@ -10,6 +10,12 @@
       </select>
     </div>
   
-    <div #osobeContainer class="osobe-container"></div>
+    <div #osobeContainer class="osobe-container">
+      <div *ngFor="let osoba of osobe" class="osoba">
+        <img [src]="osoba.putanja_profila || '/slike/avatar.jpg'" [alt]="osoba.ime_prezime" />
+        <h4>{{ osoba.ime_prezime }}</h4>
+        <p>{{ osoba.izvor_poznatosti || 'Nepoznato' }}</p>
+      </div>
+    </div>    
   </main>
   
