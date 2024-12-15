@@ -65,7 +65,7 @@ try {
     server.get("/servis/app/getJWT", (req, res) => {
         req.session.korime = "Marin";
         if(req.session.korime!=null){
-            const korime = req.session.korime as any;
+            const korime = req.session.korime;
             const token = kreirajToken({ korime: korime }, konfiguracija.dajKonf().jwtTajniKljuc);
             res.status(200).json({ token: `Bearer ${token}` });
         }
