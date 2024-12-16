@@ -1,1 +1,57 @@
-<p>dodavanje works!</p>
+<div class="search-container">
+  <div class="search-bar">
+    <input type="text" placeholder="Unesite ime za pretragu" [(ngModel)]="query" />
+    <button (click)="pretrazi()">Pretraži</button>
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button [disabled]="currentPage === 1" (click)="idiNaStranicu(1)">Prva</button>
+    <button [disabled]="currentPage === 1" (click)="idiNaStranicu(currentPage - 1)">Prethodna</button>
+    <span>Stranica {{ currentPage }} od {{ totalPages }}</span>
+    <button [disabled]="currentPage === totalPages" (click)="idiNaStranicu(currentPage + 1)">Sljedeća</button>
+    <button [disabled]="currentPage === totalPages" (click)="idiNaStranicu(totalPages)">Zadnja</button>
+  </div>
+
+  <p *ngIf="poruka">{{ poruka }}</p>
+
+  <div *ngIf="osobe.length > 0" class="results-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Ime</th>
+          <th>Poznat po</th>
+          <th>Popularnost</th>
+          <th>Profil</th>
+          <th>Radnje</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let osoba of osobe">
+          <td>{{ osoba.name }}</td>
+          <td>{{ osoba.known_for_department || 'N/A' }}</td>
+          <td>{{ osoba.popularity ? osoba.popularity.toFixed(2) : 'N/A' }}</td>
+          <td>
+            <img
+              *ngIf="osoba.profile_path"
+              [src]="'https://image.tmdb.org/t/p/w200' + osoba.profile_path"
+              [alt]="osoba.name"
+            />
+            <span *ngIf="!osoba.profile_path">Nema slike</span>
+          </td>
+          <td>
+            <button *ngIf="osoba.postojiUBazi" (click)="brisiOsobu(osoba.id, osoba.name)" class="delete">
+              Obriši
+            </button>
+            <button
+              *ngIf="!osoba.postojiUBazi"
+              (click)="dodajOsobu(osoba.id, osoba.name, osoba.known_for_department, osoba.profile_path, osoba.popularity)"
+              class="add"
+            >
+              Dodaj
+            </button>
+          </td>
+        </tr>
+      </tbody>      
+    </table>
+  </div>
+</div>

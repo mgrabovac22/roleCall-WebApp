@@ -11,6 +11,7 @@ import { OsobeComponent } from './osobe/osobe.component';
 import { DetaljiComponent } from './detalji/detalji.component';
 import { KorisniciComponent } from './korisnici/korisnici.component';
 import { DodavanjeComponent } from './dodavanje/dodavanje.component';
+import { FormsModule } from '@angular/forms';
 
 const routes:Routes = [
   { path: '', component: PocetnaComponent },
@@ -37,7 +38,7 @@ const routes:Routes = [
     DodavanjeComponent
   ],
   imports: [
-    BrowserModule, RouterModule.forRoot(routes)
+    BrowserModule, RouterModule.forRoot(routes), FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

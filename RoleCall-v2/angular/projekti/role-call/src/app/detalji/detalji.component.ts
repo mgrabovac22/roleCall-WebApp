@@ -18,6 +18,7 @@ export class DetaljiComponent implements OnInit {
   trenutnaStranicaFilmova: number = 1;
   dodatnaStranicaFilmova: number = 2;
   bazaFilmoviGotova: boolean = false;
+  environment: any = environment;
 
   constructor(private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
