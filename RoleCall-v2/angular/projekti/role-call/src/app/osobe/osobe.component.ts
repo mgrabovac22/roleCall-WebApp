@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { environment } from '../../environments/environment.prod';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-osobe',
@@ -16,10 +17,16 @@ export class OsobeComponent implements OnInit {
   ukupnoStranicaPrikaz: number = 1;
   ukupniPodaci: any[] = [];
 
+  constructor(private router: Router) {}
+
   @ViewChild('osobeContainer', { static: true }) osobeContainer!: ElementRef;
 
   async ngOnInit(): Promise<void> {
     await this.ucitajSveOsobe();
+  }
+
+  idiNaDetalje(idOsobe: number): void {
+    this.router.navigate(['/detalji', idOsobe]); 
   }
 
   async ucitajSveOsobe(): Promise<void> {
@@ -90,5 +97,18 @@ export class OsobeComponent implements OnInit {
     this.azurirajPrikaz();
   }
 
+  async prvaStranica(): Promise<void> {
+    if (this.stranica > 1) {
+      this.stranica = 1;
+      this.azurirajPrikaz();
+    }
+  }
+  
+  async zadnjaStranica(): Promise<void> {
+    if (this.stranica < this.ukupnoStranicaPrikaz) {
+      this.stranica = this.ukupnoStranicaPrikaz;
+      this.azurirajPrikaz();
+    }
+  }
   
 }

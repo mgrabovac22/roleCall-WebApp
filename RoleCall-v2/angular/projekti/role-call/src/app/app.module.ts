@@ -21,6 +21,7 @@ const routes:Routes = [
   { path: 'registracija', component: RegistracijaComponent },
   { path: 'korisnici', component: KorisniciComponent },
   { path: 'dokumentacija', component: DokumentacijaComponent },
+  { path: 'detalji/:id', component: DetaljiComponent },
   { path: '**', redirectTo: '' }
 ];
 
@@ -32,7 +33,6 @@ const routes:Routes = [
     LoginComponent,
     RegistracijaComponent,
     OsobeComponent,
-    DetaljiComponent,
     KorisniciComponent,
     DodavanjeComponent
   ],
