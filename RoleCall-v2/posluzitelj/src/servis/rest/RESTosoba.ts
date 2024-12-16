@@ -1,12 +1,18 @@
 import { Request, Response } from "express";
 import { OsobaDAO } from "../dao/osobaDAO.js";
 import { Osoba, Slika, FilmOsoba } from "../../iServis/iTmdb.js";
+import { Konfiguracija } from "../../moduli/upravljateljKonfiguracije.js";
 
 export class RestOsoba {
   private osobaDAO: OsobaDAO;
-
-  constructor() {
+  private konfiguracija: Konfiguracija;
+  private portServis: number;
+  
+  
+  constructor(portServis: number) {
     this.osobaDAO = new OsobaDAO();
+    this.konfiguracija = new Konfiguracija();
+    this.portServis = portServis;
   }
 
   async postOsoba(zahtjev: Request, odgovor: Response) {
@@ -232,6 +238,108 @@ export class RestOsoba {
     } catch (err) {
       console.error("Greška prilikom dodavanja slike:", err);
       odgovor.status(500).json({ greska: "Greška prilikom dodavanja slike" });
+    }
+  }
+
+  async dodajOsobuFilmove(req: Request, res: Response) {
+    await this.konfiguracija.ucitajKonfiguraciju();
+    
+    const { id, ime_prezime, izvor_poznatosti, putanja_profila, rang_popularnosti } = req.body;
+
+    if (!id || !ime_prezime || !izvor_poznatosti) {
+        res.status(400).json({ greska: "Nedostaju obavezni podaci za dodavanje osobe." });
+        return;
+    }
+
+    try {
+        const tmdbSlikeResponse = await fetch(`https://api.themoviedb.org/3/person/${id}/images?api_key=${this.konfiguracija.dajKonf().tmdbApiKeyV3}`);
+        if (!tmdbSlikeResponse.ok) {
+            const greska = await tmdbSlikeResponse.json();
+            res.status(tmdbSlikeResponse.status).json({
+                greska: greska.status_message || "Greška prilikom dohvaćanja slika s TMDB-a.",
+            });
+            return;
+        }
+    
+        const tmdbSlikeData = await tmdbSlikeResponse.json();
+        const slike = tmdbSlikeData.profiles.map((slika: any) => slika.file_path);
+
+        const jwtResponse = await fetch(`http://localhost:${this.portServis}/servis/app/getJWT`);
+        const jwtData = await jwtResponse.json();
+        const jwtToken = jwtData.token;
+
+        let headers = new Headers();
+        headers.set("Authorization", jwtToken);
+        headers.set("Content-Type", "application/json");
+    
+        const osobaResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba`, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify({
+                id,
+                ime_prezime,
+                izvor_poznatosti,
+                putanja_profila,
+                rang_popularnosti,
+                slike, 
+            }),
+        });
+        
+        if(!osobaResponse.ok){
+            console.warn(`Osoba nije uspešno dodan.`);
+        }
+
+        const tmdbFilmoviResponse = await fetch(`https://api.themoviedb.org/3/person/${id}/movie_credits?api_key=${this.konfiguracija.dajKonf().tmdbApiKeyV3}`);
+        if (!tmdbFilmoviResponse.ok) {
+            const greska = await tmdbFilmoviResponse.json();
+            res.status(tmdbFilmoviResponse.status).json({
+                greska: greska.status_message || "Greška prilikom dohvaćanja filmova s TMDB-a.",
+            });
+            return;
+        }
+
+        const tmdbFilmoviData = await tmdbFilmoviResponse.json();
+        const filmovi = tmdbFilmoviData.cast || [];
+
+        const filmoviZaDodavanje = filmovi.slice(0, 20); 
+        console.log(tmdbFilmoviData);
+        
+        for (const film of filmoviZaDodavanje) {
+            const filmResponse = await fetch(`http://localhost:${this.portServis}/servis/film`, {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify({
+                    id: film.id,
+                    org_naslov: film.original_title,
+                    naslov: film.title,
+                    jezik: film.original_language,
+                    datum_izdavanja: film.release_date,
+                    opis: film.overview,
+                    rang_popularnosti: film.popularity,
+                    putanja_postera: film.poster_path
+                }),
+            });
+            
+            if (!filmResponse.ok) {
+                console.warn(`Film s ID-jem ${film.id} nije uspešno dodan.`);
+                continue;
+            }
+
+            const poveziFilmResponse = await fetch(`http://localhost:${this.portServis}/servis/osoba/${id}/film`, {
+                method: "PUT",
+                headers: headers,
+                body: JSON.stringify([{ film_id: film.id, lik: film.character }]),
+            });
+
+            if (!poveziFilmResponse.ok) {
+                console.warn(`Veza između osobe ${id} i filma ${film.id} nije uspešno dodana.`);
+            }
+        }
+
+        res.status(201).json({ poruka: "Osoba, filmovi i slike uspješno dodani." });
+    } catch (error) {
+        console.error("Greška prilikom dodavanja osobe s filmovima i slikama:", error);
+        res.status(500).json({ greska: "Interna greška servera." });
     }
   }
 }

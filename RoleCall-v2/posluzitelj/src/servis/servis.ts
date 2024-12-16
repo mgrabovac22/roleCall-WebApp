@@ -14,12 +14,7 @@ import { kreirajToken } from "../moduli/jwtModul.js";
 let port = 3000;
 const konfiguracija = new Konfiguracija();
 const server = express();
-const restKorisnik = new RestKorisnik();
-const restOsoba = new RestOsoba();
-const restFilm = new RestFilm();
-const restTMDB = new RestTMDB();
 let provjera: Boolean = false;
-
 
 declare module 'express-session' {
     export interface SessionData {
@@ -33,8 +28,8 @@ try {
     server.use(cors({
         origin: ['http://localhost:4200', 'http://localhost:12222']
     }));
-
-
+    
+    
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
     
@@ -52,6 +47,11 @@ try {
         throw new Error("Previše argumenata naredbenog retka!");
     }
 
+    const restKorisnik = new RestKorisnik();
+    const restOsoba = new RestOsoba(port);
+    const restFilm = new RestFilm();
+    const restTMDB = new RestTMDB();
+    
     server.use(
         session({
             secret: konfiguracija.dajKonf().tajniKljucSesija,
@@ -128,6 +128,7 @@ try {
 
     server.get("/servis/app/pretrazi", (req, res) => restTMDB.getOsobe(req, res));
     server.get("/servis/app/:id/filmoviTmdb", (req, res) => restTMDB.getFilmoveOsobeOd21(req, res));
+    server.post("/servis/app/osobaFilmovi", (req, res) => restOsoba.dodajOsobuFilmove(req, res));
 
     server.listen(port, () => {
         const baseURL = provjera || port === 12222 ? "http://localhost" : "http://spider.foi.hr";

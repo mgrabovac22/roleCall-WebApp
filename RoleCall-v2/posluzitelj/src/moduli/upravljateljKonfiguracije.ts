@@ -29,7 +29,7 @@ export class Konfiguracija {
 	}
 
 	public async ucitajKonfiguraciju() {
-		console.log(this.konf);
+		//console.log(this.konf);
 
 		if (process.argv[2] == undefined)
 			throw new Error("Nedostaje putanja do konfiguracijske datoteke!");
@@ -39,12 +39,12 @@ export class Konfiguracija {
 			encoding: "utf-8",
 		});
 		this.pretvoriJSONkonfig(podaci);
-		console.log(this.konf);
+		//console.log(this.konf);
 		this.provjeriPodatkeKonfiguracije();
 	}
 
 	private pretvoriJSONkonfig(podaci: string) {
-		console.log(podaci);
+		//console.log(podaci);
 		let konf: { [kljuc: string]: string } = {};
 		var nizPodataka = podaci.split("\n");
 		for (let podatak of nizPodataka) {

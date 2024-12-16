@@ -34,7 +34,7 @@ export class DodavanjeComponent {
     try {
       const odgovor = await fetch(url, {
         headers: {
-          Authorization: jwtToken,
+          'Authorization': jwtToken,
           'Content-Type': 'application/json',
         },
       });
@@ -53,21 +53,27 @@ export class DodavanjeComponent {
   }
 
   async dodajOsobu(id: number, ime: string, izvor_poznatosti: string, putanja_profila: string, rang_popularnosti: any) {
-    const url = `/servis/dodaj/osoba`;
+    const url = `${environment.restServis}app/osobaFilmovi`;
 
     const body = JSON.stringify({
       id,
       ime_prezime: ime,
       izvor_poznatosti,
-      putanja_profila,
+      putanja_profila: environment.slikePutanja + putanja_profila,
       rang_popularnosti,
     });
+    
 
     try {
+      const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
+      const jwtData = await jwtResponse.json();
+      const jwtToken = jwtData.token;
+
       const odgovor = await fetch(url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Authorization': jwtToken,
+          'Content-Type': 'application/json'
         },
         body,
       });
@@ -90,10 +96,15 @@ export class DodavanjeComponent {
     if (!potvrda) return;
 
     try {
+      const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
+      const jwtData = await jwtResponse.json();
+      const jwtToken = jwtData.token;
+
       const url = `/servis/obrisi/osoba/${id}`;
       const odgovor = await fetch(url, {
         method: 'DELETE',
         headers: {
+          'Authorization': jwtToken,
           'Content-Type': 'application/json',
         },
       });
