@@ -1,0 +1,140 @@
+main {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: lightblue;
+    color: #333;
+  }
+  
+  #detaljiOsobe {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 800px;
+  
+    img {
+        max-width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 10px;
+        border: 4px solid #fff;
+    }
+  
+    h1 {
+      font-size: 2rem;
+      margin: 10px 0;
+      color: #007bff;
+    }
+  
+    p {
+      font-size: 1rem;
+      margin: 5px 0;
+      color: #555;
+    }
+  }
+  
+  #galerija {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 800px;
+  
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+  
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+  
+  #filmovi {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+  
+    thead {
+      background-color: #007bff;
+      color: #ffffff;
+  
+      th {
+        padding: 15px;
+        text-align: left;
+        font-weight: bold;
+      }
+    }
+  
+    tbody {
+      tr {
+        &:nth-child(even) {
+          background-color: #f9f9f9;
+        }
+  
+        &:hover {
+          background-color: #f1f1f1;
+        }
+      }
+  
+      td {
+        padding: 10px;
+        text-align: left;
+        vertical-align: middle;
+  
+        img {
+          display: block;
+          max-width: 50px;
+          height: auto;
+          border-radius: 5px;
+        }
+  
+        span {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: block;
+          max-width: 200px;
+        }
+      }
+    }
+  }
+  
+  #ucitajJos {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  
+    &:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+  }
+  

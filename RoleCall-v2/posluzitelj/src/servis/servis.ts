@@ -127,7 +127,7 @@ try {
     server.delete("/servis/osoba/:id/film", (req, res) => restOsoba.obrisiVezeOsobaFilmove(req, res));
 
     server.get("/servis/app/pretrazi", (req, res) => restTMDB.getOsobe(req, res));
-    server.get("/servis/app/filmoviTmdb", (req, res) => restTMDB.getFilmoveOsobeOd21(req, res));
+    server.get("/servis/app/:id/filmoviTmdb", (req, res) => restTMDB.getFilmoveOsobeOd21(req, res));
 
     server.listen(port, () => {
         const baseURL = provjera || port === 12222 ? "http://localhost" : "http://spider.foi.hr";

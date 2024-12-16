@@ -1,11 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common'; 
 import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-detalji',
   templateUrl: './detalji.component.html',
-  styleUrls: ['./detalji.component.scss']
+  styleUrls: ['./detalji.component.scss'],
+  standalone: true, 
+  imports: [CommonModule], 
 })
 export class DetaljiComponent implements OnInit {
   idOsobe: number | null = null;
@@ -13,10 +16,10 @@ export class DetaljiComponent implements OnInit {
   slike: any[] = [];
   filmovi: any[] = [];
   trenutnaStranicaFilmova: number = 1;
-  dodatnaStranicaFilmova: number = 1;
+  dodatnaStranicaFilmova: number = 2;
   bazaFilmoviGotova: boolean = false;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(async (params) => {
@@ -36,9 +39,9 @@ export class DetaljiComponent implements OnInit {
 
       const response = await fetch(`${environment.restServis}osoba/${this.idOsobe}`, {
         headers: {
-          'Authorization': jwtToken,
+          Authorization: jwtToken,
           'Content-Type': 'application/json',
-        }
+        },
       });
       if (!response.ok) throw new Error('Greška prilikom dohvaćanja detalja osobe.');
       this.osoba = await response.json();
@@ -56,9 +59,9 @@ export class DetaljiComponent implements OnInit {
 
       const response = await fetch(`${environment.restServis}osoba/${this.idOsobe}/film?stranica=${this.trenutnaStranicaFilmova}`, {
         headers: {
-          'Authorization': jwtToken,
+          Authorization: jwtToken,
           'Content-Type': 'application/json',
-        }
+        },
       });
       if (!response.ok) throw new Error('Greška prilikom dohvaćanja filmova iz baze.');
       const filmovi = await response.json();
@@ -78,11 +81,11 @@ export class DetaljiComponent implements OnInit {
       const jwtData = await jwtResponse.json();
       const jwtToken = jwtData.token;
 
-      const response = await fetch(`${environment.restServis}app/filmoviTmdb?stranica=${this.dodatnaStranicaFilmova}`, {
+      const response = await fetch(`${environment.restServis}app/${this.idOsobe}/filmoviTmdb?stranica=${this.dodatnaStranicaFilmova}`, {
         headers: {
-          'Authorization': jwtToken,
+          Authorization: jwtToken,
           'Content-Type': 'application/json',
-        }
+        },
       });
       if (!response.ok) throw new Error('Greška prilikom dohvaćanja dodatnih filmova.');
       const filmovi = await response.json();
@@ -100,5 +103,6 @@ export class DetaljiComponent implements OnInit {
       this.dodatnaStranicaFilmova++;
       await this.ucitajFilmoveSaTMDB();
     }
+    this.cdr.detectChanges();
   }
 }
