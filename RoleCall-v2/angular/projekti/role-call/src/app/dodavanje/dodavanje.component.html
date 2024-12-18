@@ -41,21 +41,26 @@
           <td>
             <button
               *ngIf="!osoba.postojiUBazi"
+              [disabled]="dodavanjeStatus[osoba.id]"
               (click)="dodajOsobu(osoba.id, osoba.name, osoba.known_for_department, osoba.profile_path, osoba.popularity)"
               class="add"
             >
-              Dodaj
+              <span *ngIf="!dodavanjeStatus[osoba.id]">Dodaj</span>
+              <span *ngIf="dodavanjeStatus[osoba.id]" class="loading-spinner" style="display: inline-block; margin: 5px;"></span>
             </button>
+
             <button
               *ngIf="osoba.postojiUBazi"
+              [disabled]="brisanjeStatus[osoba.id]"
               (click)="brisiOsobu(osoba.id, osoba.name)"
               class="delete"
             >
-              Obriši
+              <span *ngIf="!brisanjeStatus[osoba.id]">Obriši</span>
+              <span *ngIf="brisanjeStatus[osoba.id]" class="loading-spinner" style="display: inline-block; margin: 5px;"></span>
             </button>
-          </td>                    
+          </td>
         </tr>
-      </tbody>      
+      </tbody>
     </table>
-  </div>
+  </div>  
 </div>

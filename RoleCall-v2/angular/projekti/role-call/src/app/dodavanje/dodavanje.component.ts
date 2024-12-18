@@ -13,6 +13,9 @@ export class DodavanjeComponent {
   currentPage = 1;
   totalPages = 1;
   osobe: any[] = [];
+  dodavanjeStatus: { [key: number]: boolean } = {};
+  brisanjeStatus: { [key: number]: boolean } = {};
+
 
   async pretrazi() {
     if (this.query.length >= 3) {
@@ -73,8 +76,9 @@ export class DodavanjeComponent {
   
 
   async dodajOsobu(id: number, ime: string, izvor_poznatosti: string, putanja_profila: string, rang_popularnosti: any) {
+    this.dodavanjeStatus[id] = true; 
     const url = `${environment.restServis}app/osobaFilmovi`;
-
+  
     const body = JSON.stringify({
       id,
       ime_prezime: ime,
@@ -82,24 +86,22 @@ export class DodavanjeComponent {
       putanja_profila: environment.slikePutanja + putanja_profila,
       rang_popularnosti,
     });
-    
-
+  
     try {
       const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
       const jwtData = await jwtResponse.json();
       const jwtToken = jwtData.token;
-
+  
       const odgovor = await fetch(url, {
         method: 'POST',
         headers: {
           'Authorization': jwtToken,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body,
       });
-
+  
       if (odgovor.ok) {
-        alert(`Osoba "${ime}" je uspješno dodana.`);
         await this.dajOsobe(this.currentPage);
       } else {
         const greska = await odgovor.json();
@@ -108,18 +110,20 @@ export class DodavanjeComponent {
     } catch (error) {
       console.error('Greška prilikom dodavanja osobe:', error);
       this.poruka = 'Došlo je do greške prilikom dodavanja osobe!';
+    } finally {
+      this.dodavanjeStatus[id] = false; 
     }
   }
-
+  
   async brisiOsobu(id: number, ime: string) {
-    const potvrda = window.confirm(`Jeste li sigurni da želite obrisati "${ime}"?`);
-    if (!potvrda) return;
-
+  
+    this.brisanjeStatus[id] = true; 
+  
     try {
       const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
       const jwtData = await jwtResponse.json();
       const jwtToken = jwtData.token;
-
+  
       const url = `${environment.restServis}app/osobaFilmovi/${id}`;
       const odgovor = await fetch(url, {
         method: 'DELETE',
@@ -128,9 +132,8 @@ export class DodavanjeComponent {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (odgovor.ok) {
-        alert(`Osoba "${ime}" je uspješno obrisana.`);
         await this.dajOsobe(this.currentPage);
       } else {
         const greska = await odgovor.json();
@@ -139,8 +142,11 @@ export class DodavanjeComponent {
     } catch (error) {
       console.error('Greška prilikom brisanja osobe:', error);
       this.poruka = 'Došlo je do greške prilikom brisanja!';
+    } finally {
+      this.brisanjeStatus[id] = false; 
     }
   }
+  
 
   idiNaStranicu(page: number) {
     if (page >= 1 && page <= this.totalPages) {
