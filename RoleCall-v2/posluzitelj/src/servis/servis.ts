@@ -128,7 +128,9 @@ try {
 
     server.get("/servis/app/pretrazi", (req, res) => restTMDB.getOsobe(req, res));
     server.get("/servis/app/:id/filmoviTmdb", (req, res) => restTMDB.getFilmoveOsobeOd21(req, res));
+    server.get("/servis/app/provjeriPostojanje/:id", (req, res) => restOsoba.provjeriPostojanjeOsobe(req, res));
     server.post("/servis/app/osobaFilmovi", (req, res) => restOsoba.dodajOsobuFilmove(req, res));
+    server.delete("/servis/app/osobaFilmovi/:id", (req, res) => restOsoba.obrisiOsobuFilmove(req, res));
 
     server.listen(port, () => {
         const baseURL = provjera || port === 12222 ? "http://localhost" : "http://spider.foi.hr";

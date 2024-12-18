@@ -100,7 +100,7 @@ export class DodavanjeComponent {
       const jwtData = await jwtResponse.json();
       const jwtToken = jwtData.token;
 
-      const url = `/servis/obrisi/osoba/${id}`;
+      const url = `${environment.restServis}app/osobaFilmovi/${id}`;
       const odgovor = await fetch(url, {
         method: 'DELETE',
         headers: {
