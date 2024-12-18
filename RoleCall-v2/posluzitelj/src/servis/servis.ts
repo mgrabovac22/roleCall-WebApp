@@ -10,6 +10,7 @@ import cors from "cors";
 import { provjeriToken } from "../moduli/jwtModul.js";
 import { RestTMDB } from "./rest/RESTtmdb.js";
 import { kreirajToken } from "../moduli/jwtModul.js";
+import { RestAuthKorisnik } from "./rest/RESTkorisnikAuth.js";
 
 let port = 3000;
 const konfiguracija = new Konfiguracija();
@@ -51,6 +52,7 @@ try {
     const restOsoba = new RestOsoba(port);
     const restFilm = new RestFilm();
     const restTMDB = new RestTMDB();
+    const restAuthKorisnik = new RestAuthKorisnik();
     
     server.use(
         session({
@@ -131,6 +133,15 @@ try {
     server.get("/servis/app/provjeriPostojanje/:id", (req, res) => restOsoba.provjeriPostojanjeOsobe(req, res));
     server.post("/servis/app/osobaFilmovi", (req, res) => restOsoba.dodajOsobuFilmove(req, res));
     server.delete("/servis/app/osobaFilmovi/:id", (req, res) => restOsoba.obrisiOsobuFilmove(req, res));
+
+    server.get("/servis/app/korisnici", (req, res) => restAuthKorisnik.getKorisnici(req, res));
+    server.get("/servis/app/korisnici/tipovi", (req, res) => restAuthKorisnik.getTipoviKorisnika(req, res));
+    server.put("/servis/app/korisnici/:id/dajPristup", (req, res) => restAuthKorisnik.dajPristup(req, res));
+    server.put("/servis/app/korisnici/:id/zabraniPristup", (req, res) => restAuthKorisnik.zabraniPristup(req, res));
+    server.post("/servis/app/korisnik/posaljiZahtjev", (req, res) => restAuthKorisnik.postZahtjevAdminu(req, res));
+    server.get("/servis/app/korisnici/dajTrenutnogKorisnika", (req, res) => restAuthKorisnik.dohvatiTrenutnogKorisnika(req, res));
+    server.get("/servis/app/korisnici/:id", (req, res) => restAuthKorisnik.getKorisnik(req, res));
+    server.delete("/servis/korisnici/:id/obrisi", (req, res) => restAuthKorisnik.deleteKorisnik(req, res));
 
     server.listen(port, () => {
         const baseURL = provjera || port === 12222 ? "http://localhost" : "http://spider.foi.hr";

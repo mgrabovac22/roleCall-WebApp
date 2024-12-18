@@ -1,1 +1,50 @@
-<p>korisnici works!</p>
+<div class="container">
+    <h1>Korisnici</h1>
+    <p *ngIf="poruka" class="error">{{ poruka }}</p>
+  
+    <div class="trenutni-korisnik" *ngIf="trenutniKorisnik">
+        <h2>Trenutni korisnik</h2>
+        <p>Ime: {{ trenutniKorisnik.ime }}</p>
+        <p>Email: {{ trenutniKorisnik.email }}</p>
+    </div>
+  
+    <div class="korisnici-lista">
+        <h2>Popis korisnika</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Ime</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Akcije</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let korisnik of korisnici">
+                    <td>{{ korisnik.id }}</td>
+                    <td>{{ korisnik.ime }}</td>
+                    <td>{{ korisnik.email }}</td>
+                    <td>
+                        <span [ngStyle]="{ color: prikaziStatus(korisnik.status) }">
+                            {{ korisnik.status }}
+                        </span>
+                    </td>
+                    <td *ngIf="trenutniKorisnik?.id !== korisnik.id" class="actions-column">
+                        <button (click)="dajPristup(korisnik.id)" 
+                                *ngIf="korisnik.status !== 'Ima pristup'" 
+                                [disabled]="korisnik.status === 'Nije poslan zahtjev'">
+                            Daj pristup
+                        </button>
+                        <button (click)="zabraniPristup(korisnik.id)" *ngIf="korisnik.status === 'Ima pristup'">
+                            Zabrani pristup
+                        </button>
+                        <button (click)="obrisiKorisnika(korisnik.id)" class="delete">
+                            Obriši
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
