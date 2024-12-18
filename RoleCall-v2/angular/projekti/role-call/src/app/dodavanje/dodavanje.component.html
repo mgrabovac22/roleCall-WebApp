@@ -39,17 +39,21 @@
             <span *ngIf="!osoba.profile_path">Nema slike</span>
           </td>
           <td>
-            <button (click)="brisiOsobu(osoba.id, osoba.name)" class="delete">
-              Obriši
-            </button>
             <button
-             
+              *ngIf="!osoba.postojiUBazi"
               (click)="dodajOsobu(osoba.id, osoba.name, osoba.known_for_department, osoba.profile_path, osoba.popularity)"
               class="add"
             >
               Dodaj
             </button>
-          </td>
+            <button
+              *ngIf="osoba.postojiUBazi"
+              (click)="brisiOsobu(osoba.id, osoba.name)"
+              class="delete"
+            >
+              Obriši
+            </button>
+          </td>                    
         </tr>
       </tbody>      
     </table>

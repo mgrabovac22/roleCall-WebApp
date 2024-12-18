@@ -24,13 +24,11 @@ export class DodavanjeComponent {
   }
 
   async dajOsobe(stranica: number) {
-
     const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
     const jwtData = await jwtResponse.json();
     const jwtToken = jwtData.token;
-
+  
     const url = `${environment.restServis}app/pretrazi?query=${encodeURIComponent(this.query)}&stranica=${stranica}`;
-
     try {
       const odgovor = await fetch(url, {
         headers: {
@@ -42,7 +40,13 @@ export class DodavanjeComponent {
         const podaci = await odgovor.json();
         this.totalPages = podaci.total_pages;
         this.currentPage = podaci.page;
-        this.osobe = podaci.results;
+  
+        this.osobe = await Promise.all(
+          podaci.results.map(async (osoba: any) => {
+            const postoji = await this.provjeriPostojanje(osoba.id, jwtToken);
+            return { ...osoba, postojiUBazi: postoji };
+          })
+        );
       } else {
         throw new Error(`Greška: ${odgovor.status}`);
       }
@@ -51,6 +55,22 @@ export class DodavanjeComponent {
       this.poruka = 'Došlo je do greške prilikom dohvaćanja podataka!';
     }
   }
+  
+  async provjeriPostojanje(id: number, jwtToken: string): Promise<boolean> {
+    const url = `${environment.restServis}app/provjeriPostojanje/${id}`;
+    try {
+      const odgovor = await fetch(url, {
+        headers: {
+          'Authorization': jwtToken,
+        },
+      });
+      return odgovor.ok;
+    } catch (error) {
+      console.error(`Greška prilikom provjere osobe ID ${id}:`, error);
+      return false;
+    }
+  }
+  
 
   async dodajOsobu(id: number, ime: string, izvor_poznatosti: string, putanja_profila: string, rang_popularnosti: any) {
     const url = `${environment.restServis}app/osobaFilmovi`;
