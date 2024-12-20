@@ -8,19 +8,19 @@ await konfiguracija.ucitajKonfiguraciju();
 
 export function kreirajToken(korisnik:{korime:string}, tajniKljucJWT:string){
 	let token = jwt.sign({ korime: korisnik.korime }, tajniKljucJWT, { expiresIn: `${konfiguracija.dajKonf().jwtValjanost}s` });
-	console.log(token);
+	//console.log(token);
   return token;
 }
 
 export function provjeriToken(zahtjev:Request, tajniKljucJWT:string) {
-  	console.log("Provjera tokena: "+zahtjev.headers.authorization);
+  	//console.log("Provjera tokena: "+zahtjev.headers.authorization);
     if (zahtjev.headers.authorization != null) {
         console.log(zahtjev.headers.authorization);
         let token = zahtjev.headers.authorization.split(" ")[1] ?? "";
-        console.log(token)
+        //console.log(token)
         try {
             let podaci = jwt.verify(token, tajniKljucJWT);
-            console.log("JWT podaci: "+podaci);
+            //console.log("JWT podaci: "+podaci);
             return podaci;
         } catch (e) {
             console.log(e)

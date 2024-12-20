@@ -141,7 +141,7 @@ try {
     server.post("/servis/app/korisnik/posaljiZahtjev", (req, res) => restAuthKorisnik.postZahtjevAdminu(req, res));
     server.get("/servis/app/korisnici/dajTrenutnogKorisnika", (req, res) => restAuthKorisnik.dohvatiTrenutnogKorisnika(req, res));
     server.get("/servis/app/korisnici/:id", (req, res) => restAuthKorisnik.getKorisnik(req, res));
-    server.delete("/servis/korisnici/:id/obrisi", (req, res) => restAuthKorisnik.deleteKorisnik(req, res));
+    server.delete("/servis/app/korisnici/:id/obrisi", (req, res) => restAuthKorisnik.deleteKorisnik(req, res));
 
     server.listen(port, () => {
         const baseURL = provjera || port === 12222 ? "http://localhost" : "http://spider.foi.hr";

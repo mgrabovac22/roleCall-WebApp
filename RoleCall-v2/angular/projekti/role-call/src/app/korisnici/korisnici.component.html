@@ -5,7 +5,9 @@
     <div class="trenutni-korisnik" *ngIf="trenutniKorisnik">
         <h2>Trenutni korisnik</h2>
         <p>Ime: {{ trenutniKorisnik.ime }}</p>
+        <p>Prezime: {{ trenutniKorisnik.prezime }}</p>
         <p>Email: {{ trenutniKorisnik.email }}</p>
+        <p>Telefon: {{ trenutniKorisnik.telefon }}</p>
     </div>
   
     <div class="korisnici-lista">
@@ -31,15 +33,15 @@
                         </span>
                     </td>
                     <td *ngIf="trenutniKorisnik?.id !== korisnik.id" class="actions-column">
-                        <button (click)="dajPristup(korisnik.id)" 
+                        <button (click)="dajPristup(korisnik.id, korisnik)" 
                                 *ngIf="korisnik.status !== 'Ima pristup'" 
                                 [disabled]="korisnik.status === 'Nije poslan zahtjev'">
                             Daj pristup
                         </button>
-                        <button (click)="zabraniPristup(korisnik.id)" *ngIf="korisnik.status === 'Ima pristup'">
+                        <button (click)="zabraniPristup(korisnik.id, korisnik.korime)" *ngIf="korisnik.status === 'Ima pristup'">
                             Zabrani pristup
                         </button>
-                        <button (click)="obrisiKorisnika(korisnik.id)" class="delete">
+                        <button (click)="obrisiKorisnika(korisnik.id, korisnik.korime, korisnik.status)" class="delete">
                             Obriši
                         </button>
                     </td>
