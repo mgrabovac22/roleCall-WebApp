@@ -1,24 +1,33 @@
 <main>
-    <div class="pagination">
-      <button (click)="prvaStranica()" [disabled]="stranica === 1">Prva</button>
-      <button (click)="prethodnaStranica()" [disabled]="stranica === 1">Prethodna</button>
-      <span>Stranica {{ stranica }} / {{ ukupnoStranicaPrikaz }}</span>
-      <button (click)="sljedecaStranica()" [disabled]="stranica === ukupnoStranicaPrikaz">Sljedeća</button>
-      <button (click)="zadnjaStranica()" [disabled]="stranica === ukupnoStranicaPrikaz">Zadnja</button>
+  <div class="pagination">
+    <button (click)="prvaStranica()" [disabled]="stranica === 1">Prva</button>
+    <button (click)="prethodnaStranica()" [disabled]="stranica === 1">Prethodna</button>
+    <span>Stranica {{ stranica }} / {{ ukupnoStranicaPrikaz }}</span>
+    <button (click)="sljedecaStranica()" [disabled]="stranica === ukupnoStranicaPrikaz">Sljedeća</button>
+    <button (click)="zadnjaStranica()" [disabled]="stranica === ukupnoStranicaPrikaz">Zadnja</button>
 
-      <label for="brojPoStranici">Broj osoba po stranici:</label>
-      <select id="brojPoStranici" (change)="promjeniBrojPoStranici($event)">
-        <option *ngFor="let broj of [5, 10, 20, 50]" [value]="broj" [selected]="broj === brojPoStranici">{{ broj }}</option>
-      </select>
+    <label for="brojPoStranici">Broj osoba po stranici:</label>
+    <select id="brojPoStranici" (change)="promjeniBrojPoStranici($event)">
+      <option *ngFor="let broj of [5, 10, 20, 50]" [value]="broj" [selected]="broj === brojPoStranici">{{ broj }}</option>
+    </select>
+  </div>
+
+  <div #osobeContainer class="osobe-container">
+    <div *ngFor="let osoba of osobe" class="osoba" (click)="idiNaDetalje(osoba.id)">
+      <img [src]="osoba.putanja_profila || '/slike/avatar.jpg'" [alt]="osoba.ime_prezime" />
+      <h4>{{ osoba.ime_prezime }}</h4>
+      <p>{{ osoba.izvor_poznatosti || 'Nepoznato' }}</p>
     </div>
-  
-    <div #osobeContainer class="osobe-container">
-      <div *ngFor="let osoba of osobe" class="osoba" (click)="idiNaDetalje(osoba.id)">
-        <img [src]="osoba.putanja_profila || '/slike/avatar.jpg'" [alt]="osoba.ime_prezime" />
-        <h4>{{ osoba.ime_prezime }}</h4>
-        <p>{{ osoba.izvor_poznatosti || 'Nepoznato' }}</p>
-      </div>
-    </div>   
-    <router-outlet></router-outlet> 
-  </main>
-  
+  </div>   
+  <router-outlet></router-outlet> 
+
+  <div class="falling-snow">
+    <div class="flake"></div>
+    <div class="flake"></div>
+    <div class="flake"></div>
+    <div class="flake"></div>
+    <div class="flake"></div>
+  </div>
+  <div class="snowflake-corner top-left"></div>
+  <div class="snowflake-corner bottom-right"></div>
+</main>
