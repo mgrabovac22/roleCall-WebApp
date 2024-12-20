@@ -2,74 +2,60 @@
     position: relative;
     padding: 20px;
 
-    .rotating-snowflake {
+    .falling-snow {
         position: absolute;
-        width: 40px;
-        height: 40px;
-        background: url('/assets/snjeguljica.png') no-repeat center center;
-        background-size: contain;
-        animation: rotate 4s linear infinite;
-    }
-
-    .bottom-left {
-        left: 10px;
-        bottom: 10px;
-    }
-
-    .top-right {
-        right: 10px;
-        top: 10px;
-    }
-
-    @keyframes rotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    @keyframes snow {
-        0% {
-            transform: translateY(-10px);
-        }
-        100% {
-            transform: translateY(100vh);
-        }
-    }
-
-    .snowflake {
-        position: absolute;
-        top: -10px;
-        font-size: 24px;
-        color: white;
-        opacity: 0.8;
-        animation: snow 6s linear infinite;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         pointer-events: none;
-    }
-
-    .snowflake:nth-child(1) {
-        left: 10%;
-        animation-duration: 6s;
-        animation-delay: -2s;
-    }
-    .snowflake:nth-child(2) {
-        left: 22%;
-        animation-duration: 5.5s;
-        animation-delay: -1s;
-    }
-    .snowflake:nth-child(3) {
-        left: 33%;
-        animation-duration: 7s;
-        animation-delay: -4s;
-    }
-    .snowflake:nth-child(4) {
-        left: 80%;
-        animation-duration: 5s;
-        animation-delay: -3s;
-    }
-    .snowflake:nth-child(5) {
-        left: 93%;
-        animation-duration: 6.5s;
-        animation-delay: 0s;
-    }
+        overflow: hidden;
+      }
+    
+      .flake {
+          position: absolute;
+          top: -10px;
+          font-size: 24px;
+          color: white;
+          opacity: 0.8;
+          animation: snow 6s linear infinite;
+          pointer-events: none;
+    
+          &:nth-child(1) { left: 10%; animation-duration: 4s; }
+          &:nth-child(2) { left: 20%; animation-duration: 5s; }
+          &:nth-child(3) { left: 55%; animation-duration: 6s; }
+          &:nth-child(4) { left: 81%; animation-duration: 4s; }
+          &:nth-child(5) { left: 92%; animation-duration: 5.5s; }
+      }
+    
+      @keyframes snow {
+          0% { transform: translateY(-10px); }
+          100% { transform: translateY(100vh); }
+      }
+    
+      .rotating-snowflake {
+          position: absolute;
+          width: 40px;
+          height: 40px;
+          background: url('/assets/snjeguljica.png') no-repeat center center;
+          background-size: contain;
+          animation: rotate 4s linear infinite;
+      }
+    
+      .bottom-left {
+          left: 10px;
+          bottom: 10px;
+      }
+    
+      .top-right {
+          right: 10px;
+          top: 10px;
+      }
+    
+      @keyframes rotate {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
 
     .container {
         font-family: 'Arial', sans-serif;
