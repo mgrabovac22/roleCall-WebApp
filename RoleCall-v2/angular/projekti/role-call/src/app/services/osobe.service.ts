@@ -33,7 +33,25 @@ export class OsobeService {
       return await response.json();
     } catch(err){
       console.log("Error: ", err);
-      
+    }
+  }
+
+  async dohvatiDetaljeOsobe(idOsobe: number): Promise<any> {
+    try {
+      const jwtToken = await this.getJWT();
+
+      const response = await fetch(`${environment.restServis}osoba/${idOsobe}`, {
+        headers: {
+          Authorization: jwtToken,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) throw new Error('Greška prilikom dohvaćanja detalja osobe.');
+      return await response.json();
+    } catch (error) {
+      console.error('Greška prilikom dohvaćanja detalja osobe:', error);
+      throw error;
     }
   }
 }

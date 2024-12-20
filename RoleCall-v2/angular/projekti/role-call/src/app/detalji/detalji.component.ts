@@ -1,14 +1,16 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common'; 
+import { CommonModule } from '@angular/common';
+import { OsobeService } from '../services/osobe.service';
+import { FilmoviService } from '../services/filmovi.service';
 import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-detalji',
   templateUrl: './detalji.component.html',
   styleUrls: ['./detalji.component.scss'],
-  standalone: true, 
-  imports: [CommonModule], 
+  standalone: true,
+  imports: [CommonModule],
 })
 export class DetaljiComponent implements OnInit {
   idOsobe: number | null = null;
@@ -20,7 +22,12 @@ export class DetaljiComponent implements OnInit {
   bazaFilmoviGotova: boolean = false;
   environment: any = environment;
 
-  constructor(private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
+    private osobeService: OsobeService, 
+    private filmoviService: FilmoviService
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(async (params) => {
@@ -34,18 +41,7 @@ export class DetaljiComponent implements OnInit {
 
   async ucitajDetaljeOsobe(): Promise<void> {
     try {
-      const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
-      const jwtData = await jwtResponse.json();
-      const jwtToken = jwtData.token;
-
-      const response = await fetch(`${environment.restServis}osoba/${this.idOsobe}`, {
-        headers: {
-          Authorization: jwtToken,
-          'Content-Type': 'application/json',
-        },
-      });
-      if (!response.ok) throw new Error('Greška prilikom dohvaćanja detalja osobe.');
-      this.osoba = await response.json();
+      this.osoba = await this.osobeService.dohvatiDetaljeOsobe(this.idOsobe!);
       this.slike = this.osoba.slike || [];
     } catch (error) {
       console.error('Greška prilikom učitavanja detalja osobe:', error);
@@ -54,18 +50,7 @@ export class DetaljiComponent implements OnInit {
 
   async ucitajFilmoveIzBaze(): Promise<void> {
     try {
-      const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
-      const jwtData = await jwtResponse.json();
-      const jwtToken = jwtData.token;
-
-      const response = await fetch(`${environment.restServis}osoba/${this.idOsobe}/film?stranica=${this.trenutnaStranicaFilmova}`, {
-        headers: {
-          Authorization: jwtToken,
-          'Content-Type': 'application/json',
-        },
-      });
-      if (!response.ok) throw new Error('Greška prilikom dohvaćanja filmova iz baze.');
-      const filmovi = await response.json();
+      const filmovi = await this.filmoviService.dohvatiFilmoveIzBaze(this.idOsobe!, this.trenutnaStranicaFilmova);
       this.filmovi = [...this.filmovi, ...filmovi];
 
       if (filmovi.length < 20) {
@@ -78,19 +63,8 @@ export class DetaljiComponent implements OnInit {
 
   async ucitajFilmoveSaTMDB(): Promise<void> {
     try {
-      const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
-      const jwtData = await jwtResponse.json();
-      const jwtToken = jwtData.token;
-
-      const response = await fetch(`${environment.restServis}app/${this.idOsobe}/filmoviTmdb?stranica=${this.dodatnaStranicaFilmova}`, {
-        headers: {
-          Authorization: jwtToken,
-          'Content-Type': 'application/json',
-        },
-      });
-      if (!response.ok) throw new Error('Greška prilikom dohvaćanja dodatnih filmova.');
-      const filmovi = await response.json();
-      this.filmovi = [...this.filmovi, ...filmovi.filmovi];
+      const filmovi = await this.filmoviService.dohvatiFilmoveSaTMDB(this.idOsobe!, this.dodatnaStranicaFilmova);
+      this.filmovi = [...this.filmovi, ...filmovi];
     } catch (error) {
       console.error('Greška prilikom učitavanja dodatnih filmova:', error);
     }
