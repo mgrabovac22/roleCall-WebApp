@@ -1,4 +1,4 @@
-<main>
+<section>
   <div class="pagination">
     <button (click)="prvaStranica()" [disabled]="stranica === 1">Prva</button>
     <button (click)="prethodnaStranica()" [disabled]="stranica === 1">Prethodna</button>
@@ -22,12 +22,12 @@
   <router-outlet></router-outlet> 
 
   <div class="falling-snow">
-    <div class="flake"></div>
-    <div class="flake"></div>
-    <div class="flake"></div>
-    <div class="flake"></div>
-    <div class="flake"></div>
+    <div class="flake">&#10052;</div>
+    <div class="flake">&#10052;</div>
+    <div class="flake">&#10052;</div>
+    <div class="flake">&#10052;</div>
+    <div class="flake">&#10052;</div>
   </div>
-  <div class="snowflake-corner top-left"></div>
-  <div class="snowflake-corner bottom-right"></div>
-</main>
+  <div class="rotating-snowflake bottom-left"></div>
+  <div class="rotating-snowflake top-right"></div>
+</section>

@@ -1,39 +1,49 @@
-<main>
-    <div id="detaljiOsobe">
-    <img [src]="osoba?.putanja_profila || 'assets/avatar.jpg'" [alt]="osoba?.ime_prezime" />
-    <h1>{{ osoba?.ime_prezime }}</h1>
-    <p>Poznat po: {{ osoba?.izvor_poznatosti || 'Nepoznato' }}</p>
-    <p>Popularnost: {{ osoba?.rang_popularnosti || 'Nepoznato' }}</p>
-    </div>
-
-    <div id="galerija">
-    <img *ngFor="let slika of slike" [src]="slika.putanja_do_slike.startsWith('http') ? slika.putanja_do_slike : environment.slikePutanja + slika.putanja_do_slike" />
-    </div>
-
+<section class="content-container">
+    <div class="rotating-snowflake bottom-left"></div>
+    <div class="rotating-snowflake top-right"></div>
+  
+    <div class="snowflake">&#10052;</div>
+    <div class="snowflake">&#10052;</div>
+    <div class="snowflake">&#10052;</div>
+    <div class="snowflake">&#10052;</div>
+    <div class="snowflake">&#10052;</div>
+  
+    <section id="detaljiOsobe">
+        <img [src]="osoba?.putanja_profila || 'assets/avatar.jpg'" [alt]="osoba?.ime_prezime" />
+        <h1>{{ osoba?.ime_prezime }}</h1>
+        <p>Poznat po: {{ osoba?.izvor_poznatosti || 'Nepoznato' }}</p>
+        <p>Popularnost: {{ osoba?.rang_popularnosti || 'Nepoznato' }}</p>
+    </section>
+  
+    <section id="galerija">
+        <img *ngFor="let slika of slike" [src]="slika.putanja_do_slike.startsWith('http') ? slika.putanja_do_slike : environment.slikePutanja + slika.putanja_do_slike" />
+    </section>
+  
     <table id="filmovi">
-    <thead>
-        <tr>
-        <th>Jezik</th>
-        <th>Originalni Naslov</th>
-        <th>Naslov</th>
-        <th>Popularnost</th>
-        <th>Poster</th>
-        <th>Datum Izdavanja</th>
-        <th>Lik</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let film of filmovi">
-        <td>{{ film.jezik || film.original_language || 'Nepoznato' }}</td>
-        <td><span title="{{ film.opis || film.overview || 'Nema opisa' }}">{{ film.org_naslov || film.original_title || 'Nepoznato' }}</span></td>
-        <td>{{ film.naslov || film.title || 'Nepoznato' }}</td>
-        <td>{{ film.rang_popularnosti?.toFixed(2) || film.popularity?.toFixed(2) || 'Nepoznato' }}</td>
-        <td><img *ngIf="film.putanja_postera || film.poster_path" [src]="environment.posteriPutanja + (film.putanja_postera || film.poster_path)" [alt]="film.naslov || film.title" /></td>
-        <td>{{ film.datum_izdavanja || film.release_date || 'Nepoznato' }}</td>
-        <td>{{ film.lik || film.character || 'Nepoznato' }}</td>
-        </tr>
-    </tbody>
+        <thead>
+            <tr>
+                <th>Jezik</th>
+                <th>Originalni Naslov</th>
+                <th>Naslov</th>
+                <th>Popularnost</th>
+                <th>Poster</th>
+                <th>Datum Izdavanja</th>
+                <th>Lik</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let film of filmovi">
+                <td>{{ film.jezik || film.original_language || 'Nepoznato' }}</td>
+                <td><span title="{{ film.opis || film.overview || 'Nema opisa' }}">{{ film.org_naslov || film.original_title || 'Nepoznato' }}</span></td>
+                <td>{{ film.naslov || film.title || 'Nepoznato' }}</td>
+                <td>{{ film.rang_popularnosti?.toFixed(2) || film.popularity?.toFixed(2) || 'Nepoznato' }}</td>
+                <td><img *ngIf="film.putanja_postera || film.poster_path" [src]="environment.posteriPutanja + (film.putanja_postera || film.poster_path)" [alt]="film.naslov || film.title" /></td>
+                <td>{{ film.datum_izdavanja || film.release_date || 'Nepoznato' }}</td>
+                <td>{{ film.lik || film.character || 'Nepoznato' }}</td>
+            </tr>
+        </tbody>
     </table>
-
+  
     <button id="ucitajJos" (click)="ucitajJosFilmova()">Učitaj Još</button>
-</main>
+  </section>
+  

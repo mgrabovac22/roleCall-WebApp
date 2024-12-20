@@ -1,4 +1,4 @@
-main {
+section {
     background-color: lightblue;
     position: relative;
 }
@@ -109,11 +109,12 @@ main {
 
 .flake {
     position: absolute;
-    background: white;
-    border-radius: 50%;
-    width: 6px;
-    height: 6px;
-    animation: fall 6s linear infinite;
+    top: -10px;
+    font-size: 24px;
+    color: white;
+    opacity: 0.8;
+    animation: snow 6s linear infinite;
+    pointer-events: none;
 
     &:nth-child(1) { left: 10%; animation-duration: 4s; }
     &:nth-child(2) { left: 25%; animation-duration: 5s; }
@@ -122,28 +123,33 @@ main {
     &:nth-child(5) { left: 85%; animation-duration: 5.5s; }
 }
 
-@keyframes fall {
+@keyframes snow {
     0% { transform: translateY(-10px); }
     100% { transform: translateY(100vh); }
 }
 
-.snowflake-corner {
+.rotating-snowflake {
     position: absolute;
     width: 40px;
     height: 40px;
     background: url('/assets/snjeguljica.png') no-repeat center center;
     background-size: contain;
-    animation: rotate-corner 4s linear infinite;
-  }
-
-.top-left {
-    top: 20px;
-    left: 20px;
+    animation: rotate 4s linear infinite;
 }
 
-.bottom-right {
-    bottom: 20px;
-    right: 20px;
+.bottom-left {
+    left: 10px;
+    bottom: 10px;
+}
+
+.top-right {
+    right: 10px;
+    top: 10px;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 @keyframes rotate-corner {
