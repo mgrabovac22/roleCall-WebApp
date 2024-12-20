@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { environment } from '../../environments/environment.prod';
 import { Router } from '@angular/router';
+import { OsobeService } from '../services/osobe.service';
 
 @Component({
   selector: 'app-osobe',
@@ -17,7 +18,7 @@ export class OsobeComponent implements OnInit {
   ukupnoStranicaPrikaz: number = 1;
   ukupniPodaci: any[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private osobeService: OsobeService) {}
 
   @ViewChild('osobeContainer', { static: true }) osobeContainer!: ElementRef;
 
@@ -31,27 +32,13 @@ export class OsobeComponent implements OnInit {
 
   async ucitajSveOsobe(): Promise<void> {
     try {
-      const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
-      const jwtData = await jwtResponse.json();
-      const jwtToken = jwtData.token;
 
       let trenutnaStranica = 1;
       let ukupnoStranicaSaServisa = 1;
 
       do {
-        const response = await fetch(
-          `${environment.restServis}osoba?stranica=${trenutnaStranica}`,
-          {
-            headers: {
-              'Authorization': jwtToken,
-              'Content-Type': 'application/json',
-            }
-          }
-        );
 
-        if (!response.ok) throw new Error(`Greška prilikom dohvaćanja stranice ${trenutnaStranica}.`);
-
-        const podaci = await response.json();
+        const podaci = await this.osobeService.dohvatiOsobe(trenutnaStranica);
 
         this.ukupniPodaci = [...this.ukupniPodaci, ...podaci.osobe];
         ukupnoStranicaSaServisa = podaci.ukupnoStranica;
