@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { environment } from '../../environments/environment.prod';
+import { TmdbService } from '../services/tmdb.service';
+import { OsobeService } from '../services/osobe.service';
 
 @Component({
   selector: 'app-dodavanje',
@@ -16,6 +18,8 @@ export class DodavanjeComponent {
   dodavanjeStatus: { [key: number]: boolean } = {};
   brisanjeStatus: { [key: number]: boolean } = {};
 
+  constructor(private tmdbService: TmdbService, private osobeService: OsobeService){}
+
 
   async pretrazi() {
     if (this.query.length >= 3) {
@@ -27,26 +31,17 @@ export class DodavanjeComponent {
   }
 
   async dajOsobe(stranica: number) {
-    const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
-    const jwtData = await jwtResponse.json();
-    const jwtToken = jwtData.token;
   
-    const url = `${environment.restServis}app/pretrazi?query=${encodeURIComponent(this.query)}&stranica=${stranica}`;
     try {
-      const odgovor = await fetch(url, {
-        headers: {
-          'Authorization': jwtToken,
-          'Content-Type': 'application/json',
-        },
-      });
-      if (odgovor.ok) {
-        const podaci = await odgovor.json();
+      const odgovor = await this.tmdbService.pretrazi(this.query, stranica);
+      if (odgovor!=null) {
+        const podaci = odgovor;
         this.totalPages = podaci.total_pages;
         this.currentPage = podaci.page;
   
         this.osobe = await Promise.all(
           podaci.results.map(async (osoba: any) => {
-            const postoji = await this.provjeriPostojanje(osoba.id, jwtToken);
+            const postoji = await this.osobeService.provjeriPostojanje(osoba.id);
             return { ...osoba, postojiUBazi: postoji };
           })
         );
@@ -59,15 +54,10 @@ export class DodavanjeComponent {
     }
   }
   
-  async provjeriPostojanje(id: number, jwtToken: string): Promise<boolean> {
-    const url = `${environment.restServis}app/provjeriPostojanje/${id}`;
+  async provjeriPostojanje(id: number): Promise<boolean> {
     try {
-      const odgovor = await fetch(url, {
-        headers: {
-          'Authorization': jwtToken,
-        },
-      });
-      return odgovor.ok;
+      const odgovor = await this.osobeService.provjeriPostojanje(id);
+      return odgovor;
     } catch (error) {
       console.error(`Greška prilikom provjere osobe ID ${id}:`, error);
       return false;
@@ -77,7 +67,6 @@ export class DodavanjeComponent {
 
   async dodajOsobu(id: number, ime: string, izvor_poznatosti: string, putanja_profila: string, rang_popularnosti: any) {
     this.dodavanjeStatus[id] = true; 
-    const url = `${environment.restServis}app/osobaFilmovi`;
   
     const body = JSON.stringify({
       id,
@@ -88,24 +77,13 @@ export class DodavanjeComponent {
     });
   
     try {
-      const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
-      const jwtData = await jwtResponse.json();
-      const jwtToken = jwtData.token;
+      var odgovor = await this.osobeService.dodajOsobu(body)
   
-      const odgovor = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Authorization': jwtToken,
-          'Content-Type': 'application/json',
-        },
-        body,
-      });
-  
-      if (odgovor.ok) {
+      if (odgovor) {
         await this.dajOsobe(this.currentPage);
       } else {
-        const greska = await odgovor.json();
-        throw new Error(greska.greska || `Greška: ${odgovor.status}`);
+        const greska = "Nije uspjelo dodavanje osobe!";
+        throw new Error(greska);
       }
     } catch (error) {
       console.error('Greška prilikom dodavanja osobe:', error);
@@ -115,29 +93,18 @@ export class DodavanjeComponent {
     }
   }
   
-  async brisiOsobu(id: number, ime: string) {
+  async brisiOsobu(id: number) {
   
     this.brisanjeStatus[id] = true; 
   
     try {
-      const jwtResponse = await fetch(`${environment.restServis}app/getJWT`);
-      const jwtData = await jwtResponse.json();
-      const jwtToken = jwtData.token;
+      var odgovor = await this.osobeService.brisiOsobu(id);
   
-      const url = `${environment.restServis}app/osobaFilmovi/${id}`;
-      const odgovor = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': jwtToken,
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (odgovor.ok) {
+      if (odgovor) {
         await this.dajOsobe(this.currentPage);
       } else {
-        const greska = await odgovor.json();
-        throw new Error(greska.greska || `Greška: ${odgovor.status}`);
+        const greska = "Nije uspjelo brisanje osobe!";
+        throw new Error(greska);
       }
     } catch (error) {
       console.error('Greška prilikom brisanja osobe:', error);

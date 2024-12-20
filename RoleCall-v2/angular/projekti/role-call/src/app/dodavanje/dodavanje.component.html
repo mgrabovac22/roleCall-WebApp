@@ -52,7 +52,7 @@
             <button
               *ngIf="osoba.postojiUBazi"
               [disabled]="brisanjeStatus[osoba.id]"
-              (click)="brisiOsobu(osoba.id, osoba.name)"
+              (click)="brisiOsobu(osoba.id)"
               class="delete"
             >
               <span *ngIf="!brisanjeStatus[osoba.id]">Obriši</span>

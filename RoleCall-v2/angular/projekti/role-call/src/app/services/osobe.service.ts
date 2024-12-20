@@ -54,4 +54,75 @@ export class OsobeService {
       throw error;
     }
   }
+
+  async provjeriPostojanje(id: number): Promise<boolean> {
+    const url = `${environment.restServis}app/provjeriPostojanje/${id}`;
+    try {
+      const jwtToken = await this.getJWT();
+
+      const odgovor = await fetch(url, {
+        headers: {
+          'Authorization': jwtToken,
+        },
+      });
+      return odgovor.ok;
+    } catch (error) {
+      console.error(`Greška prilikom provjere osobe ID ${id}:`, error);
+      return false;
+    }
+  }
+
+  async dodajOsobu(bodyParse: any) {
+    const url = `${environment.restServis}app/osobaFilmovi`;
+  
+    const body = bodyParse;
+  
+    try {
+      const jwtToken = await this.getJWT();
+  
+      const odgovor = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': jwtToken,
+          'Content-Type': 'application/json',
+        },
+        body,
+      });
+  
+      if (odgovor.ok) {
+        return true;
+      } else {
+        const greska = await odgovor.json();
+        throw new Error(greska.greska || `Greška: ${odgovor.status}`);
+      }
+    } catch (error) {
+      console.error('Greška prilikom dodavanja osobe:', error);
+      throw new Error('Došlo je do greške prilikom dodavanja osobe!');
+    }
+  }
+  
+  async brisiOsobu(id: number) {
+    try {
+      const jwtToken = await this.getJWT();
+  
+      const url = `${environment.restServis}app/osobaFilmovi/${id}`;
+      const odgovor = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': jwtToken,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (odgovor.ok) {
+        return true;
+      } else {
+        const greska = await odgovor.json();
+        throw new Error(greska.greska || `Greška: ${odgovor.status}`);
+      }
+    } catch (error) {
+      console.error('Greška prilikom brisanja osobe:', error);
+      throw new Error('Došlo je do greške prilikom brisanja!');
+    }
+  }
 }
