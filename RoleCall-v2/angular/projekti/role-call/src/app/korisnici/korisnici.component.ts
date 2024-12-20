@@ -12,6 +12,8 @@ export class KorisniciComponent implements OnInit {
   korisnici: any[] = [];
   trenutniKorisnik: any = null;
   poruka: string = '';
+  prikaziModal: boolean = false;
+  korisnikZaBrisanje: { id: number; korime: string; ime: string; status: string } | null = null;
 
   constructor(private korisniciService: KorisniciService) {}
 
@@ -46,7 +48,6 @@ export class KorisniciComponent implements OnInit {
   }
 
   async zabraniPristup(id: number, korime: string): Promise<void> {
-
     try {
       await this.korisniciService.zabraniPristup(id);
       await this.korisniciService.obrisiSaServisa(korime);
@@ -56,17 +57,30 @@ export class KorisniciComponent implements OnInit {
     }
   }
 
-  async obrisiKorisnika(id: number, korime: string, status: string): Promise<void> {
+  prikaziModalZaBrisanje(id: number, ime: string, korime: string, status: string): void {
+    this.korisnikZaBrisanje = { id, korime, ime, status };
+    this.prikaziModal = true;
+  }
 
-    try {
-      await this.korisniciService.obrisiKorisnika(id);
-      if(status === "Ima pristup"){
-        await this.korisniciService.obrisiSaServisa(korime);
+  async potvrdiBrisanje(): Promise<void> {
+    if (this.korisnikZaBrisanje) {
+      try {
+        await this.korisniciService.obrisiKorisnika(this.korisnikZaBrisanje.id);
+        if (this.korisnikZaBrisanje.status === 'Ima pristup') {
+          await this.korisniciService.obrisiSaServisa(this.korisnikZaBrisanje.korime);
+        }
+        await this.dohvatiKorisnike();
+      } catch (error) {
+        this.poruka = 'Došlo je do greške prilikom brisanja korisnika!';
+      } finally {
+        this.zatvoriModal();
       }
-      await this.dohvatiKorisnike();
-    } catch (error) {
-      this.poruka = 'Došlo je do greške prilikom brisanja korisnika!';
     }
+  }
+
+  zatvoriModal(): void {
+    this.prikaziModal = false;
+    this.korisnikZaBrisanje = null;
   }
 
   prikaziStatus(boja: string): string {

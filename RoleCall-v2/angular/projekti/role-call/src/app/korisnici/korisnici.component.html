@@ -41,12 +41,23 @@
                         <button (click)="zabraniPristup(korisnik.id, korisnik.korime)" *ngIf="korisnik.status === 'Ima pristup'">
                             Zabrani pristup
                         </button>
-                        <button (click)="obrisiKorisnika(korisnik.id, korisnik.korime, korisnik.status)" class="delete">
+                        <button (click)="prikaziModalZaBrisanje(korisnik.id, korisnik.ime, korisnik.korime, korisnik.status)" class="delete">
                             Obriši
                         </button>
                     </td>
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="custom-modal" *ngIf="prikaziModal">
+        <div class="modal-content">
+          <h3>Potvrda brisanja</h3>
+          <p>Jeste li sigurni da želite izbrisati korisnika {{ korisnikZaBrisanje?.ime }}?</p>
+          <div class="modal-actions">
+            <button (click)="potvrdiBrisanje()" class="btn-confirm">Da</button>
+            <button (click)="zatvoriModal()" class="btn-cancel">Odustani</button>
+          </div>
+        </div>
     </div>
 </div>
