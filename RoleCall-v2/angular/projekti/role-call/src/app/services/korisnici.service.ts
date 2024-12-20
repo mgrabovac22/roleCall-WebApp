@@ -94,7 +94,7 @@ export class KorisniciService {
 
       const body = JSON.stringify({
         korime: korisnik.korime,
-        tip_korisnika_id: korisnik.tip_korisnika,
+        tip_korisnika_id: "1",
         status: "Ima pristup"
       });      
 
