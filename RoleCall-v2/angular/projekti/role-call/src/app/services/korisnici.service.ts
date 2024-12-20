@@ -159,4 +159,40 @@ export class KorisniciService {
       throw error;
     }
   }
+
+  async dohvatiPodatkeKorisnika(): Promise<any> {
+    try {
+      const jwtToken = await this.getJWT();
+      const response = await fetch(`${environment.restServis}app/korisnici/dajTrenutnogKorisnika`, {
+        method: 'GET',
+        headers: {
+          Authorization: jwtToken,
+          'Content-Type': 'application/json',
+        }
+      });
+      if (!response.ok) throw new Error('Greška prilikom dohvaćanja podataka korisnika.');
+      
+      return response.json();
+    } catch (err) {
+      console.error('Greška prilikom dohvaćanja podataka korisnika:', err);
+      throw err;
+    }
+  }
+
+  async posaljiZahtjevAdminu(): Promise<void> {
+    try {
+      const jwtToken = await this.getJWT();
+      const response = await fetch(`${environment.restServis}app/korisnici/posaljiZahtjev`, {
+        method: 'POST',
+        headers: {
+          Authorization: jwtToken,
+          'Content-Type': 'application/json',
+        }
+      });
+      if (!response.ok) throw new Error('Greška prilikom slanja zahtjeva.');
+    } catch (err) {
+      console.error('Greška prilikom slanja zahtjeva:', err);
+      throw err;
+    }
+  }
 }

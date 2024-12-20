@@ -65,7 +65,7 @@ try {
     
     //TODO: nakon logina, postaviti da se korime uzima iz sesije
     server.get("/servis/app/getJWT", (req, res) => {
-        req.session.korime = "Marin";
+        req.session.korime = "admin";
         if(req.session.korime!=null){
             const korime = req.session.korime;
             const token = kreirajToken({ korime: korime }, konfiguracija.dajKonf().jwtTajniKljuc);
@@ -138,7 +138,7 @@ try {
     server.get("/servis/app/korisnici/tipovi", (req, res) => restAuthKorisnik.getTipoviKorisnika(req, res));
     server.put("/servis/app/korisnici/:id/dajPristup", (req, res) => restAuthKorisnik.dajPristup(req, res));
     server.put("/servis/app/korisnici/:id/zabraniPristup", (req, res) => restAuthKorisnik.zabraniPristup(req, res));
-    server.post("/servis/app/korisnik/posaljiZahtjev", (req, res) => restAuthKorisnik.postZahtjevAdminu(req, res));
+    server.post("/servis/app/korisnici/posaljiZahtjev", (req, res) => restAuthKorisnik.postZahtjevAdminu(req, res));
     server.get("/servis/app/korisnici/dajTrenutnogKorisnika", (req, res) => restAuthKorisnik.dohvatiTrenutnogKorisnika(req, res));
     server.get("/servis/app/korisnici/:id", (req, res) => restAuthKorisnik.getKorisnik(req, res));
     server.delete("/servis/app/korisnici/:id/obrisi", (req, res) => restAuthKorisnik.deleteKorisnik(req, res));

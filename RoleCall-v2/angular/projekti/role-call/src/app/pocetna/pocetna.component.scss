@@ -1,0 +1,116 @@
+.user-status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+    min-height: 80vh;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+  
+    .data-box {
+      background: #ffffff;
+      border: 1px solid #cccccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 320px;
+  
+      p {
+        font-size: 16px;
+        color: #333333;
+        margin-bottom: 12px;
+  
+        strong {
+          color: #0056b3;
+        }
+      }
+  
+      button {
+        display: block;
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        color: #ffffff;
+        background: #0056b3;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+  
+        &:hover {
+          background: #003d7a;
+        }
+  
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+    }
+  
+    .falling-snow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+  
+      .flake {
+        position: absolute;
+        top: -10px;
+        background: white;
+        border-radius: 50%;
+        width: 6px;
+        height: 6px;
+        animation: fall 6s linear infinite;
+  
+        &:nth-child(1) { left: 15%; animation-duration: 4s; }
+        &:nth-child(2) { left: 30%; animation-duration: 5.5s; }
+        &:nth-child(3) { left: 50%; animation-duration: 7s; }
+        &:nth-child(4) { left: 70%; animation-duration: 6s; }
+        &:nth-child(5) { left: 85%; animation-duration: 5s; }
+      }
+    }
+  
+    .rotating-snowflake {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: url('/assets/snjeguljica.png') no-repeat center center;
+      background-size: contain;
+      animation: rotate 4s linear infinite;
+    }
+  
+    .bottom-left {
+      left: 10px;
+      bottom: 10px;
+    }
+  
+    .top-right {
+      right: 10px;
+      top: 10px;
+    }
+  
+    @keyframes fall {
+      0% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(100vh);
+      }
+    }
+  
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  }
+  
