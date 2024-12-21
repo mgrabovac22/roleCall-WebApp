@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { OsobaDAO } from "../dao/osobaDAO.js";
 import { Osoba, Slika, FilmOsoba } from "../../iServis/iTmdb.js";
 import { Konfiguracija } from "../../moduli/upravljateljKonfiguracije.js";
+import { kreirajToken } from "../..//moduli/jwtModul.js";
 
 export class RestOsoba {
   private osobaDAO: OsobaDAO;
@@ -264,9 +265,17 @@ export class RestOsoba {
         const tmdbSlikeData = await tmdbSlikeResponse.json();
         const slike = tmdbSlikeData.profiles.map((slika: any) => slika.file_path);
 
-        const jwtResponse = await fetch(`http://localhost:${this.portServis}/servis/app/getJWT`);
-        const jwtData = await jwtResponse.json();
-        const jwtToken = jwtData.token;
+        const korimeSessija = req.session.korime;
+
+        if (!korimeSessija) {
+            throw new Error("Korisničko ime nije definisano u sesiji.");
+        }
+        const notValidToken = kreirajToken({ korime: korimeSessija }, this.konfiguracija.dajKonf().jwtTajniKljuc);
+        const jwtToken = `Bearer ${notValidToken}`;
+
+        if (!jwtToken) {
+            throw new Error("JWT token is missing.");
+        }
 
         let headers = new Headers();
         headers.set("Authorization", jwtToken);
@@ -351,9 +360,17 @@ export class RestOsoba {
             return;
         }
         
-        const jwtResponse = await fetch(`http://localhost:${this.portServis}/servis/app/getJWT`);
-        const jwtData = await jwtResponse.json();
-        const jwtToken = jwtData.token;
+        const korimeSessija = req.session.korime;
+
+        if (!korimeSessija) {
+            throw new Error("Korisničko ime nije definisano u sesiji.");
+        }
+        const notValidToken = kreirajToken({ korime: korimeSessija }, this.konfiguracija.dajKonf().jwtTajniKljuc);
+        const jwtToken = `Bearer ${notValidToken}`;
+
+        if (!jwtToken) {
+            throw new Error("JWT token is missing.");
+        }
 
         let headers = new Headers();
         headers.set("Authorization", jwtToken);
@@ -413,21 +430,24 @@ export class RestOsoba {
 
   async provjeriPostojanjeOsobe(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");
+    console.log("sessija u provjeri: ", zahtjev.session);
+    await this.konfiguracija.ucitajKonfiguraciju();
 
     try {
-        const jwtResponse = await fetch(`http://localhost:${this.portServis}/servis/app/getJWT`);
-        if (!jwtResponse.ok) {
-            throw new Error("Failed to fetch JWT token.");
-        }
-        const jwtData = await jwtResponse.json();
-        const jwtToken = jwtData.token;
+      const korimeSessija = zahtjev.session.korime;
 
-        if (!jwtToken) {
-            throw new Error("JWT token is missing.");
-        }
+      if (!korimeSessija) {
+          throw new Error("Korisničko ime nije definisano u sesiji.");
+      }
+      const notValidToken = kreirajToken({ korime: korimeSessija }, this.konfiguracija.dajKonf().jwtTajniKljuc);
+      const jwtToken = `Bearer ${notValidToken}`;
+
+      if (!jwtToken) {
+          throw new Error("JWT token is missing.");
+      }
 
         const headers = new Headers();
-        headers.set("Authorization", `Bearer ${jwtToken}`);
+        headers.set("Authorization", jwtToken);
         headers.set("Content-Type", "application/json");
 
         const id = parseInt(zahtjev.params["id"] as string);

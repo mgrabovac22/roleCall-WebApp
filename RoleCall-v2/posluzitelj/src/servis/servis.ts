@@ -69,6 +69,7 @@ try {
     server.post("/servis/app/korisnici/prijava", (req, res) => restAuthKorisnik.prijavaKorisnika(req, res));
     
     server.get("/servis/app/getJWT", (req, res) => {
+        
         if(req.session.korime!=null){
             const korime = req.session.korime;
             const token = kreirajToken({ korime: korime }, konfiguracija.dajKonf().jwtTajniKljuc);
