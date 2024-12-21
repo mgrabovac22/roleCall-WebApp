@@ -42,8 +42,10 @@ export class LoginComponent {
 
     try {
       await this.authService.login({ korime: this.korime, lozinka: this.lozinka });
+      console.log("aaaaaaaaaaaaaaaaaaaaaa");
       
       this.router.navigate(['/']);  
+      
     } catch (error: any) {
       this.errorMessage = (error && error.message) || 'Došlo je do greške prilikom prijave. Molimo pokušajte ponovo.';
     }

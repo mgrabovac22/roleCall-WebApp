@@ -24,10 +24,7 @@ export class RestKorisnik {
       korime,
       status,
       tip_korisnika: tip_korisnika_id,
-    };
-
-    console.log("restk: ", korisnik);
-    
+    };    
 
     try {
       await this.kdao.dodaj(korisnik);

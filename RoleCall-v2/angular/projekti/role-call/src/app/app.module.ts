@@ -22,7 +22,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'registracija', component: RegistracijaComponent },
   { path: 'korisnici', component: KorisniciComponent, canActivate: [AuthGuard] },
-  { path: 'dokumentacija', component: DokumentacijaComponent, canActivate: [AuthGuard] },
+  { path: 'dokumentacija', component: DokumentacijaComponent },
   { path: 'detalji/:id', component: DetaljiComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];

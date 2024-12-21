@@ -12,17 +12,18 @@ export class AuthService {
     const response = await fetch(`${environment.restServis}app/korisnici`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(userData)
+      body: JSON.stringify(userData),
     });
 
     const data = await response.json();
-    if (response.ok) {
-      return data;
-    } else {
-      throw new Error(data.greska);
+    
+    if (!response.ok) {
+      throw new Error(data.greska || 'Greška prilikom registracije.');
     }
+
+    return data;
   }
 
   async login(credentials: { korime: string, lozinka: string }) {

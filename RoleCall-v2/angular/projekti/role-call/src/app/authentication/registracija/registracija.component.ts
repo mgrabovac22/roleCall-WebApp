@@ -10,14 +10,40 @@ import { AuthService } from '../auth/auth.service';
 })
 export class RegistracijaComponent {
 
+  intenzitetSnijega: number = 20;
+  snowflakes: { duration: number; left: number }[] = [];
+
   ime: string = '';
   prezime: string = '';
   email: string = '';
   korime: string = '';
   lozinka: string = '';
+  adresa: string = '';
+  grad: string = '';
+  drzava: string = '';
+  telefon: string = '';
   errorMessage: string = '';
 
   constructor(private authService: AuthService, private router: Router) {}
+
+  isValid(): boolean {
+    return !!(this.email && this.korime && this.lozinka);
+  }
+
+  ngOnInit(): void {
+    this.generateSnowflakes();
+  }
+
+  setIntenzitetSnijega() {
+    this.generateSnowflakes();
+  }
+
+  private generateSnowflakes() {
+    this.snowflakes = Array.from({ length: this.intenzitetSnijega }, () => ({
+      duration: Math.random() * 5 + 5,
+      left: Math.random() * 100,
+    }));
+  }
 
   async onRegister() {
     const userData = {
@@ -26,14 +52,17 @@ export class RegistracijaComponent {
       email: this.email,
       korime: this.korime,
       lozinka: this.lozinka,
+      adresa: this.adresa,
+      grad: this.grad,
+      drzava: this.drzava,
+      telefon: this.telefon,
     };
 
     try {
-      var podaci = await this.authService.register(userData);
-      this.router.navigate(['/login']);
-    } catch (error) {
-      this.errorMessage = podaci.greska;
-      
+      await this.authService.register(userData);
+      this.router.navigate(['/login']); 
+    } catch (error: any) {
+      this.errorMessage = error.message || 'Došlo je do greške!';
     }
   }
 }

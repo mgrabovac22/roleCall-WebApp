@@ -79,13 +79,10 @@ export class RestAuthKorisnik {
             odgovor.status(500).json({ greska: "Greška prilikom pohrane sesije" });
             return;
           }
-          console.log("Sesija uspješno spremljena!");
         });
 
         const notValidToken = kreirajToken({ korime: korisnik.korime }, this.konfiguracija.dajKonf().jwtTajniKljuc);
-        const token = `Bearer ${notValidToken}`;
-        console.log("sessija u prijavi: ", zahtjev.session);
-        
+        const token = `Bearer ${notValidToken}`;        
 
         odgovor.status(200).json({ poruka: "Prijava uspješna", korisnik, token });
       } else {
@@ -156,11 +153,7 @@ export class RestAuthKorisnik {
 
   async dohvatiTrenutnogKorisnika(req: Request, res: Response) {
     res.type("application/json");
-    //TODO: obrisati
-    req.session.korime = "admin";
     let korime = req.session.korime;
-
-    console.log("Sessija pri dohvacanju: ", req.session);
     
     if (!korime) {
         res.status(401).json({ greska: "Niste prijavljeni" });
@@ -170,7 +163,6 @@ export class RestAuthKorisnik {
     try {
         const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);
         if (!korisnik) {
-          console.log("nije pronadjen!");
           
             res.status(404).json({ greska: "Korisnik nije pronađen" });
         } else {

@@ -170,12 +170,9 @@ export class KorisniciService {
         headers: {
           Authorization: jwtToken,
           'Content-Type': 'application/json',
-          credentials: 'include',
-          cache: 'no-store'
         }
       });
       if (!response.ok) throw new Error('Greška prilikom dohvaćanja podataka korisnika.');
-      console.log(response.json);
       
       return response.json();
     } catch (err) {

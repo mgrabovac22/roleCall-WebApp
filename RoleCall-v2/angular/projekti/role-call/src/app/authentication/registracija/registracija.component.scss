@@ -1,0 +1,201 @@
+section{
+    position: relative;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    min-height: 85vh;
+
+    #slider-container {
+        text-align: center;
+        justify-content: center;
+        display: flex;
+        margin: auto;
+        align-items: center;
+        gap: 10px;
+        margin: 20px 0;
+        font-size: 14px;
+        color: #333;
+      
+        label {
+          font-weight: bold;
+        }
+      
+        input[type="range"] {
+          width: 200px;
+          appearance: none;
+          height: 8px;
+          background: #ddd;
+          border-radius: 5px;
+          outline: none;
+          transition: background 0.3s;
+      
+          &::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #007acc;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+          }
+      
+          &::-webkit-slider-thumb:hover {
+            background: #005f99;
+          }
+        }
+      }
+      
+    .falling-snow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+      }
+    
+      .flake {
+          position: absolute;
+          top: -10px;
+          font-size: 24px;
+          color: white;
+          opacity: 0.8;
+          animation: snow 6s linear infinite;
+          pointer-events: none;
+    
+          &:nth-child(1) { left: 10%; animation-duration: 4s; }
+          &:nth-child(2) { left: 25%; animation-duration: 5s; }
+          &:nth-child(3) { left: 50%; animation-duration: 6s; }
+          &:nth-child(4) { left: 70%; animation-duration: 4s; }
+          &:nth-child(5) { left: 85%; animation-duration: 5.5s; }
+      }
+    
+      @keyframes snow {
+          0% { transform: translateY(-10px); }
+          100% { transform: translateY(100vh); }
+      }
+    
+      .rotating-snowflake {
+          position: absolute;
+          width: 40px;
+          height: 40px;
+          background: url('/assets/snjeguljica.png') no-repeat center center;
+          background-size: contain;
+          animation: rotate 4s linear infinite;
+      }
+    
+      .bottom-left {
+          left: 10px;
+          bottom: 10px;
+      }
+    
+      .top-right {
+          right: 10px;
+          top: 10px;
+      }
+    
+      @keyframes rotate {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
+    .registration-container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-family: Arial, sans-serif;
+        .login-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .login-text {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        
+        .login-text:hover {
+            color: #0056b3; 
+            text-decoration: underline;
+            transform: scale(1.05);
+        }
+    }
+    
+    .registration-container h2 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    
+    .registration-container input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        color: #333;
+        box-sizing: border-box;
+        background-color: #fff;
+    
+        &:focus {
+        border-color: #007bff;
+        outline: none;
+        background-color: #eaf5ff;
+        }
+    }
+    
+    .registration-container button {
+        width: 100%;
+        padding: 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    
+        &:hover {
+        background-color: #005f99;
+        }
+    
+        &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        }
+    }
+    
+    .error-message {
+        color: red;
+        margin-top: 15px;
+        font-size: 14px;
+        display: none;
+        
+        &.show {
+        display: block;
+        }
+    }
+    
+    .registration-container form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    @media (max-width: 768px) {
+        .registration-container {
+        padding: 20px;
+        max-width: 90%;
+        }
+    }
+}
+  
