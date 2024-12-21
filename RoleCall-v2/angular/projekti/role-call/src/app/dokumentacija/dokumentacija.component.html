@@ -1,14 +1,31 @@
 <section>
+    <div class="rotating-snowflake bottom-left"></div>
+    <div class="rotating-snowflake top-right"></div>
+    
+    <div id="slider-container">
+        <label for="snijeg-slider">Intenzitet snijega:</label>
+        <input
+          id="snijeg-slider"
+          type="range"
+          min="5"
+          max="50"
+          step="1"
+          [(ngModel)]="intenzitetSnijega"
+          (input)="setIntenzitetSnijega()"
+        />
+        <span>{{ intenzitetSnijega }}</span>
+    </div>
+
     <div class="falling-snow">
-        <div class="flake">&#10052;</div>
-        <div class="flake">&#10052;</div>
-        <div class="flake">&#10052;</div>
-        <div class="flake">&#10052;</div>
-        <div class="flake">&#10052;</div>
-      </div>
-      
-      <div class="rotating-snowflake bottom-left"></div>
-      <div class="rotating-snowflake top-right"></div>
+        <div
+          class="flake"
+          *ngFor="let snowflake of snowflakes"
+          [style.animation-duration]="snowflake.duration + 's'"
+          [style.left]="snowflake.left + '%'"
+        >
+          &#10052;
+        </div>
+    </div>      
 
     <div id="mojeInfo">
         <img id="mojaSlika" src="assets/mgrabovac22.jpg" alt="Marin Grabovac">

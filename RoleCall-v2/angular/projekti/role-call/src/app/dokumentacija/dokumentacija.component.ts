@@ -9,6 +9,8 @@ import { Korak } from '../sucelja/KorakI';
   styleUrl: './dokumentacija.component.scss'
 })
 export class DokumentacijaComponent implements OnInit {
+  intenzitetSnijega: number = 20;
+  snowflakes: { duration: number; left: number }[] = [];
 
   koraci: Korak[] = [
     { broj: 1, opis: 'Pripremiti osnovni Angular projekt i instalirati sve potrebne module.', tip: 'frontend', status: '✅ Gotovo' },
@@ -33,6 +35,17 @@ export class DokumentacijaComponent implements OnInit {
   constructor(){}
 
   ngOnInit(): void {
-    
+    this.generateSnowflakes();
+  }
+
+  setIntenzitetSnijega() {
+    this.generateSnowflakes();
+  }
+
+  private generateSnowflakes() {
+    this.snowflakes = Array.from({ length: this.intenzitetSnijega }, () => ({
+      duration: Math.random() * 5 + 5,
+      left: Math.random() * 100,
+    }));
   }
 }
