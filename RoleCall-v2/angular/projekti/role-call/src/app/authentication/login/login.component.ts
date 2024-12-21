@@ -9,6 +9,8 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  intenzitetSnijega: number = 20;
+  snowflakes: { duration: number; left: number }[] = [];
 
   korime: string = '';   
   lozinka: string = '';  
@@ -17,11 +19,22 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
+    this.generateSnowflakes();
     if (this.authService.isLoggedIn()) {
       console.log(this.authService.isLoggedIn());
-      
       this.router.navigate(['/']);
     }
+  }
+
+  setIntenzitetSnijega() {
+    this.generateSnowflakes();
+  }
+
+  private generateSnowflakes() {
+    this.snowflakes = Array.from({ length: this.intenzitetSnijega }, () => ({
+      duration: Math.random() * 5 + 5,
+      left: Math.random() * 100,
+    }));
   }
 
   async login() {

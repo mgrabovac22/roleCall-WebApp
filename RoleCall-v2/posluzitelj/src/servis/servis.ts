@@ -83,12 +83,6 @@ try {
     
     
     server.use(express.static(path.join(__dirname(), '../../angular/role-call/browser'))); 
-
-    server.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname(), '../../angular/role-call/browser/index.html')); 
-    });
-
-    
     
     server.post("/servis/app/korisnici", (req, res) => restAuthKorisnik.postKorisnik(req, res));
     
@@ -108,6 +102,9 @@ try {
         }
     });
     
+    server.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname(), '../../angular/role-call/browser/index.html')); 
+    });
 
     server.post("/servis/korisnici", (req, res) => restKorisnik.postKorisnici(req, res));
     server.get("/servis/korisnici", metodaNijeImplementirana);
