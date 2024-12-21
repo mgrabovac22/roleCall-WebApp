@@ -156,9 +156,12 @@ export class RestAuthKorisnik {
 
   async dohvatiTrenutnogKorisnika(req: Request, res: Response) {
     res.type("application/json");
-    //TODO:obrisati
+    //TODO: obrisati
     req.session.korime = "admin";
     let korime = req.session.korime;
+
+    console.log("Sessija pri dohvacanju: ", req.session);
+    
     if (!korime) {
         res.status(401).json({ greska: "Niste prijavljeni" });
         return;
@@ -167,8 +170,12 @@ export class RestAuthKorisnik {
     try {
         const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);
         if (!korisnik) {
+          console.log("nije pronadjen!");
+          
             res.status(404).json({ greska: "Korisnik nije pronađen" });
         } else {
+          console.log(korisnik);
+          
             res.status(200).json(korisnik);
         }
     } catch (err) {

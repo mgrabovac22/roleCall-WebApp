@@ -42,7 +42,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/role-call",
+            "outputPath": "../posluzitelj/angular/role-call",
             "index": "projekti/role-call/src/index.html",
             "browser": "projekti/role-call/src/main.ts",
             "polyfills": [

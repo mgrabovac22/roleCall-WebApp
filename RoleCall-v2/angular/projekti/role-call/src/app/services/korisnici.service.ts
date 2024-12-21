@@ -9,7 +9,9 @@ export class KorisniciService {
   constructor() {}
 
   async getJWT(): Promise<string> {
-    const response = await fetch(`${environment.restServis}app/getJWT`);
+    const response = await fetch(`${environment.restServis}app/getJWT`, {
+      credentials: 'include'
+    });
     const data = await response.json();
     return data.token;
   }
@@ -168,9 +170,12 @@ export class KorisniciService {
         headers: {
           Authorization: jwtToken,
           'Content-Type': 'application/json',
+          credentials: 'include',
+          cache: 'no-store'
         }
       });
       if (!response.ok) throw new Error('Greška prilikom dohvaćanja podataka korisnika.');
+      console.log(response.json);
       
       return response.json();
     } catch (err) {

@@ -11,6 +11,7 @@ import { provjeriToken } from "../moduli/jwtModul.js";
 import { RestTMDB } from "./rest/RESTtmdb.js";
 import { kreirajToken } from "../moduli/jwtModul.js";
 import { RestAuthKorisnik } from "./rest/RESTkorisnikAuth.js";
+import path from "path";
 
 let port = 3000;
 const konfiguracija = new Konfiguracija();
@@ -67,9 +68,9 @@ try {
     server.post("/servis/app/korisnici/prijava", (req, res) => restAuthKorisnik.prijavaKorisnika(req, res));
     
     server.get("/servis/app/getJWT", (req, res) => {
-        //TODO: orbisati
-        req.session.korime = "admin";
         console.log("sessija u jwt: ", req.session);
+        //TODO: obrisati
+        req.session.korime = "admin";
         if(req.session.korime!=null){
             const korime = req.session.korime;
             const token = kreirajToken({ korime: korime }, konfiguracija.dajKonf().jwtTajniKljuc);
@@ -78,7 +79,15 @@ try {
         else{
             res.status(401).json({greska: "Nije kreirana sesija"});
         }
-    });    
+    });  
+    
+    
+    server.use(express.static(path.join(__dirname(), '../../angular/role-call/browser'))); 
+
+    server.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname(), '../../angular/role-call/browser/index.html')); 
+    });
+
     
     
     server.post("/servis/app/korisnici", (req, res) => restAuthKorisnik.postKorisnik(req, res));
