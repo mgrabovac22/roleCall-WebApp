@@ -27,9 +27,9 @@ declare module 'express-session' {
 
 try {
     server.use(cors({
-        origin: ['http://localhost:4200', 'http://localhost:12222']
+        origin: ['http://localhost:4200', 'http://localhost:12222'],
+        credentials: true
     }));
-    
     
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
@@ -47,25 +47,29 @@ try {
     if(process.argv.length>4){        
         throw new Error("Previše argumenata naredbenog retka!");
     }
-
+    
     const restKorisnik = new RestKorisnik();
     const restOsoba = new RestOsoba(port);
     const restFilm = new RestFilm();
     const restTMDB = new RestTMDB();
     const restAuthKorisnik = new RestAuthKorisnik();
     
+    
     server.use(
         session({
             secret: konfiguracija.dajKonf().tajniKljucSesija,
             resave: false,
             saveUninitialized: false,
-            cookie: { secure: false },
+            cookie: { secure: false, httpOnly: true, sameSite: 'lax' },
         })
     );
+
+    server.post("/servis/app/korisnici/prijava", (req, res) => restAuthKorisnik.prijavaKorisnika(req, res));
     
-    //TODO: nakon logina, postaviti da se korime uzima iz sesije
     server.get("/servis/app/getJWT", (req, res) => {
+        //TODO: orbisati
         req.session.korime = "admin";
+        console.log("sessija u jwt: ", req.session);
         if(req.session.korime!=null){
             const korime = req.session.korime;
             const token = kreirajToken({ korime: korime }, konfiguracija.dajKonf().jwtTajniKljuc);
@@ -75,17 +79,20 @@ try {
             res.status(401).json({greska: "Nije kreirana sesija"});
         }
     });    
-
-
+    
+    
+    server.post("/servis/app/korisnici", (req, res) => restAuthKorisnik.postKorisnik(req, res));
+    
     server.all("*", (zahtjev, odgovor, dalje) => {
+        
         try {    
             const tokenValidan = provjeriToken(zahtjev, konfiguracija.dajKonf().jwtTajniKljuc);
-    
+            
             if (!tokenValidan) {
                 odgovor.status(406).json({ greska: "Nevažeći token" }); 
                 return;
             }
-    
+            
             dalje(); 
         } catch (err) {
             odgovor.status(422).json({ greska: "Token je istekao." }); 

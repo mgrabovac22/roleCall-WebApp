@@ -5,24 +5,25 @@ import { RouterModule, Routes } from '@angular/router'
 import { AppComponent } from './app.component';
 import { DokumentacijaComponent } from './dokumentacija/dokumentacija.component';
 import { PocetnaComponent } from './pocetna/pocetna.component';
-import { LoginComponent } from './login/login.component';
-import { RegistracijaComponent } from './registracija/registracija.component';
+import { LoginComponent } from './authentication/login/login.component';
+import { RegistracijaComponent } from './authentication/registracija/registracija.component';
 import { OsobeComponent } from './osobe/osobe.component';
 import { DetaljiComponent } from './detalji/detalji.component';
 import { KorisniciComponent } from './korisnici/korisnici.component';
 import { DodavanjeComponent } from './dodavanje/dodavanje.component';
 import { FormsModule } from '@angular/forms';
+import { AuthGuard } from './authentication/auth/auth.guard';
 
-const routes:Routes = [
-  { path: '', component: PocetnaComponent },
-  { path: 'osobe', component: OsobeComponent },
-  { path: 'dodavanje', component: DodavanjeComponent },
-  { path: 'detalji', component: DetaljiComponent },
-  { path: 'login', component: LoginComponent },
+const routes: Routes = [
+  { path: '', component: PocetnaComponent, canActivate: [AuthGuard] },
+  { path: 'osobe', component: OsobeComponent, canActivate: [AuthGuard] },
+  { path: 'dodavanje', component: DodavanjeComponent, canActivate: [AuthGuard] },
+  { path: 'detalji', component: DetaljiComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent},
   { path: 'registracija', component: RegistracijaComponent },
-  { path: 'korisnici', component: KorisniciComponent },
-  { path: 'dokumentacija', component: DokumentacijaComponent },
-  { path: 'detalji/:id', component: DetaljiComponent },
+  { path: 'korisnici', component: KorisniciComponent, canActivate: [AuthGuard] },
+  { path: 'dokumentacija', component: DokumentacijaComponent, canActivate: [AuthGuard] },
+  { path: 'detalji/:id', component: DetaljiComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];
 
@@ -40,7 +41,7 @@ const routes:Routes = [
   imports: [
     BrowserModule, RouterModule.forRoot(routes), FormsModule
   ],
-  providers: [],
+  providers: [AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

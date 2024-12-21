@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import { KorisnikDAO } from "../dao/korisnikAuthDAO.js";
 import { kreirajSHA256 } from "../../moduli/generatori.js";
+import { Konfiguracija } from "../..//moduli/upravljateljKonfiguracije.js";
+import { kreirajToken } from "../../moduli/jwtModul.js";
 
 export class RestAuthKorisnik {
   private korisnikDAO: KorisnikDAO;
+  private konfiguracija: Konfiguracija = new Konfiguracija();
 
   constructor() {
     this.korisnikDAO = new KorisnikDAO();
@@ -50,6 +53,8 @@ export class RestAuthKorisnik {
   }
 
   async prijavaKorisnika(zahtjev: Request, odgovor: Response) {
+    await this.konfiguracija.ucitajKonfiguraciju();
+
     odgovor.type("application/json");
     const { korime, lozinka } = zahtjev.body;
 
@@ -63,10 +68,26 @@ export class RestAuthKorisnik {
       const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);
 
       if (korisnik && korisnik.lozinka === hashLozinka) {
-          zahtjev.session.korime = korisnik.korime;
-          zahtjev.session.tip_korisnika = korisnik.tip_korisnika_id;
-          zahtjev.session.status = korisnik.status;
-        odgovor.status(200).json({ poruka: "Prijava uspješna", korisnik });
+
+        zahtjev.session.korime = korisnik.korime;        
+        zahtjev.session.tip_korisnika = korisnik.tip_korisnika_id;
+        zahtjev.session.status = korisnik.status;
+
+        zahtjev.session.save((err) => {
+          if (err) {
+            console.error("Greška prilikom spremanja sesije:", err);
+            odgovor.status(500).json({ greska: "Greška prilikom pohrane sesije" });
+            return;
+          }
+          console.log("Sesija uspješno spremljena!");
+        });
+
+        const notValidToken = kreirajToken({ korime: korisnik.korime }, this.konfiguracija.dajKonf().jwtTajniKljuc);
+        const token = `Bearer ${notValidToken}`;
+        console.log("sessija u prijavi: ", zahtjev.session);
+        
+
+        odgovor.status(200).json({ poruka: "Prijava uspješna", korisnik, token });
       } else {
         odgovor.status(401).json({ greska: "Pogrešni podaci za prijavu ili korisnik nema pristup." });
       }
@@ -135,9 +156,9 @@ export class RestAuthKorisnik {
 
   async dohvatiTrenutnogKorisnika(req: Request, res: Response) {
     res.type("application/json");
+    //TODO:obrisati
+    req.session.korime = "admin";
     let korime = req.session.korime;
-    //OBRISATI U SVRHE TESTIRANJA JE NAPISANO
-    korime = 'admin';
     if (!korime) {
         res.status(401).json({ greska: "Niste prijavljeni" });
         return;

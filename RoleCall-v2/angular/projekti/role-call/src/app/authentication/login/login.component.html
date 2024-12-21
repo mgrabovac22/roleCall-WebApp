@@ -1,0 +1,25 @@
+<div>
+    <h2>Prijavite se</h2>
+    <form (ngSubmit)="login()">
+      <input 
+        type="text" 
+        [(ngModel)]="korime" 
+        name="korime" 
+        placeholder="Korisničko ime" 
+        required>
+        
+      <input 
+        type="password" 
+        [(ngModel)]="lozinka" 
+        name="lozinka" 
+        placeholder="Lozinka" 
+        required>
+  
+      <button type="submit" [disabled]="!korime || !lozinka">Prijava</button>
+    </form>
+  
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>
+  
