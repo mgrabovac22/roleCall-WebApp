@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import {Request} from "express";
+import {Request, Response, NextFunction} from "express";
 import { Konfiguracija } from "./upravljateljKonfiguracije.js";
 
 
@@ -28,6 +28,27 @@ export function provjeriToken(zahtjev:Request, tajniKljucJWT:string) {
         }
     }
     return false;
+}
+
+export function jwtMiddleware() {
+  return (req: Request, res: Response, next: NextFunction): any => {
+      const token = req.headers['authorization']; 
+
+      if (!token) {
+          return res.status(401).json({ greska: "Token nije dostavljen." }); 
+      }
+
+      try {
+          const tokenValidan = provjeriToken(req, konfiguracija.dajKonf().jwtTajniKljuc);
+          if (!tokenValidan) {
+              return res.status(406).json({ greska: "Nevažeći token" });
+          }
+
+          next();  
+      } catch (err) {
+          return res.status(422).json({ greska: "Token je istekao." });  
+      }
+  };
 }
 
 export function dajToken(zahtjev:Request) {
