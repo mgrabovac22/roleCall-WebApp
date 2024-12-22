@@ -80,8 +80,16 @@ try {
         }
     });  
     
-    server.post("/servis/app/korisnici", (req, res) => restAuthKorisnik.postKorisnik(req, res));
+    server.get("/servis/app/getSesija", (req, res) => {
+        if (req.session) {
+            res.status(200).json({ session: req.session });
+        } else {
+            res.status(401).json({ error: "Sesija nije aktivna ili ne postoji." });
+        }
+    });
     
+    server.post("/servis/app/korisnici", (req, res) => restAuthKorisnik.postKorisnik(req, res));
+
     server.all("*", (zahtjev, odgovor, dalje) => {
         
         try {    

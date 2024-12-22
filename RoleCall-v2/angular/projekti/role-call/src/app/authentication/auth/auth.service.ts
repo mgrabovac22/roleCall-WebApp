@@ -1,12 +1,26 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.prod';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private loggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false); // Track login state
+  public loggedIn$ = this.loggedInSubject.asObservable();
 
-  constructor() {}
+  constructor() {
+    this.checkAndClearToken();  
+  }
+
+  private checkAndClearToken(): void {
+    const isFirstTime = sessionStorage.getItem('isFirstTime');
+    
+    if (!isFirstTime) {
+      this.logout();
+      sessionStorage.setItem('isFirstTime', 'true');  
+    }
+  }
 
   async register(userData: any) {
     const response = await fetch(`${environment.restServis}app/korisnici`, {
@@ -39,6 +53,7 @@ export class AuthService {
     const data = await response.json();
     
     if (response.ok) {
+      this.loggedInSubject.next(true);
       localStorage.setItem('token', data.token);
       return data;
     } else {
@@ -46,11 +61,27 @@ export class AuthService {
     }
   }
 
+  async getSesija() {
+    const response = await fetch(`${environment.restServis}app/getSesija`, {
+      method: 'GET',
+      credentials: 'include', 
+    });
+
+    if (!response.ok) {
+      throw new Error('Neuspelo dobijanje sesije.');
+    }
+
+    const sessionData = await response.json();
+    return sessionData.session;
+  }
+
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
 
   logout() {
+    this.loggedInSubject.next(false);
+    sessionStorage.removeItem('isFirstTime');
     localStorage.removeItem('token');
   }
 }

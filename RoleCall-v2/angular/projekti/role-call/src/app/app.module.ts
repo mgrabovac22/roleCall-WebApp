@@ -13,6 +13,7 @@ import { KorisniciComponent } from './korisnici/korisnici.component';
 import { DodavanjeComponent } from './dodavanje/dodavanje.component';
 import { FormsModule } from '@angular/forms';
 import { AuthGuard } from './authentication/auth/auth.guard';
+import { NavigacijaComponent } from './navigacija/navigacija.component';
 
 const routes: Routes = [
   { path: '', component: PocetnaComponent, canActivate: [AuthGuard] },
@@ -36,7 +37,8 @@ const routes: Routes = [
     RegistracijaComponent,
     OsobeComponent,
     KorisniciComponent,
-    DodavanjeComponent
+    DodavanjeComponent,
+    NavigacijaComponent
   ],
   imports: [
     BrowserModule, RouterModule.forRoot(routes), FormsModule
