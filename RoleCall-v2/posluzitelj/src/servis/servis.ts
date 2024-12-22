@@ -87,6 +87,22 @@ try {
             res.status(401).json({ error: "Sesija nije aktivna ili ne postoji." });
         }
     });
+
+    server.get("/servis/app/odjava", (req, res) => {
+        if (req.session) {
+            req.session.destroy((err) => {
+                if (err) {
+                    console.error("Greška prilikom uništavanja sesije:", err);
+                    res.status(500).json({ greska: "Neuspješno odjavljivanje." });
+                } else {
+                    res.clearCookie("connect.sid"); 
+                    res.status(201).json({status: "uspjeh"}); 
+                }
+            });
+        } else {
+            res.status(404).json({greska: "nije pronadjena sesija"});
+        }
+    });
     
     server.post("/servis/app/korisnici", (req, res) => restAuthKorisnik.postKorisnik(req, res));
 

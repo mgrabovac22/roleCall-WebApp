@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../authentication/auth/auth.service';  
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navigacija',
@@ -17,7 +18,7 @@ export class NavigacijaComponent implements OnInit {
   public canAccessKorisnici: boolean = false;
   public menuItems: any[] = [];
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,  private router: Router) {}
 
   ngOnInit(): void {
     this.authService.loggedIn$.subscribe((isLoggedIn: boolean) => { 
@@ -88,12 +89,23 @@ export class NavigacijaComponent implements OnInit {
         baseMenu.push({ label: 'Korisnici', link: '/korisnici' });
       }
       baseMenu.push({ label: 'Dokumentacija', link: '/dokumentacija' });
-      baseMenu.push({ label: 'Odjava', link: '/logout' });
+      baseMenu.push({ label: 'Odjava', link: '', action: () => this.logout() });
     } else {
       baseMenu.push({ label: 'Dokumentacija', link: '/dokumentacija' });
       baseMenu.push({ label: 'Login', link: '/login' });
     }
 
     this.menuItems = baseMenu;
+  }
+
+  async logout(): Promise<void> {
+    try {
+      const success = await this.authService.logout();
+      if (success) {
+        this.router.navigate(['/login']); 
+      }
+    } catch (error) {
+      console.error('Greška pri odjavi:', error);
+    }
   }
 }

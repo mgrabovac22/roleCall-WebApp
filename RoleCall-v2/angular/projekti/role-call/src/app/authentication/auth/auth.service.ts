@@ -79,9 +79,28 @@ export class AuthService {
     return !!localStorage.getItem('token');
   }
 
-  logout() {
-    this.loggedInSubject.next(false);
-    sessionStorage.removeItem('isFirstTime');
-    localStorage.removeItem('token');
+  async logout() {
+    console.log("Pokrenuta odjava");
+    try {
+      const response = await fetch(`${environment.restServis}app/odjava`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+  
+      if (response.ok) {
+        console.log("Odjava uspješna");
+        localStorage.removeItem('token'); 
+        sessionStorage.removeItem('isFirstTime');
+        this.loggedInSubject.next(false);
+        return true; 
+      } else {
+        console.error("Odjava nije uspjela:", response.statusText);
+        return false; 
+      }
+    } catch (error) {
+      console.error("Greška pri odjavi:", error);
+      throw new Error('Greška pri odjavi');
+    }
   }
+  
 }
