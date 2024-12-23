@@ -6,8 +6,10 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private loggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false); // Track login state
+  private loggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public loggedIn$ = this.loggedInSubject.asObservable();
+  private roleSubject: BehaviorSubject<number> = new BehaviorSubject<number>(3);
+  public role$ = this.roleSubject.asObservable();
 
   constructor() {
     this.checkAndClearToken();  
@@ -53,6 +55,8 @@ export class AuthService {
     const data = await response.json();
     
     if (response.ok) {
+      const sesija = await this.getSesija()
+      this.roleSubject.next(sesija.tip_korisnika);
       this.loggedInSubject.next(true);
       localStorage.setItem('token', data.token);
       return data;
@@ -91,6 +95,7 @@ export class AuthService {
         console.log("Odjava uspješna");
         localStorage.removeItem('token'); 
         sessionStorage.removeItem('isFirstTime');
+        this.roleSubject.next(3);
         this.loggedInSubject.next(false);
         return true; 
       } else {

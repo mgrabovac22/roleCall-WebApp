@@ -14,17 +14,20 @@ import { DodavanjeComponent } from './dodavanje/dodavanje.component';
 import { FormsModule } from '@angular/forms';
 import { AuthGuard } from './authentication/auth/auth.guard';
 import { NavigacijaComponent } from './navigacija/navigacija.component';
+import { NeovlastenPristupComponent } from './neovlasten-pristup/neovlasten-pristup.component';
 
 const routes: Routes = [
-  { path: '', component: PocetnaComponent, canActivate: [AuthGuard] },
-  { path: 'osobe', component: OsobeComponent, canActivate: [AuthGuard] },
-  { path: 'dodavanje', component: DodavanjeComponent, canActivate: [AuthGuard] },
-  { path: 'detalji', component: DetaljiComponent, canActivate: [AuthGuard] },
-  { path: 'login', component: LoginComponent},
+  { path: '', component: PocetnaComponent, canActivate: [AuthGuard], data: { roles: [1, 2, 3] } },
+  { path: 'osobe', component: OsobeComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
+  { path: 'dodavanje', component: DodavanjeComponent, canActivate: [AuthGuard], data: { roles: [2] } },
+  { path: 'detalji/:id', component: DetaljiComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
+  { path: 'korisnici', component: KorisniciComponent, canActivate: [AuthGuard], data: { roles: [2] } },
+
+  { path: 'neovlastenPristup', component: NeovlastenPristupComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'registracija', component: RegistracijaComponent },
-  { path: 'korisnici', component: KorisniciComponent, canActivate: [AuthGuard] },
   { path: 'dokumentacija', component: DokumentacijaComponent },
-  { path: 'detalji/:id', component: DetaljiComponent, canActivate: [AuthGuard] },
+
   { path: '**', redirectTo: '' }
 ];
 
@@ -38,7 +41,8 @@ const routes: Routes = [
     OsobeComponent,
     KorisniciComponent,
     DodavanjeComponent,
-    NavigacijaComponent
+    NavigacijaComponent,
+    NeovlastenPristupComponent
   ],
   imports: [
     BrowserModule, RouterModule.forRoot(routes), FormsModule
