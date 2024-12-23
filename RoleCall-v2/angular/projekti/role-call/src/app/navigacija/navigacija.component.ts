@@ -49,7 +49,7 @@ export class NavigacijaComponent implements OnInit {
           this.canAccessOsobe = true;
           this.canAccessDodavanje = false;
           this.canAccessKorisnici = false;
-        } else if (this.status !== 'Ima pristup' && this.uloga === 1) {
+        } else if ((this.status !== 'Ima pristup' && this.uloga === 1) || (this.status !== 'Ima pristup' && this.uloga === 3)) {
           this.canAccessPocetna = true;
           this.canAccessOsobe = false;
           this.canAccessDodavanje = false;

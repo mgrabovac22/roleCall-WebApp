@@ -11,7 +11,8 @@
 		"compile": "tsc --watch false",
 		"servis": "cd podaci && node ../build/servis/servis.js",
 		"aplikacija": "cd podaci && node ../build/aplikacija/aplikacija.js",
-		"start": "npm run clean && npm run compile && npm run copy-files && npm run servis konfiguracija.csv",
+		"start": "npm run ngBuild && npm run clean && npm run compile && npm run copy-files && npm run servis konfiguracija.csv",
+		"ngBuild": "cd ../angular && ng build && cd ../posluzitelj",
 		"kreni": "npm run clean && npm run compile && npm run copy-files && npm run aplikacija konfiguracija.csv",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
