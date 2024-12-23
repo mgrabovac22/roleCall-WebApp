@@ -16,6 +16,7 @@ export class NavigacijaComponent implements OnInit {
   public canAccessOsobe: boolean = false;
   public canAccessDodavanje: boolean = false;
   public canAccessKorisnici: boolean = false;
+  public canAccessFilmovi: boolean = false;
   public menuItems: any[] = [];
 
   constructor(private authService: AuthService,  private router: Router) {}
@@ -42,19 +43,23 @@ export class NavigacijaComponent implements OnInit {
         if (this.uloga === 2) {
           this.canAccessPocetna = true;
           this.canAccessOsobe = true;
+          this.canAccessFilmovi = true;
           this.canAccessDodavanje = true;
           this.canAccessKorisnici = true;
         } else if (this.status === 'Ima pristup' && this.uloga === 1) {
           this.canAccessPocetna = true;
           this.canAccessOsobe = true;
+          this.canAccessFilmovi = true;
           this.canAccessDodavanje = false;
           this.canAccessKorisnici = false;
         } else if ((this.status !== 'Ima pristup' && this.uloga === 1) || (this.status !== 'Ima pristup' && this.uloga === 3)) {
           this.canAccessPocetna = true;
           this.canAccessOsobe = false;
+          this.canAccessFilmovi = false;
           this.canAccessDodavanje = false;
           this.canAccessKorisnici = false;
         } else {
+          this.canAccessFilmovi = false;
           this.canAccessPocetna = false;
           this.canAccessOsobe = false;
           this.canAccessDodavanje = false;
@@ -81,6 +86,9 @@ export class NavigacijaComponent implements OnInit {
       }
       if (this.canAccessOsobe) {
         baseMenu.push({ label: 'Osobe', link: '/osobe' });
+      }
+      if (this.canAccessFilmovi) {
+        baseMenu.push({ label: 'Filmovi', link: '/filmovi' });
       }
       if (this.canAccessDodavanje) {
         baseMenu.push({ label: 'Dodavanje', link: '/dodavanje' });

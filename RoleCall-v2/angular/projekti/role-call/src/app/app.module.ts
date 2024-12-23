@@ -16,12 +16,14 @@ import { AuthGuard } from './authentication/auth/auth.guard';
 import { NavigacijaComponent } from './navigacija/navigacija.component';
 import { NeovlastenPristupComponent } from './neovlasten-pristup/neovlasten-pristup.component';
 import { StranicaNijePronadjenaComponent } from './stranica-nije-pronadjena/stranica-nije-pronadjena.component';
+import { FilmoviComponent } from './filmovi/filmovi.component';
 
 const routes: Routes = [
   { path: '', component: PocetnaComponent, canActivate: [AuthGuard], data: { roles: [1, 2, 3] } },
   { path: 'osobe', component: OsobeComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
-  { path: 'dodavanje', component: DodavanjeComponent, canActivate: [AuthGuard], data: { roles: [2] } },
+  { path: 'filmovi', component: FilmoviComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
   { path: 'detalji/:id', component: DetaljiComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
+  { path: 'dodavanje', component: DodavanjeComponent, canActivate: [AuthGuard], data: { roles: [2] } },
   { path: 'korisnici', component: KorisniciComponent, canActivate: [AuthGuard], data: { roles: [2] } },
 
   { path: 'nijePronadjeno', component: StranicaNijePronadjenaComponent },
@@ -45,7 +47,8 @@ const routes: Routes = [
     DodavanjeComponent,
     NavigacijaComponent,
     NeovlastenPristupComponent,
-    StranicaNijePronadjenaComponent
+    StranicaNijePronadjenaComponent,
+    FilmoviComponent
   ],
   imports: [
     BrowserModule, RouterModule.forRoot(routes), FormsModule
