@@ -18,7 +18,7 @@ export class StranicaNijePronadjenaComponent {
   }
 
   goBack(){
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 
   private generateSnowflakes() {

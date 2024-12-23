@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.prod';
 import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,18 +12,38 @@ export class AuthService {
   private roleSubject: BehaviorSubject<number> = new BehaviorSubject<number>(3);
   public role$ = this.roleSubject.asObservable();
 
-  constructor() {
+  constructor(private router: Router) {
     this.checkAndClearToken();  
   }
 
   private checkAndClearToken(): void {
-    const isFirstTime = sessionStorage.getItem('isFirstTime');
-    
-    if (!isFirstTime) {
-      this.logout();
-      sessionStorage.setItem('isFirstTime', 'true');  
+    if (!localStorage.getItem('token')) {
+      this.logout(); 
+    } else {
+      this.loadUserRole();
+      const isFirstTime = sessionStorage.getItem('isFirstTime');
+      if (!isFirstTime) {
+        sessionStorage.setItem('isFirstTime', 'true');
+      }
     }
   }
+
+  loadUserRole(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.getSesija().then(session => {
+        if (session && session.tip_korisnika) {
+          this.roleSubject.next(session.tip_korisnika); 
+          resolve();
+        } else {
+          this.router.navigate(['/login']);
+          reject('Greška pri dohvaćanju sesije');
+        }
+      }).catch(error => {
+        reject(error);
+      });
+    });
+  }
+
 
   async register(userData: any) {
     const response = await fetch(`${environment.restServis}app/korisnici`, {

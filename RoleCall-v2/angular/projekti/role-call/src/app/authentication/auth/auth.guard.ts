@@ -7,11 +7,9 @@ import { take } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  private role: number = 3;
-
   constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     console.log('AuthGuard: Checking authentication and authorization');
 
     if (!this.authService.isLoggedIn()) {
@@ -20,14 +18,15 @@ export class AuthGuard implements CanActivate {
       return false;
     }
 
+    await this.authService.loadUserRole();
+
     this.authService.role$.pipe(take(1)).subscribe(role => {
-      this.role = role;
-      console.log('Trenutna uloga korisnika:', this.role);
+      console.log('Trenutna uloga korisnika:', role);
 
       const allowedRoles = route.data['roles'] as number[];
 
-      if (allowedRoles && !allowedRoles.includes(this.role)) {
-        console.log(`AuthGuard: Access denied. User role (${this.role}) is not allowed for this route.`);
+      if (allowedRoles && !allowedRoles.includes(role)) {
+        console.log(`AuthGuard: Access denied. User role (${role}) is not allowed for this route.`);
         this.router.navigate(['/neovlastenPristup'], { queryParams: { returnUrl: state.url }});
       }
     });

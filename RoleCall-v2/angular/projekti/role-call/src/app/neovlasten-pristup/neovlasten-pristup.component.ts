@@ -19,7 +19,7 @@ export class NeovlastenPristupComponent implements OnInit {
   }
 
   goBack(){
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 
   private generateSnowflakes() {
