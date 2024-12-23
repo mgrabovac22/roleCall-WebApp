@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthGuard } from './authentication/auth/auth.guard';
 import { NavigacijaComponent } from './navigacija/navigacija.component';
 import { NeovlastenPristupComponent } from './neovlasten-pristup/neovlasten-pristup.component';
+import { StranicaNijePronadjenaComponent } from './stranica-nije-pronadjena/stranica-nije-pronadjena.component';
 
 const routes: Routes = [
   { path: '', component: PocetnaComponent, canActivate: [AuthGuard], data: { roles: [1, 2, 3] } },
@@ -23,12 +24,13 @@ const routes: Routes = [
   { path: 'detalji/:id', component: DetaljiComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
   { path: 'korisnici', component: KorisniciComponent, canActivate: [AuthGuard], data: { roles: [2] } },
 
+  { path: 'nijePronadjeno', component: StranicaNijePronadjenaComponent },
   { path: 'neovlastenPristup', component: NeovlastenPristupComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registracija', component: RegistracijaComponent },
   { path: 'dokumentacija', component: DokumentacijaComponent },
 
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: 'nijePronadjeno' }
 ];
 
 @NgModule({
@@ -42,7 +44,8 @@ const routes: Routes = [
     KorisniciComponent,
     DodavanjeComponent,
     NavigacijaComponent,
-    NeovlastenPristupComponent
+    NeovlastenPristupComponent,
+    StranicaNijePronadjenaComponent
   ],
   imports: [
     BrowserModule, RouterModule.forRoot(routes), FormsModule

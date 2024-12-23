@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="rotating-snowflake bottom-left"></div>
+    <div class="rotating-snowflake top-right"></div>
+    
+    <div class="message-box">
+        <h1>Odjavili ste se!</h1>
+        <p>Ova stranica nije pronađena, stoga ste odjavljeni!</p>
+        <p>Molimo vas da se prijavite sa odgovarajućom ulogom.</p>
+        <button class="back-btn" (click)="goBack()">Prijavite se</button>
+    </div>
+
+    <div class="falling-snow">
+        <div
+          class="flake"
+          *ngFor="let snowflake of snowflakes"
+          [style.animation-duration]="snowflake.duration + 's'"
+          [style.left]="snowflake.left + '%'">
+          &#10052;
+        </div>
+    </div>    
+</div>
+  
