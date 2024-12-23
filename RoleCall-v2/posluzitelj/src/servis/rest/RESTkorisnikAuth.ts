@@ -95,6 +95,10 @@ export class RestAuthKorisnik {
   }
 
   async getKorisnici(zahtjev: Request, odgovor: Response) {
+    if(zahtjev.session.tip_korisnika!==2){
+      odgovor.status(401).json({ greska: "Nemate pristup toj metodi!"});
+      return;
+    }
     odgovor.type("application/json");
     try {
       const korisnici = await this.korisnikDAO.dajSveKorisnike();
@@ -106,6 +110,10 @@ export class RestAuthKorisnik {
   }
 
   async getTipoviKorisnika(zahtjev: Request, odgovor: Response) {
+    if(zahtjev.session.tip_korisnika!==2){
+      odgovor.status(401).json({ greska: "Nemate pristup toj metodi!"});
+      return;
+    }
     odgovor.type("application/json");
     try {
       const tipoviKorisnika = await this.korisnikDAO.dajTipoveKorisnika();
@@ -117,6 +125,10 @@ export class RestAuthKorisnik {
   }
 
   async dajPristup(req: Request, res: Response) {
+    if(req.session.tip_korisnika!==2){
+      res.status(401).json({ greska: "Nemate pristup toj metodi!"});
+      return;
+    }
     const korisnikId = parseInt(req.params["id"] as string, 10);
     if (!korisnikId) {
       res.status(400).json({ greska: "Nevažeći ID korisnika" });
@@ -135,6 +147,10 @@ export class RestAuthKorisnik {
   }
 
   async zabraniPristup(req: Request, res: Response) {
+    if(req.session.tip_korisnika!==2){
+      res.status(401).json({ greska: "Nemate pristup toj metodi!"});
+      return;
+    }
     const korisnikId = parseInt(req.params["id"] as string, 10);
     if (!korisnikId) {
       res.status(400).json({ greska: "Nevažeći ID korisnika" });
@@ -177,6 +193,10 @@ export class RestAuthKorisnik {
   }
 
   async deleteKorisnik(req: Request, res: Response) {
+    if(req.session.tip_korisnika!==2){
+      res.status(401).json({ greska: "Nemate pristup toj metodi!"});
+      return;
+    }
     res.type("application/json");
     const korisnikId = parseInt(req.params["id"] as string, 10);
 
@@ -225,6 +245,10 @@ export class RestAuthKorisnik {
   }
 
   async getKorisnik(req: Request, res: Response) {
+    if(req.session.tip_korisnika!==2){
+      res.status(401).json({ greska: "Nemate pristup toj metodi!"});
+      return;
+    }
     const korisnikId = parseInt(req.params["id"] as string, 10);
 
     if (isNaN(korisnikId) || korisnikId <= 0) {

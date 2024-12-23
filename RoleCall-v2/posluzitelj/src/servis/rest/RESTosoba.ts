@@ -253,6 +253,10 @@ export class RestOsoba {
     }
 
     try {
+        if(req.session.tip_korisnika!==2){
+          res.status(401).json({ greska: "Nemate pristup toj metodi!"});
+          return;
+        }
         const tmdbSlikeResponse = await fetch(`https://api.themoviedb.org/3/person/${id}/images?api_key=${this.konfiguracija.dajKonf().tmdbApiKeyV3}`);
         if (!tmdbSlikeResponse.ok) {
             const greska = await tmdbSlikeResponse.json();
@@ -353,6 +357,10 @@ export class RestOsoba {
 
   async obrisiOsobuFilmove(req: Request, res: Response) {
     try {
+      if(req.session.tip_korisnika!==2){
+        res.status(401).json({ greska: "Nemate pristup toj metodi!"});
+        return;
+      }
         const { id } = req.params;
 
         if (!id) {
@@ -429,6 +437,10 @@ export class RestOsoba {
   }
 
   async provjeriPostojanjeOsobe(zahtjev: Request, odgovor: Response) {
+    if(zahtjev.session.tip_korisnika!==2){
+      odgovor.status(401).json({ greska: "Nemate pristup toj metodi!"});
+      return;
+    }
     odgovor.type("application/json");
     console.log("sessija u provjeri: ", zahtjev.session);
     await this.konfiguracija.ucitajKonfiguraciju();

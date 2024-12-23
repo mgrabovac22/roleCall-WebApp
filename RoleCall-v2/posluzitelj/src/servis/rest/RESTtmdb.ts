@@ -3,6 +3,10 @@ import { Konfiguracija } from "../../moduli/upravljateljKonfiguracije.js";
 
 export class RestTMDB {
     async getOsobe(req: Request, res: Response) {
+        if(req.session.tip_korisnika!==2){
+            res.status(401).json({ greska: "Nemate pristup toj metodi!"});
+            return;
+        }
         const konfiguracija = new Konfiguracija();
         await konfiguracija.ucitajKonfiguraciju();
         const { query, stranica = 1 } = req.query;
