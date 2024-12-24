@@ -1,0 +1,68 @@
+.filtriranje {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .filmovi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .film-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.2s;
+    cursor: pointer;
+    position: relative;
+  
+    img {
+      width: 100%;
+      height: auto;
+    }
+  
+    .film-info {
+      padding: 0.5rem;
+  
+      h3 {
+        font-size: 1rem;
+        margin: 0;
+      }
+  
+      p {
+        font-size: 0.9rem;
+        margin: 0.5rem 0;
+      }
+  
+      .film-details {
+        display: none;
+        font-size: 0.8rem;
+        text-align: left;
+      }
+    }
+  
+    &:hover {
+      transform: scale(1.05);
+  
+      .film-details {
+        display: block;
+      }
+    }
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  
+    button {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+  }
+  

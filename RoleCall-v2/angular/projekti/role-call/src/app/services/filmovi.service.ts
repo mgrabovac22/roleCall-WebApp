@@ -14,6 +14,34 @@ export class FilmoviService {
     return data.token;
   }
 
+  async dohvatiFilmove(stranica: number, datumOd?: number, datumDo?: number): Promise<any[]> {
+    try {
+      const jwtToken = await this.getJWT();
+      const queryParams = new URLSearchParams({
+        stranica: stranica.toString(),
+        ...(datumOd && { datumOd: datumOd.toString() }),
+        ...(datumDo && { datumDo: datumDo.toString() }),
+      });
+      console.log("da vidimo", queryParams);
+      
+
+      const response = await fetch(`${environment.restServis}film?${queryParams.toString()}`, {
+        headers: {
+          "Authorization": jwtToken,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) throw new Error('Greška prilikom dohvaćanja filmova.');
+
+      return await response.json();
+    } catch (error) {
+      console.error('Greška prilikom dohvaćanja filmova:', error);
+      throw error;
+    }
+  }
+
+
   async dohvatiFilmoveIzBaze(idOsobe: number, trenutnaStranica: number): Promise<any[]> {
     try{
       const jwtToken = await this.getJWT();

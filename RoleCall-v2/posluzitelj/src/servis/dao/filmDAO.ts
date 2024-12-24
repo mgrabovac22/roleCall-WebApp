@@ -22,9 +22,23 @@ export class FilmDAO {
     let sql = "SELECT * FROM film";
     const podaci: any[] = [];
 
-    if (datumOd && datumDo) {
-      sql += " WHERE datum_izdavanja BETWEEN ? AND ?";
-      podaci.push(datumOd, datumDo);
+    if (datumOd || datumDo) {
+        sql += " WHERE";
+        
+        if (datumOd) {
+            const datumOdFormat = new Date(parseInt(datumOd)).toISOString().split('T')[0];
+            sql += " datum_izdavanja >= ?";
+            podaci.push(datumOdFormat);
+        }
+
+        if (datumDo) {
+            const datumDoFormat = new Date(parseInt(datumDo)).toISOString().split('T')[0];
+            if (datumOd) {
+                sql += " AND";
+            }
+            sql += " datum_izdavanja <= ?";
+            podaci.push(datumDoFormat);
+        }
     }
 
     sql += " LIMIT ? OFFSET ?";
@@ -44,6 +58,7 @@ export class FilmDAO {
       opis: p.opis,
     }));
   }
+
 
   async dodajFilm(film: Film): Promise<boolean> {
     const sql = `
