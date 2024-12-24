@@ -14,7 +14,11 @@ export class FilmoviService {
     return data.token;
   }
 
-  async dohvatiFilmove(stranica: number, datumOd?: number, datumDo?: number): Promise<any[]> {
+  async dohvatiFilmove(
+    stranica: number,
+    datumOd?: number,
+    datumDo?: number
+  ): Promise<{ filmovi: any[]; total: number; trenutnaStranica: number; ukupnoStranica: number }> {
     try {
       const jwtToken = await this.getJWT();
       const queryParams = new URLSearchParams({
@@ -22,25 +26,31 @@ export class FilmoviService {
         ...(datumOd && { datumOd: datumOd.toString() }),
         ...(datumDo && { datumDo: datumDo.toString() }),
       });
-      console.log("da vidimo", queryParams);
-      
+
+      console.log("Query Params:", queryParams);
 
       const response = await fetch(`${environment.restServis}film?${queryParams.toString()}`, {
         headers: {
-          "Authorization": jwtToken,
+          Authorization: jwtToken,
           'Content-Type': 'application/json',
         },
       });
 
       if (!response.ok) throw new Error('Greška prilikom dohvaćanja filmova.');
 
-      return await response.json();
+      const podaci = await response.json();
+
+      return {
+        filmovi: podaci.filmovi,
+        total: podaci.ukupnoFilmova,  
+        trenutnaStranica: podaci.trenutnaStranica,
+        ukupnoStranica: podaci.ukupnoStranica,
+      };
     } catch (error) {
       console.error('Greška prilikom dohvaćanja filmova:', error);
       throw error;
     }
   }
-
 
   async dohvatiFilmoveIzBaze(idOsobe: number, trenutnaStranica: number): Promise<any[]> {
     try{

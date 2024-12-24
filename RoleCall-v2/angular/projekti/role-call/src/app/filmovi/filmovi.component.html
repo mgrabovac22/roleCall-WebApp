@@ -1,31 +1,37 @@
 <div class="filtriranje">
-    <label for="datumOd">Datum Od:</label>
-    <input type="date" id="datumOd" [(ngModel)]="datumOdString" />
-  
-    <label for="datumDo">Datum Do:</label>
-    <input type="date" id="datumDo" [(ngModel)]="datumDoString" />
-  
-    <button (click)="filtriraj()">Filtriraj</button>
-  </div>
-  
-  <div class="filmovi-grid">
-    <div class="film-card" *ngFor="let film of filmovi">
-        <img *ngIf="film.putanja_postera || film.poster_path" [src]="environment.posteriPutanja + (film.putanja_postera || film.poster_path)" [alt]="film.naslov || film.title" />
-      <div class="film-info">
-        <h3>{{ film.naslov }}</h3>
-        <p>{{ film.datum_izdavanja }}</p>
-        <div class="film-details">
-          <p><strong>Opis:</strong> {{ film.opis }}</p>
-          <p><strong>Jezik:</strong> {{ film.jezik }}</p>
-          <p><strong>Rang popularnosti:</strong> {{ film.rang_popularnosti }}</p>
-        </div>
+  <label for="datumOd">Datum Od:</label>
+  <input type="date" id="datumOd" [(ngModel)]="datumOdString" />
+
+  <label for="datumDo">Datum Do:</label>
+  <input type="date" id="datumDo" [(ngModel)]="datumDoString" />
+
+  <button (click)="filtriraj()">Filtriraj</button>
+</div>
+
+<div class="filmovi-grid">
+  <div class="film-card" *ngFor="let film of filmovi">
+    <img *ngIf="film.putanja_postera || film.poster_path"
+          [src]="environment.posteriPutanja + (film.putanja_postera || film.poster_path)" 
+          [alt]="film.naslov || film.title" />
+
+    <div class="film-info">
+      <h3>{{ film.naslov }}</h3>
+      <p>{{ film.datum_izdavanja }}</p>
+
+      <div class="film-details">
+        <p><strong>Opis:</strong> {{ film.opis }}</p>
+        <p><strong>Jezik:</strong> {{ film.jezik }}</p>
+        <p><strong>Rang popularnosti:</strong> {{ film.rang_popularnosti }}</p>
       </div>
     </div>
   </div>
-  
-  <div class="pagination">
-    <button (click)="prethodnaStranica()" [disabled]="stranica === 1">Prethodna</button>
-    <span>Stranica {{ stranica }}</span>
-    <button (click)="sljedecaStranica()">Sljedeća</button>
-  </div>
+</div>
+
+<div class="pagination">
+  <button (click)="prvaStranica()" [disabled]="stranica === 1">Prva</button>
+  <button (click)="prethodnaStranica()" [disabled]="stranica === 1">Prethodna</button>
+  <span>Stranica {{ stranica }}</span>
+  <button (click)="sljedecaStranica()">Sljedeća</button>
+  <button (click)="zadnjaStranica()" [disabled]="stranica === maxStranica">Zadnja</button>
+</div>
   

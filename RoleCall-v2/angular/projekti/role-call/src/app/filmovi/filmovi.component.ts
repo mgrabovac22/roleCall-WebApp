@@ -9,43 +9,60 @@ import { environment } from '../../environments/environment.prod';
   styleUrls: ['./filmovi.component.scss']
 })
 export class FilmoviComponent implements OnInit {
-  filmovi: any[] = [];
-  stranica: number = 1;
-  datumOdString?: string; 
-  datumDoString?: string; 
+  filmovi: any[] = [];  
+  stranica: number = 1; 
+  maxStranica: number = 1;  
+  datumOdString: string | undefined;
+  datumDoString: string | undefined;
   environment: any = environment;
 
   constructor(private filmoviService: FilmoviService) {}
 
   ngOnInit(): void {
-    this.ucitajFilmove();
+    this.loadFilmovi();  
   }
 
-  async ucitajFilmove(): Promise<void> {
+  async loadFilmovi() {
     try {
-      const datumOd = this.datumOdString ? new Date(this.datumOdString).getTime() : undefined;
-      const datumDo = this.datumDoString ? new Date(this.datumDoString).getTime() : undefined;
-
-      this.filmovi = await this.filmoviService.dohvatiFilmove(this.stranica, datumOd, datumDo);
+      const data = await this.filmoviService.dohvatiFilmove(
+        this.stranica,
+        this.datumOdString ? new Date(this.datumOdString).getTime() : undefined,
+        this.datumDoString ? new Date(this.datumDoString).getTime() : undefined
+      );
+      
+      this.filmovi = data.filmovi;
+      this.maxStranica = data.ukupnoStranica;
     } catch (error) {
       console.error('Greška prilikom učitavanja filmova:', error);
     }
   }
 
-  filtriraj(): void {
+  filtriraj() {
+    this.stranica = 1;  
+    this.loadFilmovi();  
+  }
+
+  prvaStranica() {
     this.stranica = 1;
-    this.ucitajFilmove();
+    this.loadFilmovi();
   }
 
-  sljedecaStranica(): void {
-    this.stranica++;
-    this.ucitajFilmove();
-  }
-
-  prethodnaStranica(): void {
+  prethodnaStranica() {
     if (this.stranica > 1) {
       this.stranica--;
-      this.ucitajFilmove();
+      this.loadFilmovi();
     }
+  }
+
+  sljedecaStranica() {
+    if (this.stranica < this.maxStranica) {
+      this.stranica++;
+      this.loadFilmovi();
+    }
+  }
+
+  zadnjaStranica() {
+    this.stranica = this.maxStranica;
+    this.loadFilmovi();
   }
 }

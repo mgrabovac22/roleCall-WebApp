@@ -1,68 +1,73 @@
-.filtriranje {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  .filmovi-grid {
+.filmovi-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1rem;
   }
   
-  .film-card {
+.film-card {
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
     text-align: center;
-    transition: transform 0.2s;
+    transition: transform 0.2s ease-in-out; 
     cursor: pointer;
     position: relative;
-  
+    background: #fff;
+    height: 400px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
     img {
-      width: 100%;
-      height: auto;
+        width: 100%;
+        height: 60%; 
+        object-fit: cover;
+        transition: transform 0.3s ease-in-out;
     }
-  
+
     .film-info {
-      padding: 0.5rem;
-  
-      h3 {
+        padding: 0.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        overflow-y: auto; 
+        height: 40%;
+
+        h3 {
         font-size: 1rem;
-        margin: 0;
-      }
-  
-      p {
-        font-size: 0.9rem;
         margin: 0.5rem 0;
-      }
-  
-      .film-details {
+        }
+
+        p {
+        font-size: 0.9rem;
+        margin: 0.3rem 0;
+        }
+
+        .film-details {
         display: none;
         font-size: 0.8rem;
         text-align: left;
-      }
+        background: #f9f9f9;
+        padding: 0.5rem;
+        border-top: 1px solid #ddd;
+        }
     }
-  
+
     &:hover {
-      transform: scale(1.05);
-  
-      .film-details {
-        display: block;
-      }
+        transform: scale(1.05); 
+        z-index: 1;
+        
+        img {
+            transform: translateY(-25px);
+        }
+
+        .film-info {
+            .film-details {
+                display: block; 
+            }
+        }
     }
-  }
-  
-  .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1rem;
-  
-    button {
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-    }
-  }
+}
   

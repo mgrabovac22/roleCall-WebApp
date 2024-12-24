@@ -27,14 +27,19 @@ export class RestFilm {
     const datumDo = zahtjev.query["datumDo"] as string;
 
     try {
-        const filmovi = await this.filmDAO.dajFilmovePoStranici(stranica, datumOd, datumDo);
-        odgovor.status(200).json(filmovi);
+        const response = await this.filmDAO.dajFilmovePoStranici(stranica, datumOd, datumDo);
+        
+        odgovor.status(200).json({
+            filmovi: response.filmovi,  
+            trenutnaStranica: stranica,
+            ukupnoStranica: Math.ceil(response.total / 20), 
+            ukupnoFilmova: response.total 
+        });
     } catch (err) {
         console.error("Greška prilikom dohvaćanja filmova:", err);
         odgovor.status(500).json({ greska: "Greška prilikom dohvaćanja filmova" });
     }
   }
-
 
   async postFilm(zahtjev: Request, odgovor: Response) {
     odgovor.type("application/json");

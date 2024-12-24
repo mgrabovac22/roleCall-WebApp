@@ -15,48 +15,75 @@ export class FilmDAO {
     stranica: number,
     datumOd?: string,
     datumDo?: string
-  ): Promise<Film[]> {
+  ): Promise<{ filmovi: Film[], total: number }> {
     const limit = 20;
     const offset = (stranica - 1) * limit;
 
     let sql = "SELECT * FROM film";
-    const podaci: any[] = [];
+    const filmParams: any[] = []; 
 
     if (datumOd || datumDo) {
-        sql += " WHERE";
-        
-        if (datumOd) {
-            const datumOdFormat = new Date(parseInt(datumOd)).toISOString().split('T')[0];
-            sql += " datum_izdavanja >= ?";
-            podaci.push(datumOdFormat);
-        }
+      sql += " WHERE";
+      
+      if (datumOd) {
+        const datumOdFormat = new Date(parseInt(datumOd)).toISOString().split('T')[0];
+        sql += " datum_izdavanja >= ?";
+        filmParams.push(datumOdFormat); 
+      }
 
-        if (datumDo) {
-            const datumDoFormat = new Date(parseInt(datumDo)).toISOString().split('T')[0];
-            if (datumOd) {
-                sql += " AND";
-            }
-            sql += " datum_izdavanja <= ?";
-            podaci.push(datumDoFormat);
+      if (datumDo) {
+        const datumDoFormat = new Date(parseInt(datumDo)).toISOString().split('T')[0];
+        if (datumOd) {
+          sql += " AND";
         }
+        sql += " datum_izdavanja <= ?";
+        filmParams.push(datumDoFormat); 
+      }
     }
 
     sql += " LIMIT ? OFFSET ?";
-    podaci.push(limit, offset);
+    filmParams.push(limit, offset);
 
-    const filmovi = (await this.baza.dajPodatkePromise(sql, podaci)) as Array<any>;
+    const filmovi = await this.baza.dajPodatkePromise(sql, filmParams) as any;
 
-    return filmovi.map((p) => ({
-      row_id: p.row_id,
-      id: p.id,
-      jezik: p.jezik,
-      org_naslov: p.org_naslov,
-      naslov: p.naslov,
-      rang_popularnosti: p.rang_popularnosti,
-      putanja_postera: p.putanja_postera,
-      datum_izdavanja: p.datum_izdavanja,
-      opis: p.opis,
-    }));
+    let countSql = "SELECT COUNT(*) AS total FROM film";
+    const countParams: any[] = [];
+
+    if (datumOd || datumDo) {
+        countSql += " WHERE";
+        
+        if (datumOd) {
+            countSql += " datum_izdavanja >= ?";
+            countParams.push(new Date(parseInt(datumOd)).toISOString().split('T')[0]); 
+        }
+
+        if (datumDo) {
+            if (datumOd) {
+                countSql += " AND";
+            }
+            countSql += " datum_izdavanja <= ?";
+            countParams.push(new Date(parseInt(datumDo)).toISOString().split('T')[0]); 
+        }
+    }
+
+    const totalResult = await this.baza.dajPodatkePromise(countSql, countParams) as any;
+
+    const totalFilmova = totalResult && totalResult[0] ? totalResult[0].total : 0;
+
+    return {
+        filmovi: filmovi.map((p: any) => ({
+            row_id: p.row_id,
+            id: p.id,
+            jezik: p.jezik,
+            org_naslov: p.org_naslov,
+            naslov: p.naslov,
+            rang_popularnosti: p.rang_popularnosti,
+            putanja_postera: p.putanja_postera,
+            datum_izdavanja: p.datum_izdavanja,
+            opis: p.opis,
+        })),
+        total: totalFilmova
+    };
   }
 
 
