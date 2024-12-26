@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { KorisniciService } from '../services/korisnici.service';
+import { KorisniciService } from '../../moduls/services/korisnici.service';
 
 @Component({
   selector: 'app-pocetna',

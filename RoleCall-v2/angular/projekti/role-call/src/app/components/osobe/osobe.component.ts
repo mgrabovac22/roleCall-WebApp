@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { environment } from '../../environments/environment.prod';
 import { Router } from '@angular/router';
-import { OsobeService } from '../services/osobe.service';
+import { OsobeService } from '../../moduls/services/osobe.service';
 
 @Component({
   selector: 'app-osobe',

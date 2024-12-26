@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { KorisniciService } from '../services/korisnici.service';
-import { Korisnik } from '../interfaces/iKorisnikService';
+import { KorisniciService } from '../../moduls/services/korisnici.service';
+import { Korisnik } from '../../moduls/interfaces/iKorisnikService';
 
 @Component({
   selector: 'app-korisnici',

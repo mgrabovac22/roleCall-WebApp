@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { environment } from '../../environments/environment.prod';
-import { TmdbService } from '../services/tmdb.service';
-import { OsobeService } from '../services/osobe.service';
+import { environment } from '../../../environments/environment.prod';
+import { TmdbService } from '../../moduls/services/tmdb.service';
+import { OsobeService } from '../../moduls/services/osobe.service';
 
 @Component({
   selector: 'app-dodavanje',

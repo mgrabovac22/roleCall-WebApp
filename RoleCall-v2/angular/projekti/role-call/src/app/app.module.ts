@@ -3,20 +3,20 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router'
 
 import { AppComponent } from './app.component';
-import { DokumentacijaComponent } from './dokumentacija/dokumentacija.component';
-import { PocetnaComponent } from './pocetna/pocetna.component';
-import { LoginComponent } from './authentication/login/login.component';
-import { RegistracijaComponent } from './authentication/registracija/registracija.component';
-import { OsobeComponent } from './osobe/osobe.component';
-import { DetaljiComponent } from './detalji/detalji.component';
-import { KorisniciComponent } from './korisnici/korisnici.component';
-import { DodavanjeComponent } from './dodavanje/dodavanje.component';
+import { DokumentacijaComponent } from './components/dokumentacija/dokumentacija.component';
+import { PocetnaComponent } from './components/pocetna/pocetna.component';
+import { LoginComponent } from './components/authentication/login/login.component';
+import { RegistracijaComponent } from './components/authentication/registracija/registracija.component';
+import { OsobeComponent } from './components/osobe/osobe.component';
+import { DetaljiComponent } from './components/detalji/detalji.component';
+import { KorisniciComponent } from './components/korisnici/korisnici.component';
+import { DodavanjeComponent } from './components/dodavanje/dodavanje.component';
 import { FormsModule } from '@angular/forms';
-import { AuthGuard } from './authentication/auth/auth.guard';
-import { NavigacijaComponent } from './navigacija/navigacija.component';
-import { NeovlastenPristupComponent } from './neovlasten-pristup/neovlasten-pristup.component';
-import { StranicaNijePronadjenaComponent } from './stranica-nije-pronadjena/stranica-nije-pronadjena.component';
-import { FilmoviComponent } from './filmovi/filmovi.component';
+import { AuthGuard } from './components/authentication/auth/auth.guard';
+import { NavigacijaComponent } from './moduls/navigacija/navigacija.component';
+import { NeovlastenPristupComponent } from './error-handling/neovlasten-pristup/neovlasten-pristup.component';
+import { StranicaNijePronadjenaComponent } from './error-handling/stranica-nije-pronadjena/stranica-nije-pronadjena.component';
+import { FilmoviComponent } from './components/filmovi/filmovi.component';
 
 const routes: Routes = [
   { path: '', component: PocetnaComponent, canActivate: [AuthGuard], data: { roles: [1, 2, 3] } },

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FilmoviService } from '../services/filmovi.service';
-import { environment } from '../../environments/environment.prod';
+import { FilmoviService } from '../../moduls/services/filmovi.service';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-filmovi',

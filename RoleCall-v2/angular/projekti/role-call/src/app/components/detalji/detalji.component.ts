@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { OsobeService } from '../services/osobe.service';
-import { FilmoviService } from '../services/filmovi.service';
-import { environment } from '../../environments/environment.prod';
+import { OsobeService } from '../../moduls/services/osobe.service';
+import { FilmoviService } from '../../moduls/services/filmovi.service';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-detalji',

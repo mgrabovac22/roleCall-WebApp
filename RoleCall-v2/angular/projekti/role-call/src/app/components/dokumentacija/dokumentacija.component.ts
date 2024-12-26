@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Korak } from '../sucelja/KorakI';
+import { Korak } from '../../moduls/interfaces/KorakI';
 
 @Component({
   selector: 'app-dokumentacija',
