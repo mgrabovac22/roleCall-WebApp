@@ -1,0 +1,118 @@
+$primary-color: rgb(63, 63, 198);
+$secondary-color: #f1f1f1;
+$accent-color: rgb(51, 121, 213);
+$text-color: #333;
+
+h1 {
+  text-align: center;
+  color: $primary-color;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+div {
+  padding: 2rem;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 2rem auto;
+  box-sizing: border-box;
+}
+
+p {
+  font-size: 1.2rem;
+  color: $text-color;
+  margin-bottom: 1rem;
+}
+
+strong {
+  color: $accent-color;
+}
+
+button {
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.profile-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+
+  p {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.profile-info div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+p strong {
+  font-weight: bold;
+}
+
+.totp-section {
+  margin-top: 2rem;
+  text-align: center;
+  background-color: #eeeeee;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.totp-section img {
+  margin-top: 1rem;
+  border-radius: 8px;
+  width: 150px;
+  height: 150px;
+}
+
+button:disabled {
+  background-color: #ccc;
+}
+
+button:not(:disabled) {
+  background-color: $primary-color;
+  cursor: pointer;
+}
+
+button + button {
+  margin-left: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+  .profile-info {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}

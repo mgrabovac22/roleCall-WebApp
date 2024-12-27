@@ -26,7 +26,11 @@ VALUES ('Registrirani korisnik', 'Korisnik koji ima samo određena prava'),
        ('Administrator', 'Korisnik koji nema ograničenja prava'),
        ('Gost', 'Korisnik koji nema prava.');
 
+ALTER TABLE "korisnik"
+ADD COLUMN "totp_secret" VARCHAR(100);
 
+ALTER TABLE "korisnik"
+ADD COLUMN "totp_aktiviran" BOOLEAN DEFAULT FALSE;
 
 INSERT INTO "korisnik" (
   "ime", 

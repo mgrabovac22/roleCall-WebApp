@@ -1,0 +1,36 @@
+<div>
+    <h1>Profil Korisnika</h1>
+    <div *ngIf="korisnik">
+        <p><strong>Korisničko ime:</strong> {{ korisnik.korime }}</p>
+        <p><strong>Email:</strong> {{ korisnik.email }}</p>
+        <p><strong>Status:</strong> {{ korisnik.status }}</p>
+        <p><strong>Ime:</strong> {{ korisnik.ime }}</p>
+        <p><strong>Prezime:</strong> {{ korisnik.prezime }}</p>
+        <p><strong>Adresa:</strong> {{ korisnik.adresa }}</p>
+        <div [ngSwitch]="korisnik.tip_korisnika_id">
+            <p *ngSwitchCase="1"><strong>Tip korisnika:</strong> Registrirani korisnik</p>
+            <p *ngSwitchCase="2"><strong>Tip korisnika:</strong> Administrator</p>
+            <p *ngSwitchCase="3"><strong>Tip korisnika:</strong> Gost</p>
+            <p *ngSwitchDefault><strong>Tip korisnika:</strong> Nepoznat</p>
+        </div>          
+        <p><strong>Telefon:</strong> {{ korisnik.telefon }}</p>
+        <p><strong>Grad:</strong> {{ korisnik.grad }}</p>
+        <p><strong>Država:</strong> {{ korisnik['država'] }}</p>
+
+        <div *ngIf="korisnik.totpAktiviran">
+        <p>Dvorazinska autentifikacija je aktivirana.</p>
+        <button (click)="onDeactivateTOTP()">Deaktiviraj TOTP</button>
+        </div>
+        <div *ngIf="!korisnik.totpAktiviran">
+        <p>Dvorazinska autentifikacija nije aktivirana.</p>
+        <button (click)="onActivateTOTP()">Aktiviraj TOTP</button>
+        </div>
+
+        <div *ngIf="totpSecret">
+        <p><strong>Vaš TOTP tajni ključ:</strong> {{ totpSecret }}</p>
+        <p>Skenerajte QR kod u aplikaciji za autentifikaciju:</p>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ totpSecret }}&size=150x150" alt="QR kod za TOTP" />
+        </div>
+    </div>
+</div>
+  

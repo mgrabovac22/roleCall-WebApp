@@ -17,6 +17,7 @@ export class NavigacijaComponent implements OnInit {
   public canAccessDodavanje: boolean = false;
   public canAccessKorisnici: boolean = false;
   public canAccessFilmovi: boolean = false;
+  public canAccessProfil: boolean = false;
   public menuItems: any[] = [];
 
   constructor(private authService: AuthService,  private router: Router) {}
@@ -42,23 +43,27 @@ export class NavigacijaComponent implements OnInit {
         
         if (this.uloga === 2) {
           this.canAccessPocetna = true;
+          this.canAccessProfil = true;
           this.canAccessOsobe = true;
           this.canAccessFilmovi = true;
           this.canAccessDodavanje = true;
           this.canAccessKorisnici = true;
         } else if (this.status === 'Ima pristup' && this.uloga === 1) {
           this.canAccessPocetna = true;
+          this.canAccessProfil = true;
           this.canAccessOsobe = true;
           this.canAccessFilmovi = true;
           this.canAccessDodavanje = false;
           this.canAccessKorisnici = false;
         } else if ((this.status !== 'Ima pristup' && this.uloga === 1) || (this.status !== 'Ima pristup' && this.uloga === 3)) {
           this.canAccessPocetna = true;
+          this.canAccessProfil = true;
           this.canAccessOsobe = false;
           this.canAccessFilmovi = false;
           this.canAccessDodavanje = false;
           this.canAccessKorisnici = false;
         } else {
+          this.canAccessProfil = false;
           this.canAccessFilmovi = false;
           this.canAccessPocetna = false;
           this.canAccessOsobe = false;
@@ -97,6 +102,9 @@ export class NavigacijaComponent implements OnInit {
         baseMenu.push({ label: 'Korisnici', link: '/korisnici' });
       }
       baseMenu.push({ label: 'Dokumentacija', link: '/dokumentacija' });
+      if (this.canAccessProfil) {
+        baseMenu.push({ label: 'Profil', link: '/profil' });
+      }
       baseMenu.push({ label: 'Odjava', link: '', action: () => this.logout() });
     } else {
       baseMenu.push({ label: 'Dokumentacija', link: '/dokumentacija' });

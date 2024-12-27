@@ -17,9 +17,11 @@ import { NavigacijaComponent } from './moduls/navigacija/navigacija.component';
 import { NeovlastenPristupComponent } from './error-handling/neovlasten-pristup/neovlasten-pristup.component';
 import { StranicaNijePronadjenaComponent } from './error-handling/stranica-nije-pronadjena/stranica-nije-pronadjena.component';
 import { FilmoviComponent } from './components/filmovi/filmovi.component';
+import { ProfilComponent } from './components/profil/profil.component';
 
 const routes: Routes = [
   { path: '', component: PocetnaComponent, canActivate: [AuthGuard], data: { roles: [1, 2, 3] } },
+  { path: 'profil', component: ProfilComponent, canActivate: [AuthGuard], data: { roles: [1, 2, 3] } },
   { path: 'osobe', component: OsobeComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
   { path: 'filmovi', component: FilmoviComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
   { path: 'detalji/:id', component: DetaljiComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
@@ -48,7 +50,8 @@ const routes: Routes = [
     NavigacijaComponent,
     NeovlastenPristupComponent,
     StranicaNijePronadjenaComponent,
-    FilmoviComponent
+    FilmoviComponent,
+    ProfilComponent
   ],
   imports: [
     BrowserModule, RouterModule.forRoot(routes), FormsModule

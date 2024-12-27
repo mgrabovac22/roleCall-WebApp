@@ -197,4 +197,33 @@ export class KorisniciService {
       throw err;
     }
   }
+
+  async activateTOTP(): Promise<string> {
+    const jwtToken = await this.getJWT();
+    const response = await fetch(`${environment.restServis}app/korisnici/activateTOTP`, {
+      method: 'POST',
+      headers: {
+        Authorization: jwtToken,
+        'Content-Type': 'application/json'
+      }
+    });
+  
+    if (!response.ok) throw new Error('Greška prilikom aktivacije TOTP.');
+  
+    const data = await response.json();
+    return data.totpSecret;
+  }
+  
+  async deactivateTOTP(): Promise<void> {
+    const jwtToken = await this.getJWT();
+    const response = await fetch(`${environment.restServis}app/korisnici/deactivateTOTP`, {
+      method: 'POST',
+      headers: {
+        Authorization: jwtToken,
+        'Content-Type': 'application/json'
+      }
+    });
+  
+    if (!response.ok) throw new Error('Greška prilikom deaktivacije TOTP.');
+  }  
 }
