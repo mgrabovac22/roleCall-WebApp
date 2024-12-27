@@ -198,32 +198,70 @@ export class KorisniciService {
     }
   }
 
-  async activateTOTP(): Promise<string> {
+  async activateTOTP(): Promise<{ tajniKljuc: string }> {
     const jwtToken = await this.getJWT();
-    const response = await fetch(`${environment.restServis}app/korisnici/activateTOTP`, {
+  
+    // Dohvati trenutnog korisnika
+    const responseTrenutni = await fetch(`${environment.restServis}app/korisnici/dajTrenutnogKorisnika`, {
+      method: 'GET',
+      headers: {
+        Authorization: jwtToken,
+        'Content-Type': 'application/json',
+      },
+    });
+  
+    if (!responseTrenutni.ok) throw new Error('Greška prilikom dohvaćanja trenutnog korisnika.');
+  
+    const trenutniKorisnik = await responseTrenutni.json();
+  
+    // Aktivacija TOTP-a (bez generiranja novog ako već postoji)
+    const response = await fetch(`${environment.restServis}app/korisnici/${trenutniKorisnik.korime}/aktiviraj-totp`, {
       method: 'POST',
       headers: {
         Authorization: jwtToken,
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   
     if (!response.ok) throw new Error('Greška prilikom aktivacije TOTP.');
   
-    const data = await response.json();
-    return data.totpSecret;
+    const result = await response.json();
+  
+    // Provjeri postoji li već ključ ili je generiran novi
+    if (result.tajniKljuc) {
+      console.log('TOTP aktiviran s ključem:', result.tajniKljuc);
+    } else {
+      console.log('TOTP je već aktiviran.');
+    }
+  
+    return result;
   }
   
   async deactivateTOTP(): Promise<void> {
     const jwtToken = await this.getJWT();
-    const response = await fetch(`${environment.restServis}app/korisnici/deactivateTOTP`, {
+  
+    // Dohvati trenutnog korisnika
+    const responseTrenutni = await fetch(`${environment.restServis}app/korisnici/dajTrenutnogKorisnika`, {
+      method: 'GET',
+      headers: {
+        Authorization: jwtToken,
+        'Content-Type': 'application/json',
+      },
+    });
+  
+    if (!responseTrenutni.ok) throw new Error('Greška prilikom dohvaćanja trenutnog korisnika.');
+  
+    const trenutniKorisnik = await responseTrenutni.json();
+  
+    // Deaktivacija TOTP-a
+    const response = await fetch(`${environment.restServis}app/korisnici/${trenutniKorisnik.korime}/deaktiviraj-totp`, {
       method: 'POST',
       headers: {
         Authorization: jwtToken,
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   
     if (!response.ok) throw new Error('Greška prilikom deaktivacije TOTP.');
-  }  
+  }
 }

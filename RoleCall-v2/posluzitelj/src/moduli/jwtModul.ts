@@ -15,7 +15,7 @@ export function kreirajToken(korisnik:{korime:string}, tajniKljucJWT:string){
 export function provjeriToken(zahtjev:Request, tajniKljucJWT:string) {
   	//console.log("Provjera tokena: "+zahtjev.headers.authorization);
     if (zahtjev.headers.authorization != null) {
-        console.log(zahtjev.headers.authorization);
+        //console.log(zahtjev.headers.authorization);
         let token = zahtjev.headers.authorization.split(" ")[1] ?? "";
         //console.log(token)
         try {

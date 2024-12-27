@@ -148,5 +148,84 @@ export class KorisnikDAO {
     return null;
   }
 
+  async aktivirajTOTP(korime: string, totpSecret: string | null): Promise<void> {
+    const imaTOTP = `
+      SELECT * FROM korisnik WHERE totp_aktiviran = 1 AND korime = ?;
+      `;
+      let a = (await this.baza.dajPodatkePromise(imaTOTP, [korime]));
+      
+      if ((a as Array<any>).length == 0) {
+          const sql = `
+          UPDATE korisnik
+          SET 
+              totp_aktiviran = 1,
+              totp_secret = ?
+          WHERE korime = ?
+          `;
+          try {
+              await this.baza.ubaciAzurirajPodatke(sql, [totpSecret, korime]);
+          }
+          catch (err) {
+              console.error("Greška prilikom aktivacije TOTP-a:", err);
+              throw err;
+          }
+      }
+  }
+
+  async deaktivirajTOTP(korime: string): Promise<void> {
+      const sql = `
+          UPDATE korisnik
+          SET totp_aktiviran = 0
+          WHERE korime = ?
+      `;
+      try {
+          await this.baza.ubaciAzurirajPodatke(sql, [korime]);
+      } catch (err) {
+          console.error("Greška prilikom deaktivacije TOTP-a:", err);
+          throw err;
+      }
+  }
+
+  async dohvatiTOTPSecret(korime: string): Promise<string | null> {
+    const sql = `
+        SELECT totp_secret
+        FROM korisnik
+        WHERE korime = ?
+    `;
+    try {
+        const rezultat = (await this.baza.dajPodatkePromise(sql, [korime])) as Array<{ totp_secret: string | null }>;
+
+        const totpSecret = rezultat[0]?.totp_secret;
+
+        if (totpSecret !== null && totpSecret !== undefined) {
+            console.log("rez", rezultat);
+            return totpSecret;
+        }
+        console.log(`Nema TOTP tajnog ključa za korisnika: ${korime}`);
+        return null; // Ako totp_secret nije prisutan ili je null
+    } catch (err) {
+        console.error("Greška prilikom dohvaćanja TOTP tajnog ključa:", err);
+        throw err;
+    }
+  }
+
+
+  async provjeriTOTPStatus(korime: string): Promise<boolean> {
+      const sql = `
+          SELECT totp_aktiviran
+          FROM korisnik
+          WHERE korime = ?
+      `;
+      try {
+          const rezultat = (await this.baza.dajPodatkePromise(sql, [korime])) as Array<{ totp_aktiviran: number }>;
+          if(rezultat[0])
+            return rezultat.length === 1 && rezultat[0].totp_aktiviran === 1;
+          return false;
+      } catch (err) {
+          console.error("Greška prilikom provjere TOTP statusa:", err);
+          throw err;
+      }
+  }
+
 
 }

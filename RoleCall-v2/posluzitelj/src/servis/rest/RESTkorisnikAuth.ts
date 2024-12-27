@@ -3,6 +3,7 @@ import { KorisnikDAO } from "../dao/korisnikAuthDAO.js";
 import { kreirajSHA256 } from "../../moduli/generatori.js";
 import { Konfiguracija } from "../..//moduli/upravljateljKonfiguracije.js";
 import { kreirajToken } from "../../moduli/jwtModul.js";
+import { kreirajTajniKljuc, provjeriTOTP } from "../../moduli/totp.js";
 
 export class RestAuthKorisnik {
   private korisnikDAO: KorisnikDAO;
@@ -50,6 +51,8 @@ export class RestAuthKorisnik {
         drzava: drzava || null,
         telefon: telefon || null,
         grad: grad || null,
+        totp_aktiviran: false,
+        totp_secret: null
       });
   
       if (uspjeh) {
@@ -213,7 +216,6 @@ export class RestAuthKorisnik {
           
             res.status(404).json({ greska: "Korisnik nije pronađen" });
         } else {
-          console.log(korisnik);
           
             res.status(200).json(korisnik);
         }
@@ -307,4 +309,103 @@ export class RestAuthKorisnik {
         res.status(500).json({ greska: "Interna greška servera." });
     }
   }
+
+  async aktivirajTOTP(req: Request, res: Response) {
+    const korime = req.params["korime"];
+  
+    if (!korime) {
+      res.status(400).json({ greska: "Nevažeće korime korisnika." });
+      return;
+    }
+  
+    try {
+      const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);      
+  
+      if (!korisnik) {
+        res.status(404).json({ greska: "Korisnik nije pronađen." });
+        return;
+      }
+  
+      let tajniKljuc = korisnik.totp_secret;
+
+      if (!tajniKljuc) {
+        tajniKljuc = kreirajTajniKljuc(korisnik.korime);
+        await this.korisnikDAO.aktivirajTOTP(korime, tajniKljuc);
+      }
+  
+      res.status(200).json({ poruka: "TOTP uspješno aktiviran.", tajniKljuc });
+    } catch (err) {
+      console.error("Greška prilikom aktivacije TOTP-a:", err);
+      res.status(500).json({ greska: "Interna greška servera." });
+    }
+  }
+  
+  async deaktivirajTOTP(req: Request, res: Response) {
+    const korime = req.params["korime"];
+  
+    if (!korime) {
+      res.status(400).json({ greska: "Nevažeće korime korisnika." });
+      return;
+    }
+  
+    try {
+      await this.korisnikDAO.deaktivirajTOTP(korime);
+      res.status(200).json({ poruka: "TOTP uspješno deaktiviran." });
+    } catch (err) {
+      console.error("Greška prilikom deaktivacije TOTP-a:", err);
+      res.status(500).json({ greska: "Interna greška servera." });
+    }
+  }  
+
+  async dohvatiTOTPSecret(req: Request, res: Response) {
+    const korime = req.params["korime"];
+
+    if (!korime) {
+        res.status(400).json({ greska: "Nevažeći ID korisnika." });
+        return;
+    }
+
+    try {
+        const totpSecret = await this.korisnikDAO.dohvatiTOTPSecret(korime);
+        if (totpSecret) {
+            res.status(200).json({ totpSecret });
+        } else {
+            res.status(404).json({ greska: "TOTP tajni ključ nije pronađen." });
+        }
+    } catch (err) {
+        console.error("Greška prilikom dohvaćanja TOTP tajnog ključa:", err);
+        res.status(500).json({ greska: "Interna greška servera." });
+    }
+  }
+
+  async provjeriTOTP(req: Request, res: Response) {
+    const korime = req.params["korime"];
+    const { uneseniKod } = req.body;
+
+    if (!korime || !uneseniKod) {
+      res.status(400).json({ greska: "Nedostaju podaci (korime korisnika ili TOTP kod)." });
+      return;
+    }
+
+    try {
+      const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);
+
+      if (!korisnik || !korisnik.totp_secret) {
+        res.status(404).json({ greska: "Korisnik ili njegov TOTP tajni ključ nisu pronađeni." });
+        return;
+      }
+
+      const isValid = provjeriTOTP(uneseniKod, korisnik.totp_secret);
+
+      if (isValid) {
+        res.status(200).json({ poruka: "TOTP kod je ispravan." });
+      } else {
+        res.status(401).json({ greska: "Neispravan TOTP kod." });
+      }
+    } catch (err) {
+      console.error("Greška prilikom provjere TOTP koda:", err);
+      res.status(500).json({ greska: "Interna greška servera." });
+    }
+  }
+
 }

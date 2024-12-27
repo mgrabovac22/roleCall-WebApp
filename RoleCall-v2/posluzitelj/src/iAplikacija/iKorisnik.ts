@@ -16,5 +16,7 @@ export interface Korisnik {
   status: string;
   telefon: string | null;
   grad: string | null;    
-  drzava: string | null;  
+  drzava: string | null;
+  totp_secret: string | null;
+  totp_aktiviran: boolean;
 }

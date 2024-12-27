@@ -5,7 +5,7 @@ import { KorisniciService } from '../../moduls/services/korisnici.service';
   selector: 'app-profil',
   standalone: false,
   templateUrl: './profil.component.html',
-  styleUrls: ['./profil.component.scss']
+  styleUrls: ['./profil.component.scss'],
 })
 export class ProfilComponent implements OnInit {
   korisnik: any;
@@ -16,6 +16,7 @@ export class ProfilComponent implements OnInit {
   async ngOnInit() {
     try {
       this.korisnik = await this.korisniciService.dohvatiPodatkeKorisnika();
+      this.totpSecret = this.korisnik.totpAktiviran ? this.korisnik.totpSecret : null;
     } catch (error) {
       console.error('Greška prilikom dohvaćanja korisnika:', error);
     }
@@ -23,17 +24,19 @@ export class ProfilComponent implements OnInit {
 
   async onActivateTOTP() {
     try {
-      this.totpSecret = await this.korisniciService.activateTOTP();
+      const response = await this.korisniciService.activateTOTP();
+      this.totpSecret = response.tajniKljuc;
+      console.log('TOTP tajni ključ:', this.totpSecret);
+      this.korisnik.totpAktiviran = true;
     } catch (error) {
       console.error('Greška prilikom aktivacije TOTP:', error);
     }
-  }
+  }  
 
   async onDeactivateTOTP() {
     try {
       await this.korisniciService.deactivateTOTP();
       this.korisnik.totpAktiviran = false;
-      this.totpSecret = null;
     } catch (error) {
       console.error('Greška prilikom deaktivacije TOTP:', error);
     }
