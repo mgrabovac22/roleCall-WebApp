@@ -6,6 +6,7 @@ type tipKonf = {
 	tajniKljucSesija: string;
 	tmdbApiKeyV3: string;
 	tmdbApiKeyV4: string;
+	tajniCaptchaKljuc: string;
 };
 
 export class Konfiguracija {
@@ -21,6 +22,7 @@ export class Konfiguracija {
 			tajniKljucSesija: "",
 			tmdbApiKeyV3: "",
 			tmdbApiKeyV4: "",
+			tajniCaptchaKljuc: "",
 		};
 	}
 

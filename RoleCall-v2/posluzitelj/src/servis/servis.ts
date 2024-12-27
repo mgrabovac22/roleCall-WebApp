@@ -102,8 +102,8 @@ try {
         }
     });
     
-    server.post("/servis/app/korisnici/prijava", (req, res) => restAuthKorisnik.prijavaKorisnika(req, res));
-    server.post("/servis/app/korisnici", (req, res) => restAuthKorisnik.postKorisnik(req, res));
+    server.post("/servis/app/korisnici", async (req, res) => { await restAuthKorisnik.postKorisnik(req, res) });
+    server.post("/servis/app/korisnici/prijava", async (req, res) => { await restAuthKorisnik.prijavaKorisnika(req, res) });
     
     server.post("/servis/korisnici",jwtMiddleware(), (req, res) => restKorisnik.postKorisnici(req, res));
     server.get("/servis/korisnici",jwtMiddleware(), metodaNijeImplementirana);

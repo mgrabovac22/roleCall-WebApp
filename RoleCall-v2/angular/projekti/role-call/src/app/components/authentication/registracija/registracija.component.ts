@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { RecaptchaService } from '../../../moduls/services/recaptcha.service';
 
 @Component({
   selector: 'app-register',
@@ -24,7 +25,7 @@ export class RegistracijaComponent {
   telefon: string = '';
   errorMessage: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private recaptchaService: RecaptchaService, private router: Router) {}
 
   isValid(): boolean {
     return !!(this.email && this.korime && this.lozinka);
@@ -59,7 +60,9 @@ export class RegistracijaComponent {
     };
 
     try {
-      await this.authService.register(userData);
+      const captchaToken = await this.recaptchaService.executeRecaptcha('register');
+
+      await this.authService.register(userData, captchaToken);
       this.router.navigate(['/login']); 
     } catch (error: any) {
       this.errorMessage = error.message || 'Došlo je do greške!';

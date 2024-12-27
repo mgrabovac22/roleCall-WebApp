@@ -13,15 +13,29 @@ export class RestAuthKorisnik {
   }
 
   async postKorisnik(zahtjev: Request, odgovor: Response) {
+    await this.konfiguracija.ucitajKonfiguraciju();
     odgovor.type("application/json");
-    const { ime, prezime, adresa, korime, lozinka, email, drzava, telefon, grad } = zahtjev.body;
-
-    if (!korime || !lozinka || !email) {
-      odgovor.status(400).json({ greska: "Nedostaju obavezni podaci (korime, lozinka, email)" });
-      return;
+    const { ime, prezime, adresa, korime, lozinka, email, drzava, telefon, grad, recaptchaToken } = zahtjev.body;
+  
+    if (!korime || !lozinka || !email || !recaptchaToken) {
+      return odgovor.status(400).json({ greska: "Nedostaju obavezni podaci (korime, lozinka, email, recaptchaToken)" });
     }
-
+  
     try {
+      const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        body: new URLSearchParams({
+          secret: this.konfiguracija.dajKonf().tajniCaptchaKljuc, 
+          response: recaptchaToken, 
+        }),
+      });
+  
+      const recaptchaResult = await recaptchaResponse.json();
+  
+      if (!recaptchaResult.success) {
+        return odgovor.status(400).json({ greska: "reCAPTCHA verifikacija nije uspela." });
+      }
+  
       const hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
       const uspjeh = await this.korisnikDAO.dodajKorisnika({
         id: 0,
@@ -37,42 +51,56 @@ export class RestAuthKorisnik {
         telefon: telefon || null,
         grad: grad || null,
       });
-      
+  
       if (uspjeh) {
         zahtjev.session.korime = korime;
         zahtjev.session.tip_korisnika = 3;
         zahtjev.session.status = "Nije poslan zahtjev";
-        odgovor.status(201).json({ poruka: "Korisnik uspješno dodan" });
+        return odgovor.status(201).json({ poruka: "Korisnik uspješno dodan" });
       } else {
-        odgovor.status(400).json({ greska: "Dodavanje korisnika nije uspjelo. Provjerite podatke." });
+        return odgovor.status(400).json({ greska: "Dodavanje korisnika nije uspjelo. Provjerite podatke." });
       }
     } catch (err) {
       console.error("Greška prilikom dodavanja korisnika:", err);
-      odgovor.status(500).json({ greska: "Interna greška servera" });
+      return odgovor.status(500).json({ greska: "Interna greška servera" });
     }
-  }
+  }  
 
   async prijavaKorisnika(zahtjev: Request, odgovor: Response) {
     await this.konfiguracija.ucitajKonfiguraciju();
-
+  
     odgovor.type("application/json");
-    const { korime, lozinka } = zahtjev.body;
-
-    if (!korime || !lozinka) {
-      odgovor.status(400).json({ greska: "Nedostaju podaci za prijavu (korime, lozinka)" });
+    const { korime, lozinka, recaptchaToken } = zahtjev.body;
+  
+    if (!korime || !lozinka || !recaptchaToken) {
+      odgovor.status(400).json({ greska: "Nedostaju podaci za prijavu (korime, lozinka, recaptchaToken)" });
       return;
     }
-
+  
     try {
+      const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        body: new URLSearchParams({
+          secret: this.konfiguracija.dajKonf().tajniCaptchaKljuc, 
+          response: recaptchaToken,
+        }),
+      });
+  
+      const recaptchaResult = await recaptchaResponse.json();
+  
+      if (!recaptchaResult.success) {
+        odgovor.status(400).json({ greska: "reCAPTCHA verifikacija nije uspela." });
+        return;
+      }
+  
       const hashLozinka = kreirajSHA256(lozinka.trim(), korime.trim());
       const korisnik = await this.korisnikDAO.dajKorisnikaPoKorime(korime);
-
+  
       if (korisnik && korisnik.lozinka === hashLozinka) {
-
         zahtjev.session.korime = korisnik.korime;        
         zahtjev.session.tip_korisnika = korisnik.tip_korisnika_id;
         zahtjev.session.status = korisnik.status;
-
+  
         zahtjev.session.save((err) => {
           if (err) {
             console.error("Greška prilikom spremanja sesije:", err);
@@ -80,19 +108,22 @@ export class RestAuthKorisnik {
             return;
           }
         });
-
+  
         const notValidToken = kreirajToken({ korime: korisnik.korime }, this.konfiguracija.dajKonf().jwtTajniKljuc);
         const token = `Bearer ${notValidToken}`;        
-
+  
         odgovor.status(200).json({ poruka: "Prijava uspješna", korisnik, token });
+        return;
       } else {
         odgovor.status(401).json({ greska: "Pogrešni podaci za prijavu ili korisnik nema pristup." });
+        return;
       }
     } catch (err) {
       console.error("Greška prilikom prijave korisnika:", err);
       odgovor.status(500).json({ greska: "Interna greška servera" });
+      return
     }
-  }
+  }  
 
   async getKorisnici(zahtjev: Request, odgovor: Response) {
     if(zahtjev.session.tip_korisnika!==2){

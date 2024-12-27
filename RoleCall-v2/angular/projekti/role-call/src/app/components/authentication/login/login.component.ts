@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { RecaptchaService } from '../../../moduls/services/recaptcha.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ export class LoginComponent {
   lozinka: string = '';  
   errorMessage: string = '';  
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private recaptchaService: RecaptchaService, private router: Router) {}
 
   ngOnInit(): void {
     this.generateSnowflakes();
@@ -41,7 +42,9 @@ export class LoginComponent {
     this.errorMessage = '';  
 
     try {
-      await this.authService.login({ korime: this.korime, lozinka: this.lozinka });
+      const captchaToken = await this.recaptchaService.executeRecaptcha('login');
+      
+      await this.authService.login({ korime: this.korime, lozinka: this.lozinka }, captchaToken);
       console.log("aaaaaaaaaaaaaaaaaaaaaa");
       
       this.router.navigate(['/']);  

@@ -45,44 +45,50 @@ export class AuthService {
   }
 
 
-  async register(userData: any) {
+  async register(userData: any, recaptchaToken: string) {
     const response = await fetch(`${environment.restServis}app/korisnici`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(userData),
+      body: JSON.stringify({
+        ...userData,
+        recaptchaToken,
+      }),
     });
-
+  
     const data = await response.json();
     
     if (!response.ok) {
       throw new Error(data.greska || 'Greška prilikom registracije.');
     }
-
+  
     return data;
   }
 
-  async login(credentials: { korime: string, lozinka: string }) {
+  async login(credentials: { korime: string, lozinka: string }, recaptchaToken: string) {
     const response = await fetch(`${environment.restServis}app/korisnici/prijava`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         credentials: 'include',
       },
-      body: JSON.stringify(credentials)
+      body: JSON.stringify({
+        ...credentials,
+        recaptchaToken,
+      }),
     });
-
+  
     const data = await response.json();
     
     if (response.ok) {
-      const sesija = await this.getSesija()
+      const sesija = await this.getSesija();
       this.roleSubject.next(sesija.tip_korisnika);
       this.loggedInSubject.next(true);
       localStorage.setItem('token', data.token);
       return data;
     } else {
-      throw new Error(data.greska);
+      throw new Error(data.greska || 'Greška prilikom prijave.');
     }
   }
 
