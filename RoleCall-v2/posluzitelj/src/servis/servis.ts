@@ -157,7 +157,8 @@ try {
     server.post("/servis/app/korisnici/:korime/aktiviraj-totp",jwtMiddleware(), (req, res) => restAuthKorisnik.aktivirajTOTP(req, res));
     server.post("/servis/app/korisnici/:korime/deaktiviraj-totp", (req, res) => restAuthKorisnik.deaktivirajTOTP(req, res));
     server.get("/servis/app/korisnici/:korime/totp-secret",jwtMiddleware(), (req, res) => restAuthKorisnik.dohvatiTOTPSecret(req, res));
-    server.get("/servis/app/korisnici/:korime/totp-status",jwtMiddleware(), (req, res) => restAuthKorisnik.provjeriTOTP(req, res));
+    server.get("/servis/app/korisnici/:korime/totp-status",jwtMiddleware(), (req, res) => restAuthKorisnik.totpStatus(req, res));
+    server.get("/servis/app/korisnici/:korime/totp-provjera",jwtMiddleware(), (req, res) => restAuthKorisnik.provjeriTOTP(req, res));
     
     server.get('*', (req, res) => {
         res.sendFile(path.join(__dirname(), '../../angular/role-call/browser/index.html')); 

@@ -325,12 +325,24 @@ export class RestAuthKorisnik {
         res.status(404).json({ greska: "Korisnik nije pronađen." });
         return;
       }
+
+      console.log("korime", korime);
+      
   
       let tajniKljuc = korisnik.totp_secret;
-
-      if (!tajniKljuc) {
+      const provjeraTotp = await this.korisnikDAO.dohvatiTOTPSecret(korime);
+      console.log("provjera", provjeraTotp);
+      
+  
+      if (!provjeraTotp) {
+        console.log("uslo unutra");
+        
         tajniKljuc = kreirajTajniKljuc(korisnik.korime);
         await this.korisnikDAO.aktivirajTOTP(korime, tajniKljuc);
+      } else {
+        console.log("uslo u ovo");
+        
+        await this.korisnikDAO.postaviZastavicuTotpa(korime);
       }
   
       res.status(200).json({ poruka: "TOTP uspješno aktiviran.", tajniKljuc });
@@ -371,6 +383,29 @@ export class RestAuthKorisnik {
             res.status(200).json({ totpSecret });
         } else {
             res.status(404).json({ greska: "TOTP tajni ključ nije pronađen." });
+        }
+    } catch (err) {
+        console.error("Greška prilikom dohvaćanja TOTP tajnog ključa:", err);
+        res.status(500).json({ greska: "Interna greška servera." });
+    }
+  }
+
+  async totpStatus(req: Request, res: Response) {
+    const korime = req.params["korime"];
+
+    if (!korime) {
+        res.status(400).json({ greska: "Nevažeći ID korisnika." });
+        return;
+    }
+
+    try {
+        const status = await this.korisnikDAO.provjeriTOTPStatus(korime);
+        console.log("status", status);
+        
+        if (status!==null) {
+            res.status(200).json({ status });
+        } else {
+            res.status(404).json({ greska: "Korisnik nije pronađen!" });
         }
     } catch (err) {
         console.error("Greška prilikom dohvaćanja TOTP tajnog ključa:", err);

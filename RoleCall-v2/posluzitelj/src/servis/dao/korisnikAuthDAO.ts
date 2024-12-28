@@ -149,27 +149,33 @@ export class KorisnikDAO {
   }
 
   async aktivirajTOTP(korime: string, totpSecret: string | null): Promise<void> {
-    const imaTOTP = `
-      SELECT * FROM korisnik WHERE totp_aktiviran = 1 AND korime = ?;
-      `;
-      let a = (await this.baza.dajPodatkePromise(imaTOTP, [korime]));
-      
-      if ((a as Array<any>).length == 0) {
-          const sql = `
-          UPDATE korisnik
-          SET 
-              totp_aktiviran = 1,
-              totp_secret = ?
-          WHERE korime = ?
-          `;
-          try {
-              await this.baza.ubaciAzurirajPodatke(sql, [totpSecret, korime]);
-          }
-          catch (err) {
-              console.error("Greška prilikom aktivacije TOTP-a:", err);
-              throw err;
-          }
-      }
+    const sql = `
+        UPDATE korisnik
+        SET 
+            totp_aktiviran = 1,
+            totp_secret = ?
+        WHERE korime = ?
+    `;
+    try {
+        await this.baza.ubaciAzurirajPodatke(sql, [totpSecret, korime]);
+    } catch (err) {
+        console.error("Greška prilikom aktivacije TOTP-a:", err);
+        throw err;
+    }
+  }
+
+  async postaviZastavicuTotpa(korime: string): Promise<void> {
+    const sql = `
+        UPDATE korisnik
+        SET totp_aktiviran = 1
+        WHERE korime = ?
+    `;
+    try {
+        await this.baza.ubaciAzurirajPodatke(sql, [korime]);
+    } catch (err) {
+        console.error("Greška prilikom ponovne aktivacije TOTP-a:", err);
+        throw err;
+    }
   }
 
   async deaktivirajTOTP(korime: string): Promise<void> {

@@ -201,7 +201,6 @@ export class KorisniciService {
   async activateTOTP(): Promise<{ tajniKljuc: string }> {
     const jwtToken = await this.getJWT();
   
-    // Dohvati trenutnog korisnika
     const responseTrenutni = await fetch(`${environment.restServis}app/korisnici/dajTrenutnogKorisnika`, {
       method: 'GET',
       headers: {
@@ -214,7 +213,6 @@ export class KorisniciService {
   
     const trenutniKorisnik = await responseTrenutni.json();
   
-    // Aktivacija TOTP-a (bez generiranja novog ako već postoji)
     const response = await fetch(`${environment.restServis}app/korisnici/${trenutniKorisnik.korime}/aktiviraj-totp`, {
       method: 'POST',
       headers: {
@@ -227,7 +225,6 @@ export class KorisniciService {
   
     const result = await response.json();
   
-    // Provjeri postoji li već ključ ili je generiran novi
     if (result.tajniKljuc) {
       console.log('TOTP aktiviran s ključem:', result.tajniKljuc);
     } else {
@@ -240,7 +237,6 @@ export class KorisniciService {
   async deactivateTOTP(): Promise<void> {
     const jwtToken = await this.getJWT();
   
-    // Dohvati trenutnog korisnika
     const responseTrenutni = await fetch(`${environment.restServis}app/korisnici/dajTrenutnogKorisnika`, {
       method: 'GET',
       headers: {
@@ -253,7 +249,6 @@ export class KorisniciService {
   
     const trenutniKorisnik = await responseTrenutni.json();
   
-    // Deaktivacija TOTP-a
     const response = await fetch(`${environment.restServis}app/korisnici/${trenutniKorisnik.korime}/deaktiviraj-totp`, {
       method: 'POST',
       headers: {
@@ -264,4 +259,32 @@ export class KorisniciService {
   
     if (!response.ok) throw new Error('Greška prilikom deaktivacije TOTP.');
   }
+
+  async provjeriTOTPStatus(): Promise<boolean> {
+    try {
+      const jwtToken = await this.getJWT();
+    
+      const trenutniKorisnik = await this.dohvatiPodatkeKorisnika();
+      
+      const totpStatusResponse = await fetch(`${environment.restServis}app/korisnici/${trenutniKorisnik.korime}/totp-status`, {
+        method: 'GET',
+        headers: {
+          Authorization: jwtToken,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!totpStatusResponse.ok) throw new Error('Greška prilikom dohvaćanja statusa TOTP-a.');
+  
+      const totpStatus = await totpStatusResponse.json();
+      console.log("frontend", totpStatus);
+    
+      return totpStatus.status; 
+     
+    } catch (error) {
+      console.error('Greška prilikom provjere TOTP statusa:', error);
+      throw error;
+    }
+  }
+  
 }
