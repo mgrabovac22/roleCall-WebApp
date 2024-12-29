@@ -11,6 +11,7 @@ export class AuthService {
   public loggedIn$ = this.loggedInSubject.asObservable();
   private roleSubject: BehaviorSubject<number> = new BehaviorSubject<number>(3);
   public role$ = this.roleSubject.asObservable();
+  private token: string = "";
 
   constructor(private router: Router) {
     this.checkAndClearToken();  
@@ -66,7 +67,7 @@ export class AuthService {
     return data;
   }
 
-  async login(credentials: { korime: string, lozinka: string }, recaptchaToken: string) {
+  async login(credentials: { korime: string, lozinka: string }, recaptchaToken: string, totpEnabled: boolean) {
     const response = await fetch(`${environment.restServis}app/korisnici/prijava`, {
       method: 'POST',
       headers: {
@@ -82,10 +83,12 @@ export class AuthService {
     const data = await response.json();
     
     if (response.ok) {
-      const sesija = await this.getSesija();
-      this.roleSubject.next(sesija.tip_korisnika);
-      this.loggedInSubject.next(true);
-      localStorage.setItem('token', data.token);
+      if(!totpEnabled){
+        const sesija = await this.getSesija();
+        this.roleSubject.next(sesija.tip_korisnika);
+        this.loggedInSubject.next(true);
+        localStorage.setItem('token', data.token);
+      }
       return data;
     } else {
       throw new Error(data.greska || 'Greška prilikom prijave.');
@@ -134,5 +137,46 @@ export class AuthService {
       throw new Error('Greška pri odjavi');
     }
   }
+
+  async verifyTotpCode(korime: string, uneseniKod: string): Promise<void> {
+    const response = await fetch(`${environment.restServis}app/korisnici/${korime}/totp-provjera`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ uneseniKod }),
+    });
+  
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.greska || 'Neispravan TOTP kod.');
+    }
+    
+    const sesija = await this.getSesija();
+    this.roleSubject.next(sesija.tip_korisnika);
+    localStorage.setItem('token', this.token);
+    this.loggedInSubject.next(true);
+  }
+  
+
+  async getTotpStatus(korime: string): Promise<{status: boolean}> {
+    console.log("Korime u serv", korime);
+    
+    const response = await fetch(`${environment.restServis}app/korisnici/${korime}/totp-status`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Došlo je do greške prilikom dohvaćanja TOTP statusa.');
+    }
+
+    const data = await response.json();
+    return data; 
+  }
+  
   
 }

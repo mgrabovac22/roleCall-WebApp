@@ -208,7 +208,7 @@ export class KorisnikDAO {
             return totpSecret;
         }
         console.log(`Nema TOTP tajnog ključa za korisnika: ${korime}`);
-        return null; // Ako totp_secret nije prisutan ili je null
+        return null;
     } catch (err) {
         console.error("Greška prilikom dohvaćanja TOTP tajnog ključa:", err);
         throw err;
