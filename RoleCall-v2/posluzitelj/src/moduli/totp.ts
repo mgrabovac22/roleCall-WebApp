@@ -15,6 +15,8 @@ export function provjeriTOTP (uneseniKod:string, tajniKljuc:string) {
     algorithm: "SHA-512",
     period: 60
   });
+  console.log("Tajni ključ:", tajniKljuc);
+  console.log("Generirani kod:", kod.otp);
   console.log(uneseniKod+"="+kod.otp);
   if (uneseniKod == kod.otp)
     return true;

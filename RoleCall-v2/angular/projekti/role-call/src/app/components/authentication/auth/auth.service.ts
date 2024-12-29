@@ -17,6 +17,12 @@ export class AuthService {
     this.checkAndClearToken();  
   }
 
+  async getJWT(): Promise<string> {
+    const response = await fetch(`${environment.restServis}app/getJWT`);
+    const data = await response.json();
+    return data.token;
+  }
+
   private checkAndClearToken(): void {
     if (!localStorage.getItem('token')) {
       this.logout(); 
@@ -89,6 +95,7 @@ export class AuthService {
         this.loggedInSubject.next(true);
         localStorage.setItem('token', data.token);
       }
+      this.token = data.token;
       return data;
     } else {
       throw new Error(data.greska || 'Greška prilikom prijave.');
@@ -139,9 +146,13 @@ export class AuthService {
   }
 
   async verifyTotpCode(korime: string, uneseniKod: string): Promise<void> {
+    console.log(`${environment.restServis}app/korisnici/${korime}/totp-provjera`);
+    var jwtToken = await this.getJWT();
+    
     const response = await fetch(`${environment.restServis}app/korisnici/${korime}/totp-provjera`, {
       method: 'POST',
       headers: {
+        'Authorization': jwtToken,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ uneseniKod }),
