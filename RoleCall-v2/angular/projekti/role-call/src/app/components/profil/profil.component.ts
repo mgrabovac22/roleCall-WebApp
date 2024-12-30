@@ -12,7 +12,7 @@ export class ProfilComponent implements OnInit {
   korisnik: any;
   totpSecret: string | null = null;
   totpAktiviran: boolean = false;
-  qrCodeImage: string | null = null;  // Ovdje pohranjujemo QR kod kao base64 string
+  qrCodeImage: string | null = null; 
 
   constructor(private korisniciService: KorisniciService) {}
 
@@ -49,19 +49,23 @@ export class ProfilComponent implements OnInit {
       this.korisnik.totpAktiviran = false;
       this.totpAktiviran = false;
       this.totpSecret = null;
-      this.qrCodeImage = null;  // Očistite QR kod
+      this.qrCodeImage = null;  
     } catch (error) {
       console.error('Greška prilikom deaktivacije TOTP:', error);
     }
   }
 
   private generateQRCode(secret: string) {
-    // Generirajte QR kod kao base64 string
-    QRCode.toDataURL(secret, (error, url) => {
+    const korime = this.korisnik.korime;
+    const issuer = 'RoleCall';  
+
+    const otpUrl = `otpauth://totp/${korime}?issuer=${issuer}&secret=${secret}&digits=6&period=60&algorithm=SHA512`;
+
+    QRCode.toDataURL(otpUrl, (error, url) => {
       if (error) {
         console.error('Greška pri generiranju QR koda:', error);
       } else {
-        this.qrCodeImage = url;  // Postavite URL kao izvor za sliku
+        this.qrCodeImage = url;  
       }
     });
   }
