@@ -34,7 +34,6 @@ export class NavigacijaComponent implements OnInit {
   private async loadUserRole(): Promise<void> {
     try {
       const sessionData = await this.authService.getSesija();
-      console.log(sessionData.korime != null);
       
       if (sessionData.korime != null) {
         this.isLoggedIn = true;

@@ -54,7 +54,6 @@ export class PocetnaComponent {
   async posaljiZahtjevAdminu() {
     try {
       await this.korisniciService.posaljiZahtjevAdminu();
-      alert('Zahtjev je uspješno poslan.');
       this.zahtjevPoslan = true;
     } catch (err) {
       console.error(err);

@@ -225,12 +225,6 @@ export class KorisniciService {
   
     const result = await response.json();
   
-    if (result.tajniKljuc) {
-      console.log('TOTP aktiviran s ključem:', result.tajniKljuc);
-    } else {
-      console.log('TOTP je već aktiviran.');
-    }
-  
     return result;
   }
   
@@ -277,7 +271,6 @@ export class KorisniciService {
       if (!totpStatusResponse.ok) throw new Error('Greška prilikom dohvaćanja statusa TOTP-a.');
   
       const totpStatus = await totpStatusResponse.json();
-      console.log("frontend", totpStatus);
     
       return totpStatus.status; 
      

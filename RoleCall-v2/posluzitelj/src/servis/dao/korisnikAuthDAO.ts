@@ -72,7 +72,6 @@ export class KorisnikDAO {
         SET tip_korisnika_ID = ?
         WHERE id = ?
     `;
-    console.log(`Ažuriram tip korisnika s ID ${korisnikID} na ${noviTip}`);
     try {
         await this.baza.ubaciAzurirajPodatke(sql, [noviTip, korisnikID]);
     } catch (err) {
@@ -123,7 +122,6 @@ export class KorisnikDAO {
         SET status = ?
         WHERE korime = ?
     `;
-    console.log(`Postavljam status korisnika ${korime} na ${noviStatus}`);
     try {
         await this.baza.ubaciAzurirajPodatke(sql, [noviStatus, korime]);
     } catch (err) {
@@ -204,10 +202,8 @@ export class KorisnikDAO {
         const totpSecret = rezultat[0]?.totp_secret;
 
         if (totpSecret !== null && totpSecret !== undefined) {
-            console.log("rez", rezultat);
             return totpSecret;
         }
-        console.log(`Nema TOTP tajnog ključa za korisnika: ${korime}`);
         return null;
     } catch (err) {
         console.error("Greška prilikom dohvaćanja TOTP tajnog ključa:", err);

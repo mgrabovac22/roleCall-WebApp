@@ -17,7 +17,6 @@ export function provjeriTOTP (uneseniKod:string, tajniKljuc:string) {
   });
   console.log("Tajni ključ:", tajniKljuc);
   console.log("Generirani kod:", kod.otp);
-  console.log(uneseniKod+"="+kod.otp);
   if (uneseniKod == kod.otp)
     return true;
 

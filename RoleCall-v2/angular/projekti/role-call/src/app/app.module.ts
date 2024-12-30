@@ -18,6 +18,8 @@ import { NeovlastenPristupComponent } from './error-handling/neovlasten-pristup/
 import { StranicaNijePronadjenaComponent } from './error-handling/stranica-nije-pronadjena/stranica-nije-pronadjena.component';
 import { FilmoviComponent } from './components/filmovi/filmovi.component';
 import { ProfilComponent } from './components/profil/profil.component';
+import { RecaptchaFormsModule, RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
+import { environment } from '../environments/environment.prod';
 
 const routes: Routes = [
   { path: '', component: PocetnaComponent, canActivate: [AuthGuard], data: { roles: [1, 2, 3] } },
@@ -54,9 +56,9 @@ const routes: Routes = [
     ProfilComponent
   ],
   imports: [
-    BrowserModule, RouterModule.forRoot(routes), FormsModule
+    BrowserModule, RouterModule.forRoot(routes), FormsModule, RecaptchaFormsModule, RecaptchaV3Module
   ],
-  providers: [AuthGuard],
+  providers: [AuthGuard, { provide: RECAPTCHA_V3_SITE_KEY, useValue: environment.recaptchaSiteKey },],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

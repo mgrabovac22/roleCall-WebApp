@@ -27,7 +27,6 @@ export class FilmoviService {
         ...(datumDo && { datumDo: datumDo.toString() }),
       });
 
-      console.log("Query Params:", queryParams);
 
       const response = await fetch(`${environment.restServis}film?${queryParams.toString()}`, {
         headers: {

@@ -146,7 +146,6 @@ export class AuthService {
   }
 
   async verifyTotpCode(korime: string, uneseniKod: string): Promise<void> {
-    console.log(`${environment.restServis}app/korisnici/${korime}/totp-provjera`);
     var jwtToken = await this.getJWT();
     
     const response = await fetch(`${environment.restServis}app/korisnici/${korime}/totp-provjera`, {
@@ -171,7 +170,6 @@ export class AuthService {
   
 
   async getTotpStatus(korime: string): Promise<{status: boolean}> {
-    console.log("Korime u serv", korime);
     
     const response = await fetch(`${environment.restServis}app/korisnici/${korime}/totp-status`, {
       method: 'GET',

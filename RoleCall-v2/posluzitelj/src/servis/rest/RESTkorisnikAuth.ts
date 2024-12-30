@@ -90,9 +90,9 @@ export class RestAuthKorisnik {
       });
   
       const recaptchaResult = await recaptchaResponse.json();
-  
-      if (!recaptchaResult.success) {
-        odgovor.status(400).json({ greska: "reCAPTCHA verifikacija nije uspela." });
+      
+      if (!recaptchaResult.success || recaptchaResult.score <= 0.5) {
+        odgovor.status(400).json({ greska: "reCAPTCHA verifikacija nije uspela ili ste prepoznati kao bot." });
         return;
       }
   
@@ -326,21 +326,17 @@ export class RestAuthKorisnik {
         return;
       }
 
-      console.log("korime", korime);
       
   
       let tajniKljuc = korisnik.totp_secret;
       const provjeraTotp = await this.korisnikDAO.dohvatiTOTPSecret(korime);
-      console.log("provjera", provjeraTotp);
       
   
       if (!provjeraTotp) {
-        console.log("uslo unutra");
         
         tajniKljuc = kreirajTajniKljuc(korisnik.korime);
         await this.korisnikDAO.aktivirajTOTP(korime, tajniKljuc);
       } else {
-        console.log("uslo u ovo");
         
         await this.korisnikDAO.postaviZastavicuTotpa(korime);
       }
@@ -400,7 +396,6 @@ export class RestAuthKorisnik {
 
     try {
         const status = await this.korisnikDAO.provjeriTOTPStatus(korime);
-        console.log("status", status);
         
         if (status!==null) {
             res.status(200).json({ status });

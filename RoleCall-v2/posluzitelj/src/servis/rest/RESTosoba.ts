@@ -442,7 +442,6 @@ export class RestOsoba {
       return;
     }
     odgovor.type("application/json");
-    console.log("sessija u provjeri: ", zahtjev.session);
     await this.konfiguracija.ucitajKonfiguraciju();
 
     try {
