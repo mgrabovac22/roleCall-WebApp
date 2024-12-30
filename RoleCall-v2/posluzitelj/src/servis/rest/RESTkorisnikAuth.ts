@@ -418,7 +418,7 @@ export class RestAuthKorisnik {
     const { uneseniKod } = req.body;
 
     if (!korime || !uneseniKod) {
-      res.status(400).json({ greska: "Nedostaju podaci (korime korisnika ili TOTP kod)." });
+      res.status(400).json({ greska: "Nedostaje TOTP kod." });
       return;
     }
 

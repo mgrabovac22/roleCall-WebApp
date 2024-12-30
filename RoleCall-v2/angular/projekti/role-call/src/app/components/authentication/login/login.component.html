@@ -43,6 +43,20 @@
     </div>
   </div>
 
+  <div id="slider-container">
+  <label for="snijeg-slider">Intenzitet snijega:</label>
+  <input
+  id="snijeg-slider"
+  type="range"
+  min="5"
+  max="100"
+  step="1"
+  [(ngModel)]="intenzitetSnijega"
+  (input)="setIntenzitetSnijega()"
+  />
+  <span>{{ intenzitetSnijega }}</span>
+</div>
+
   <div class="popup-overlay" *ngIf="showTotpPopup && totpEnabled">
     <div class="popup">
       <h3>Unesite TOTP kod</h3>
@@ -52,12 +66,14 @@
         placeholder="TOTP kod"
         class="totp-input"
       />
-      <button (click)="verifyTotp()">Potvrdi</button>
-      <button (click)="showTotpPopup = false">Zatvori</button>
+      <div class="popup-actions">
+        <button (click)="verifyTotp()">Potvrdi</button>
+        <button class="close-btn" (click)="showTotpPopup = false">Zatvori</button>
+      </div>
       <p *ngIf="errorMessage" class="error-message">
         {{ errorMessage }}
       </p>
     </div>
-  </div>
+  </div>  
   
 </section>

@@ -17,28 +17,123 @@ section{
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); 
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; 
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
   }
   
   .popup {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    background: #ffffff;
+    padding: 30px 20px;
+    border-radius: 12px;
     text-align: center;
-    width: 300px;
-    z-index: 1010;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    overflow: hidden;
+    animation: slideIn 0.4s ease-in-out;
+  }
+  
+  .popup h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .popup .totp-input {
+    width: calc(100% - 20px); 
+    max-width: 100%; 
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+  }
+  
+  .popup .totp-input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  .popup-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .popup button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+  }
+  
+  .popup button:hover {
+    transform: scale(1.05);
+  }
+  
+  .popup button:first-child {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .popup button:first-child:hover {
+    background-color: #0056b3;
+  }
+  
+  .popup .close-btn {
+    background-color: #f8f9fa;
+    color: #333;
+  }
+  
+  .popup .close-btn:hover {
+    background-color: #e2e6ea;
   }
   
   .error-message {
     color: red;
+    font-size: 14px;
     margin-top: 10px;
   }
   
+  @keyframes fadeIn {
+    from {
+      background: rgba(0, 0, 0, 0);
+    }
+    to {
+      background: rgba(0, 0, 0, 0.7);
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }  
+
+  @media (max-width: 480px) {
+    .popup {
+      width: 90%;
+    }
+  
+    .popup .totp-input {
+      font-size: 14px; 
+    }
+  }
   
 
   #slider-container {
