@@ -24,5 +24,9 @@
   <div *ngIf="korisnik.totpAktiviran">
     <p><strong>Tajni TOTP ključ:</strong> {{ totpSecret }}</p>
     <p>Koristite ovaj ključ za postavljanje TOTP-a u aplikaciji.</p>
+    <div *ngIf="totpSecret" id="qrCode">
+      <h3>Skenirajte da dobijete vrijednost totp tajnog ključa</h3>
+      <img *ngIf="qrCodeImage" [src]="qrCodeImage" alt="QR kod">
+    </div>
   </div>
 </div>
