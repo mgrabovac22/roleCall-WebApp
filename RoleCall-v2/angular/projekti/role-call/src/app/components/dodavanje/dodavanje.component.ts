@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment.prod';
 import { TmdbService } from '../../moduls/services/tmdb.service';
 import { OsobeService } from '../../moduls/services/osobe.service';
+import { SnijegService } from '../../moduls/services/snijeg.service';
 
 @Component({
   selector: 'app-dodavanje',
@@ -9,7 +10,7 @@ import { OsobeService } from '../../moduls/services/osobe.service';
   standalone: false,
   styleUrls: ['./dodavanje.component.scss'],
 })
-export class DodavanjeComponent {
+export class DodavanjeComponent implements OnInit {
   query: string = '';
   poruka: string = '';
   currentPage = 1;
@@ -18,7 +19,24 @@ export class DodavanjeComponent {
   dodavanjeStatus: { [key: number]: boolean } = {};
   brisanjeStatus: { [key: number]: boolean } = {};
 
-  constructor(private tmdbService: TmdbService, private osobeService: OsobeService){}
+  intenzitetSnijega: number = 20;
+  snowflakes: { duration: number; left: number }[] = [];
+
+  constructor(private tmdbService: TmdbService, private osobeService: OsobeService, private snowflakesService: SnijegService){}
+  
+  ngOnInit(): void {
+    this.snowflakesService.intenzitetSnijega$.subscribe((intenzitet) => {
+      this.intenzitetSnijega = intenzitet;
+      this.generateSnowflakes();
+    });
+  }
+
+  private generateSnowflakes(): void {
+    this.snowflakes = Array.from({ length: this.intenzitetSnijega }, () => ({
+      duration: Math.random() * 5 + 5,
+      left: Math.random() * 100,
+    }));
+  }
 
 
   async pretrazi() {

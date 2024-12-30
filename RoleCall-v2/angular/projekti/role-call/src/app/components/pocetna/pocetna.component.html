@@ -15,11 +15,14 @@
     </div>
   
     <div class="falling-snow">
-      <div class="flake">&#10052;</div>
-      <div class="flake">&#10052;</div>
-      <div class="flake">&#10052;</div>
-      <div class="flake">&#10052;</div>
-      <div class="flake">&#10052;</div>
+      <div
+        class="flake"
+        *ngFor="let snowflake of snowflakes"
+        [style.animation-duration]="snowflake.duration + 's'"
+        [style.left]="snowflake.left + '%'"
+      >
+        &#10052;
+      </div>
     </div>
   
     <div class="rotating-snowflake bottom-left"></div>

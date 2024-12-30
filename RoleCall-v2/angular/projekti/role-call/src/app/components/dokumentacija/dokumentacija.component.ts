@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Korak } from '../../moduls/interfaces/KorakI';
+import { SnijegService } from '../../moduls/services/snijeg.service';
 
 @Component({
   selector: 'app-dokumentacija',
@@ -32,14 +33,13 @@ export class DokumentacijaComponent implements OnInit {
     { broj: 17, opis: 'Omogućiti upload slika za filmove u posebnom direktoriju.', tip: 'backend', status: '🔧 U izradi' }
   ];
 
-  constructor(){}
+  constructor(private snowflakesService: SnijegService){}
 
   ngOnInit(): void {
-    this.generateSnowflakes();
-  }
-
-  setIntenzitetSnijega() {
-    this.generateSnowflakes();
+    this.snowflakesService.intenzitetSnijega$.subscribe((intenzitet) => {
+      this.intenzitetSnijega = intenzitet;
+      this.generateSnowflakes();
+    });
   }
 
   private generateSnowflakes() {

@@ -37,5 +37,16 @@
     <button (click)="zadnjaStranica()" [disabled]="stranica === maxStranica">Zadnja</button>
   </div>
 
+  <div class="falling-snow">
+    <div
+      class="flake"
+      *ngFor="let snowflake of snowflakes"
+      [style.animation-duration]="snowflake.duration + 's'"
+      [style.left]="snowflake.left + '%'"
+    >
+      &#10052;
+    </div>
+  </div>
+
 </section>
   

@@ -2,12 +2,6 @@
     <div class="rotating-snowflake bottom-left"></div>
     <div class="rotating-snowflake top-right"></div>
   
-    <div class="snowflake">&#10052;</div>
-    <div class="snowflake">&#10052;</div>
-    <div class="snowflake">&#10052;</div>
-    <div class="snowflake">&#10052;</div>
-    <div class="snowflake">&#10052;</div>
-  
     <section id="detaljiOsobe">
         <img [src]="osoba?.putanja_profila || 'assets/avatar.jpg'" [alt]="osoba?.ime_prezime" />
         <h1>{{ osoba?.ime_prezime }}</h1>
@@ -45,5 +39,16 @@
     </table>
   
     <button id="ucitajJos" (click)="ucitajJosFilmova()">Učitaj Još</button>
+    
+    <div class="falling-snow">
+        <div
+          class="flake"
+          *ngFor="let snowflake of snowflakes"
+          [style.animation-duration]="snowflake.duration + 's'"
+          [style.left]="snowflake.left + '%'"
+        >
+          &#10052;
+        </div>
+    </div>
   </section>
   

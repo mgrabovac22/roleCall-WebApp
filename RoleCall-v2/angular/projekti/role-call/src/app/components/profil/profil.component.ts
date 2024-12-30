@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { KorisniciService } from '../../moduls/services/korisnici.service';
 import * as QRCode from 'qrcode';
+import { SnijegService } from '../../moduls/services/snijeg.service';
 
 @Component({
   selector: 'app-profil',
@@ -9,15 +10,21 @@ import * as QRCode from 'qrcode';
   styleUrls: ['./profil.component.scss'],
 })
 export class ProfilComponent implements OnInit {
+  intenzitetSnijega: number = 20;
+  snowflakes: { duration: number; left: number }[] = [];
   korisnik: any;
   totpSecret: string | null = null;
   totpAktiviran: boolean = false;
   qrCodeImage: string | null = null; 
 
-  constructor(private korisniciService: KorisniciService) {}
+  constructor(private korisniciService: KorisniciService, private snowflakesService: SnijegService) {}
 
   async ngOnInit() {
     try {
+      this.snowflakesService.intenzitetSnijega$.subscribe((intenzitet) => {
+        this.intenzitetSnijega = intenzitet;
+        this.generateSnowflakes();
+      });
       this.korisnik = await this.korisniciService.dohvatiPodatkeKorisnika();
       this.totpAktiviran = await this.korisniciService.provjeriTOTPStatus();
       this.korisnik.totpAktiviran = this.totpAktiviran;
@@ -29,6 +36,18 @@ export class ProfilComponent implements OnInit {
     } catch (error) {
       console.error('Greška prilikom dohvaćanja korisnika:', error);
     }
+  }
+
+  setIntenzitetSnijega(): void {
+    this.snowflakesService.setIntenzitetSnijega(this.intenzitetSnijega); 
+    this.generateSnowflakes();
+  }
+
+  private generateSnowflakes(): void {
+    this.snowflakes = Array.from({ length: this.intenzitetSnijega }, () => ({
+      duration: Math.random() * 5 + 5,
+      left: Math.random() * 100,
+    }));
   }
 
   async onActivateTOTP() {

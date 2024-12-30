@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { KorisniciService } from '../../moduls/services/korisnici.service';
+import { SnijegService } from '../../moduls/services/snijeg.service';
 
 @Component({
   selector: 'app-pocetna',
@@ -15,10 +16,24 @@ export class PocetnaComponent {
   zahtjevAdminuVisible: boolean = false;
   zahtjevPoslan: boolean = false;
 
-  constructor(private korisniciService: KorisniciService) {}
+  intenzitetSnijega: number = 20;
+  snowflakes: { duration: number; left: number }[] = [];
+
+  constructor(private korisniciService: KorisniciService, private snowflakesService: SnijegService) {}
 
   ngOnInit() {
+    this.snowflakesService.intenzitetSnijega$.subscribe((intenzitet) => {
+      this.intenzitetSnijega = intenzitet;
+      this.generateSnowflakes();
+    });
     this.dohvatiPodatkeKorisnika();
+  }
+
+  private generateSnowflakes(): void {
+    this.snowflakes = Array.from({ length: this.intenzitetSnijega }, () => ({
+      duration: Math.random() * 5 + 5,
+      left: Math.random() * 100,
+    }));
   }
 
   async dohvatiPodatkeKorisnika() {

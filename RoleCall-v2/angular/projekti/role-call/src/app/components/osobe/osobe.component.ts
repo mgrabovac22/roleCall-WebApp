@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { OsobeService } from '../../moduls/services/osobe.service';
+import { SnijegService } from '../../moduls/services/snijeg.service';
 
 @Component({
   selector: 'app-osobe',
@@ -17,12 +18,26 @@ export class OsobeComponent implements OnInit {
   ukupnoStranicaPrikaz: number = 1;
   ukupniPodaci: any[] = [];
 
-  constructor(private router: Router, private osobeService: OsobeService) {}
+  intenzitetSnijega: number = 20;
+  snowflakes: { duration: number; left: number }[] = [];
+
+  constructor(private router: Router, private osobeService: OsobeService, private snowflakesService: SnijegService) {}
 
   @ViewChild('osobeContainer', { static: true }) osobeContainer!: ElementRef;
 
   async ngOnInit(): Promise<void> {
+    this.snowflakesService.intenzitetSnijega$.subscribe((intenzitet) => {
+      this.intenzitetSnijega = intenzitet;
+      this.generateSnowflakes();
+    });
     await this.ucitajSveOsobe();
+  }
+
+  private generateSnowflakes(): void {
+    this.snowflakes = Array.from({ length: this.intenzitetSnijega }, () => ({
+      duration: Math.random() * 5 + 5,
+      left: Math.random() * 100,
+    }));
   }
 
   idiNaDetalje(idOsobe: number): void {

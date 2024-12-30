@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FilmoviService } from '../../moduls/services/filmovi.service';
 import { environment } from '../../../environments/environment.prod';
+import { SnijegService } from '../../moduls/services/snijeg.service';
 
 @Component({
   selector: 'app-filmovi',
@@ -16,10 +17,24 @@ export class FilmoviComponent implements OnInit {
   datumDoString: string | undefined;
   environment: any = environment;
 
-  constructor(private filmoviService: FilmoviService) {}
+  intenzitetSnijega: number = 20;
+  snowflakes: { duration: number; left: number }[] = [];
+
+  constructor(private filmoviService: FilmoviService, private snowflakesService: SnijegService) {}
 
   ngOnInit(): void {
+    this.snowflakesService.intenzitetSnijega$.subscribe((intenzitet) => {
+      this.intenzitetSnijega = intenzitet;
+      this.generateSnowflakes();
+    });
     this.loadFilmovi();  
+  }
+
+  private generateSnowflakes(): void {
+    this.snowflakes = Array.from({ length: this.intenzitetSnijega }, () => ({
+      duration: Math.random() * 5 + 5,
+      left: Math.random() * 100,
+    }));
   }
 
   async loadFilmovi() {
