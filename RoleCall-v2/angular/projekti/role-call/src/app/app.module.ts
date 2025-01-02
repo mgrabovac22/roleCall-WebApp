@@ -20,6 +20,7 @@ import { FilmoviComponent } from './components/filmovi/filmovi.component';
 import { ProfilComponent } from './components/profil/profil.component';
 import { RecaptchaFormsModule, RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
 import { environment } from '../environments/environment.prod';
+import { DetaljiFilmaComponent } from './components/detalji-filma/detalji-filma.component';
 
 const routes: Routes = [
   { path: '', component: PocetnaComponent, canActivate: [AuthGuard], data: { roles: [1, 2, 3] } },
@@ -27,6 +28,7 @@ const routes: Routes = [
   { path: 'osobe', component: OsobeComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
   { path: 'filmovi', component: FilmoviComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
   { path: 'detalji/:id', component: DetaljiComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
+  { path: 'detalji-film/:id', component: DetaljiFilmaComponent, canActivate: [AuthGuard], data: { roles: [1, 2] } },
   { path: 'dodavanje', component: DodavanjeComponent, canActivate: [AuthGuard], data: { roles: [2] } },
   { path: 'korisnici', component: KorisniciComponent, canActivate: [AuthGuard], data: { roles: [2] } },
 
@@ -53,7 +55,9 @@ const routes: Routes = [
     NeovlastenPristupComponent,
     StranicaNijePronadjenaComponent,
     FilmoviComponent,
-    ProfilComponent
+    ProfilComponent,
+    DetaljiFilmaComponent,
+    DetaljiComponent
   ],
   imports: [
     BrowserModule, RouterModule.forRoot(routes), FormsModule, RecaptchaFormsModule, RecaptchaV3Module

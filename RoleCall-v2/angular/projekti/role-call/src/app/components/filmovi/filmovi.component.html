@@ -11,9 +11,11 @@
 
   <div class="filmovi-grid">
     <div class="film-card" *ngFor="let film of filmovi">
-      <img *ngIf="film.putanja_postera || film.poster_path"
-      [src]="environment.posteriPutanja + (film.putanja_postera || film.poster_path)" 
-      [alt]="film.naslov || film.title" />
+      <a [routerLink]="['/detalji-film', film.id]">
+        <img *ngIf="film.putanja_postera || film.poster_path"
+        [src]="environment.posteriPutanja + (film.putanja_postera || film.poster_path)" 
+        [alt]="film.naslov || film.title" />
+      </a>
       
       <div class="film-info">
         <h3>{{ film.naslov }}</h3>
@@ -49,4 +51,3 @@
   </div>
 
 </section>
-  

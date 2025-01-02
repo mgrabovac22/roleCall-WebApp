@@ -10,8 +10,7 @@ import { SnijegService } from '../../moduls/services/snijeg.service';
   selector: 'app-detalji',
   templateUrl: './detalji.component.html',
   styleUrls: ['./detalji.component.scss'],
-  standalone: true,
-  imports: [CommonModule],
+  standalone: false,
 })
 export class DetaljiComponent implements OnInit {
   idOsobe: number | null = null;

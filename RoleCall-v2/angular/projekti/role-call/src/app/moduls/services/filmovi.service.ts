@@ -92,4 +92,16 @@ export class FilmoviService {
       throw error;
     }
   }
+
+  async dohvatiFilmDetalje(id: number): Promise<any> {
+    const jwtToken = await this.getJWT();
+    const response = await fetch(`${environment.restServis}film/${id}`, {
+      headers: {
+        Authorization: jwtToken,
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json();
+    return data;
+  }
 }

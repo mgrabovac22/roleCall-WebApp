@@ -1,6 +1,9 @@
 <section class="content-container">
     <div class="rotating-snowflake bottom-left"></div>
     <div class="rotating-snowflake top-right"></div>
+    <div class="film-buttons">
+        <a [routerLink]="['/osobe']" class="back-button">Nazad</a>
+    </div>
   
     <section id="detaljiOsobe">
         <img [src]="osoba?.putanja_profila || 'assets/avatar.jpg'" [alt]="osoba?.ime_prezime" />
