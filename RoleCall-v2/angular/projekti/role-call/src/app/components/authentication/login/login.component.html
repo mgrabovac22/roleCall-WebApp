@@ -21,6 +21,18 @@
       <button type="submit" [disabled]="!korime || !lozinka">Prijava</button>
     </form>
 
+    <div class="auto-fill-buttons">
+      <button (click)="autoFillForm('admin', 'rwa')">Admin</button>
+      <button (click)="autoFillForm('obican', 'rwa')">Korisnik</button>
+      <button (click)="autoFillForm('mgrab', 'marin123')">Gost</button>
+    </div>
+
+    <div *ngIf="korime && lozinka">
+      <h4>Prijavljeni podaci:</h4>
+      <p>Username: {{ korime }}</p>
+      <p>Password: {{ lozinka }}</p>
+    </div>
+
     <div *ngIf="errorMessage" class="error-message">
       {{ errorMessage }}
     </div>

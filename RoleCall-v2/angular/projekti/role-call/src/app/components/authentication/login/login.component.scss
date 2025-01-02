@@ -262,6 +262,43 @@ section{
     }
     
   }
+
+  .auto-fill-buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;  
+    gap: 10px;  
+    justify-content: center;  
+  }
+  
+  .auto-fill-buttons button {
+    padding: 8px; 
+    font-size: 14px;  
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;  
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+    max-width: 200px;  
+    text-align: center;
+    width: auto;  
+  }
+  
+  .auto-fill-buttons button:hover {
+    background-color: #0056b3;
+    transform: scale(1.03);  
+  }
+  
+  .auto-fill-buttons button:active {
+    background-color: #004085;
+  }
+  
+  .auto-fill-buttons button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }  
+  
 }
 
 h2 {

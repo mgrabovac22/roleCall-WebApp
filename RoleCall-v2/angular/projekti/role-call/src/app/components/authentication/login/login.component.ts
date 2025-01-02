@@ -44,6 +44,11 @@ export class LoginComponent {
     }));
   }
 
+  autoFillForm(korisnickoIme: string, lozinka: string): void {
+    this.korime = korisnickoIme;
+    this.lozinka = lozinka;
+  }
+
   async login(): Promise<void> {
     this.errorMessage = '';
     this.showTotpPopup = false;

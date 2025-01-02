@@ -112,8 +112,6 @@ export class DetaljiComponent implements OnInit {
 
   promijeniSliku(promena: number) {
     this.trenutnaSlikaIndex += promena;
-    console.log(promena);
-    console.log(this.trenutnaSlikaIndex);
     
     if (this.trenutnaSlikaIndex < 0) {
         this.trenutnaSlikaIndex = this.slike.length - 1; 
@@ -124,6 +122,5 @@ export class DetaljiComponent implements OnInit {
     const putanja = this.slike[this.trenutnaSlikaIndex].putanja_do_slike;
     this.odabranaSlika = putanja.startsWith('http') ? putanja : environment.slikePutanja + putanja;
     
-    console.log(this.odabranaSlika);
   }
 }
