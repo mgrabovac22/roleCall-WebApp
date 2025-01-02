@@ -6,7 +6,6 @@ export default class Baza {
 
 	constructor(putanjaSQLliteDatoteka: string) {
 		this.putanjaSQLliteDatoteka = putanjaSQLliteDatoteka;
-		console.log(putanjaSQLliteDatoteka);
 		
 		this.vezaDB = new SQLite(putanjaSQLliteDatoteka);
 		this.vezaDB.exec("PRAGMA foreign_keys = ON;");

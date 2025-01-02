@@ -121,7 +121,6 @@ export class AuthService {
   }
 
   async logout() {
-    console.log("Pokrenuta odjava");
     try {
       const response = await fetch(`${environment.restServis}app/odjava`, {
         method: 'GET',
@@ -129,7 +128,6 @@ export class AuthService {
       });
   
       if (response.ok) {
-        console.log("Odjava uspješna");
         localStorage.removeItem('token'); 
         sessionStorage.removeItem('isFirstTime');
         this.roleSubject.next(3);

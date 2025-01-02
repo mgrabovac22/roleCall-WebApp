@@ -21,7 +21,6 @@ export class KorisnikDAO {
       VALUES (?, ?, ?)
     `;
     const podaci = [korisnik.korime, korisnik.status, korisnik.tip_korisnika];
-    console.log(korisnik.korime);
     
 
     await this.baza.ubaciAzurirajPodatke(sql, podaci);

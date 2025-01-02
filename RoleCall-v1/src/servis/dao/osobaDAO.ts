@@ -192,7 +192,6 @@ export class OsobaDAO {
     `;
     try {
         await this.baza.ubaciAzurirajPodatke(sql, [idOsobe]);
-        console.log(`Sve veze između filmova i osobe s ID-jem ${idOsobe} su obrisane.`);
     } catch (err) {
         console.error(`Greška prilikom brisanja veza između filmova i osobe s ID-jem ${idOsobe}:`, err);
         throw new Error("Greška prilikom brisanja veza između filmova i osobe.");
