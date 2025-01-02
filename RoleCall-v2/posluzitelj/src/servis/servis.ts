@@ -139,7 +139,7 @@ try {
 
 
     server.post("/servis/app/korisnici", async (req, res) => { await restAuthKorisnik.postKorisnik(req, res) });
-    server.get("/servis/app/korisnici", metodaNijeImplementirana);
+    server.get("/servis/app/korisnici",jwtMiddleware(), (req, res) => restAuthKorisnik.getKorisnici(req, res));
     server.put("/servis/app/korisnici", metodaNijeImplementirana);
     server.delete("/servis/app/korisnici", metodaNijeImplementirana);
 
@@ -172,11 +172,6 @@ try {
     server.get("/servis/app/osobaFilmovi/:id",jwtMiddleware(), metodaNijeImplementirana);
     server.put("/servis/app/osobaFilmovi/:id",jwtMiddleware(), metodaNijeImplementirana);
     server.delete("/servis/app/osobaFilmovi/:id",jwtMiddleware(), (req, res) => restOsoba.obrisiOsobuFilmove(req, res));
-    
-    server.post("/servis/app/korisnici",jwtMiddleware(), metodaNijeImplementirana);
-    server.get("/servis/app/korisnici",jwtMiddleware(), (req, res) => restAuthKorisnik.getKorisnici(req, res));
-    server.put("/servis/app/korisnici",jwtMiddleware(), metodaNijeImplementirana);
-    server.delete("/servis/app/korisnici",jwtMiddleware(), metodaNijeImplementirana);
 
     server.post("/servis/app/korisnici/tipovi",jwtMiddleware(), metodaNijeImplementirana);
     server.get("/servis/app/korisnici/tipovi",jwtMiddleware(), (req, res) => restAuthKorisnik.getTipoviKorisnika(req, res));

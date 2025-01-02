@@ -17,6 +17,9 @@ export class DetaljiComponent implements OnInit {
   idOsobe: number | null = null;
   osoba: any = null;
   slike: any[] = [];
+  odabranaSlika: string | null = null;
+  isModalOpen: boolean = false;
+  trenutnaSlikaIndex: number = 0;
   filmovi: any[] = [];
   trenutnaStranicaFilmova: number = 1;
   dodatnaStranicaFilmova: number = 2;
@@ -95,5 +98,32 @@ export class DetaljiComponent implements OnInit {
       await this.ucitajFilmoveSaTMDB();
     }
     this.cdr.detectChanges();
+  }
+
+  otvoriModal(slika: string) {
+    this.odabranaSlika = slika;
+    this.trenutnaSlikaIndex = this.slike.indexOf(slika);
+    this.isModalOpen = true;
+  }
+
+  zatvoriModal() {
+    this.isModalOpen = false;
+  }
+
+  promijeniSliku(promena: number) {
+    this.trenutnaSlikaIndex += promena;
+    console.log(promena);
+    console.log(this.trenutnaSlikaIndex);
+    
+    if (this.trenutnaSlikaIndex < 0) {
+        this.trenutnaSlikaIndex = this.slike.length - 1; 
+    } else if (this.trenutnaSlikaIndex >= this.slike.length) {
+        this.trenutnaSlikaIndex = 0; 
+    }
+
+    const putanja = this.slike[this.trenutnaSlikaIndex].putanja_do_slike;
+    this.odabranaSlika = putanja.startsWith('http') ? putanja : environment.slikePutanja + putanja;
+    
+    console.log(this.odabranaSlika);
   }
 }

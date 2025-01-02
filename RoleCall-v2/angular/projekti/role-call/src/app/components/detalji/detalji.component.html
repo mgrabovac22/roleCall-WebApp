@@ -8,10 +8,24 @@
         <p>Poznat po: {{ osoba?.izvor_poznatosti || 'Nepoznato' }}</p>
         <p>Popularnost: {{ osoba?.rang_popularnosti || 'Nepoznato' }}</p>
     </section>
-  
+    
     <section id="galerija">
-        <img *ngFor="let slika of slike" [src]="slika.putanja_do_slike.startsWith('http') ? slika.putanja_do_slike : environment.slikePutanja + slika.putanja_do_slike" />
+        <img
+            *ngFor="let slika of slike"
+            [src]="slika.putanja_do_slike.startsWith('http') ? slika.putanja_do_slike : environment.slikePutanja + slika.putanja_do_slike"
+            (click)="otvoriModal(slika.putanja_do_slike.startsWith('http') ? slika.putanja_do_slike : environment.slikePutanja + slika.putanja_do_slike)"
+            alt="Galerija slika"
+        />
     </section>
+    
+    <div id="modal" class="modal" [class.show]="isModalOpen" (click)="zatvoriModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <button class="nav-button left" (click)="promijeniSliku(-1)">&#8592;</button>
+            <img [src]="odabranaSlika" alt="Galerija slika" class="modal-image" />
+            <button class="nav-button right" (click)="promijeniSliku(1)">&#8594;</button>
+            <span class="close" (click)="zatvoriModal()">&times;</span>
+        </div>
+    </div>    
   
     <table id="filmovi">
         <thead>
@@ -51,4 +65,5 @@
         </div>
     </div>
   </section>
+
   
