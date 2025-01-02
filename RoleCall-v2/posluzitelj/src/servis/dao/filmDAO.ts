@@ -136,14 +136,13 @@ export class FilmDAO {
     const sqlBrisanje = "DELETE FROM film WHERE id = ?";
 
     const veze = (await this.baza.dajPodatkePromise(sqlVeze, [id])) as Array<any>;
-
+    
     if (veze.length > 0 && veze[0].veze > 0) {
         throw new Error("Film ima povezane osobe i ne može biti obrisan.");
     }
 
     try {
         await this.baza.ubaciAzurirajPodatke(sqlBrisanje, [id]);
-        console.log(`Film s ID-jem ${id} uspešno obrisan iz baze.`);
         return true;
     } catch (error) {
         console.error(`Greška prilikom brisanja filma s ID-jem ${id}:`, error);

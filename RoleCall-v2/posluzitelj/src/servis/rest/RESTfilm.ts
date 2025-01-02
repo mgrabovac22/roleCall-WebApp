@@ -96,15 +96,16 @@ export class RestFilm {
     }
 
     try {
-        const success = await this.filmDAO.obrisiFilm(id);
-        if (success) {
-            res.status(201).json({ status :"uspjeh" });
-        } else {
-            res.status(404).json({ greska: "Film nije pronađen." });
-        }
+      
+      const success = await this.filmDAO.obrisiFilm(id);
+      if (success) {
+        res.status(201).json({ status :"uspjeh" });
+      } else {
+        res.status(404).json({ greska: "Film nije pronađen." });
+      }
     } catch (err) {
-        if (err instanceof Error && err.message === "Film ima povezane osobe i ne može biti obrisan.") {
-            res.status(409).json({ greska: err.message });
+      if (err instanceof Error && err.message === "Film ima povezane osobe i ne može biti obrisan.") {
+        res.status(409).json({ greska: err.message });
         } else {
             console.error("Greška prilikom brisanja filma:", err);
             res.status(500).json({ greska: "Došlo je do greške prilikom brisanja filma." });

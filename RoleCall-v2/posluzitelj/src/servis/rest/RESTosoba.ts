@@ -64,13 +64,12 @@ export class RestOsoba {
     }
 
     try {
-        await this.osobaDAO.obrisiSveVezeFilmova(id);
-
-        await this.osobaDAO.obrisiSliku(id);
-
-        await this.osobaDAO.obrisi(id);
-
-        odgovor.status(201).json({ status :"uspjeh" });
+            
+      await this.osobaDAO.obrisiSliku(id);
+      
+      await this.osobaDAO.obrisi(id);
+      
+      odgovor.status(201).json({ status :"uspjeh" });
     } catch (err) {
         console.error("Greška prilikom brisanja osobe:", err);
         odgovor.status(500).json({ greska: "Greška prilikom brisanja osobe." });
@@ -210,6 +209,7 @@ export class RestOsoba {
     }
 
     try {
+      
       await this.osobaDAO.obrisiSveVezeFilmova(id);
       odgovor.status(201).json({ status :"uspjeh" });
     } catch (err) {
@@ -377,21 +377,26 @@ export class RestOsoba {
         const jwtToken = `Bearer ${notValidToken}`;
 
         if (!jwtToken) {
-            throw new Error("JWT token is missing.");
+          throw new Error("JWT token is missing.");
         }
-
+        
         let headers = new Headers();
         headers.set("Authorization", jwtToken);
         headers.set("Content-Type", "application/json");
-    
+
+        const filmoviUrl = `http://localhost:${this.portServis}/servis/osoba/${id}/film`;
+        const filmovi = await fetch(filmoviUrl, { method: "GET", headers: headers });
+        const filmoviJSON = await filmovi.json();
+        
         const vezeUrl = `http://localhost:${this.portServis}/servis/osoba/${id}/film`;
         const vezeOdgovor = await fetch(vezeUrl, { method: "DELETE", headers: headers });
-
+        
         if (!vezeOdgovor.ok) {
-            console.error(`Greška prilikom brisanja veza između osobe i filmova: ${vezeOdgovor.status}`);
-            res.status(500).json({ greska: "Greška prilikom brisanja veza između osobe i filmova." });
-            return;
+          console.error(`Greška prilikom brisanja veza između osobe i filmova: ${vezeOdgovor.status}`);
+          res.status(500).json({ greska: "Greška prilikom brisanja veza između osobe i filmova." });
+          return;
         }
+        
     
         const osobaUrl = `http://localhost:${this.portServis}/servis/osoba/${id}`;
         const osobaOdgovor = await fetch(osobaUrl, { method: "DELETE", headers: headers });
@@ -402,13 +407,9 @@ export class RestOsoba {
             return;
         }
 
-        const filmoviUrl = `http://localhost:${this.portServis}/servis/film`;
-        const filmovi = await fetch(filmoviUrl, { method: "GET", headers: headers });
-        const filmoviJSON = await filmovi.json();
-
         for (const film of filmoviJSON) {
             const filmId = film.id;
-        
+            
             if (!filmId) {
                 console.warn(`Film nema validan ID: ${JSON.stringify(film)}`);
                 continue;
@@ -469,7 +470,6 @@ export class RestOsoba {
 
         const vanjskiServisUrl = `http://localhost:${this.portServis}/servis/osoba/${id}`;
 
-        console.log("Requesting:", vanjskiServisUrl);
         const vanjskiOdgovor = await fetch(vanjskiServisUrl, { method: "GET", headers });
 
         if (vanjskiOdgovor.status === 200) {
