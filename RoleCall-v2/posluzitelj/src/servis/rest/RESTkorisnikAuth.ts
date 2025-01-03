@@ -83,13 +83,19 @@ export class RestAuthKorisnik {
     try {
       const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
         body: new URLSearchParams({
-          secret: this.konfiguracija.dajKonf().tajniCaptchaKljuc, 
-          response: recaptchaToken,
+            secret: this.konfiguracija.dajKonf().tajniCaptchaKljuc,
+            response: recaptchaToken,
         }),
       });
   
       const recaptchaResult = await recaptchaResponse.json();
+
+      console.log("Recaptcha score: ", recaptchaResult.score);
+      console.log("Recaptcha success: ", recaptchaResult.success);
       
       if (!recaptchaResult.success || recaptchaResult.score <= 0.5) {
         odgovor.status(400).json({ greska: "reCAPTCHA verifikacija nije uspela ili ste prepoznati kao bot." });
