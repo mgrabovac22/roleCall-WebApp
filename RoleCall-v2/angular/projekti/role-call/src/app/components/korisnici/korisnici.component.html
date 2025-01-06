@@ -1,0 +1,80 @@
+<div class="wholePage">
+
+    <div class="falling-snow">
+        <div
+          class="flake"
+          *ngFor="let snowflake of snowflakes"
+          [style.animation-duration]="snowflake.duration + 's'"
+          [style.left]="snowflake.left + '%'"
+        >
+          &#10052;
+        </div>
+    </div>
+    
+    <div class="rotating-snowflake bottom-left"></div>
+    <div class="rotating-snowflake top-right"></div>
+
+    <div class="container">
+        <h1>Korisnici</h1>
+        <p *ngIf="poruka" class="error">{{ poruka }}</p>
+    
+        <div class="trenutni-korisnik" *ngIf="trenutniKorisnik">
+            <h2>Trenutni korisnik</h2>
+            <p>Ime: {{ trenutniKorisnik.ime }}</p>
+            <p>Prezime: {{ trenutniKorisnik.prezime }}</p>
+            <p>Email: {{ trenutniKorisnik.email }}</p>
+            <p>Telefon: {{ trenutniKorisnik.telefon }}</p>
+        </div>
+    
+        <div class="korisnici-lista">
+            <h2>Popis korisnika</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ime</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Akcije</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let korisnik of korisnici">
+                        <td>{{ korisnik.id }}</td>
+                        <td>{{ korisnik.ime }}</td>
+                        <td>{{ korisnik.email }}</td>
+                        <td>
+                            <span [ngStyle]="{ color: prikaziStatus(korisnik.status) }">
+                                {{ korisnik.status }}
+                            </span>
+                        </td>
+                        <td *ngIf="trenutniKorisnik?.id !== korisnik.id" class="actions-column">
+                            <button (click)="dajPristup(korisnik.id, korisnik)" 
+                                    *ngIf="korisnik.status !== 'Ima pristup'" 
+                                    [disabled]="korisnik.status === 'Nije poslan zahtjev'">
+                                Daj pristup
+                            </button>
+                            <button (click)="zabraniPristup(korisnik.id, korisnik.korime)" *ngIf="korisnik.status === 'Ima pristup'">
+                                Zabrani pristup
+                            </button>
+                            <button (click)="prikaziModalZaBrisanje(korisnik.id, korisnik.ime, korisnik.korime, korisnik.status)" class="delete">
+                                Obriši
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="custom-modal" *ngIf="prikaziModal">
+            <div class="modal-content">
+            <h3>Potvrda brisanja</h3>
+            <p>Jeste li sigurni da želite izbrisati korisnika {{ korisnikZaBrisanje?.ime }}?</p>
+            <div class="modal-actions">
+                <button (click)="potvrdiBrisanje()" class="btn-confirm">Da</button>
+                <button (click)="zatvoriModal()" class="btn-cancel">Odustani</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,91 @@
+<section>
+  <div class="login-container">
+    <h2>Prijavite se</h2>
+    <form (ngSubmit)="login()" class="login-form">
+      <input
+        type="text"
+        [(ngModel)]="korime"
+        name="korime"
+        placeholder="Korisničko ime"
+        required
+      />
+
+      <input
+        type="password"
+        [(ngModel)]="lozinka"
+        name="lozinka"
+        placeholder="Lozinka"
+        required
+      />
+
+      <button type="submit" [disabled]="!korime || !lozinka">Prijava</button>
+    </form>
+
+    <div class="auto-fill-buttons">
+      <button (click)="autoFillForm('admin', 'rwa')">Admin</button>
+      <button (click)="autoFillForm('obican', 'rwa')">Korisnik</button>
+      <button (click)="autoFillForm('mgrab', 'marin123')">Gost</button>
+    </div>
+
+    <div *ngIf="korime && lozinka">
+      <h4>Prijavljeni podaci:</h4>
+      <p>Username: {{ korime }}</p>
+      <p>Password: {{ lozinka }}</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div class="register-link">
+      <a routerLink="/registracija" class="register-text">
+        Nemate račun? Registrirajte se
+      </a>
+    </div>
+  </div>
+
+  <div class="falling-snow">
+    <div
+      class="flake"
+      *ngFor="let snowflake of snowflakes"
+      [style.animation-duration]="snowflake.duration + 's'"
+      [style.left]="snowflake.left + '%'"
+    >
+      &#10052;
+    </div>
+  </div>
+
+  <div id="slider-container">
+  <label for="snijeg-slider">Intenzitet snijega:</label>
+  <input
+  id="snijeg-slider"
+  type="range"
+  min="5"
+  max="100"
+  step="1"
+  [(ngModel)]="intenzitetSnijega"
+  (input)="setIntenzitetSnijega()"
+  />
+  <span>{{ intenzitetSnijega }}</span>
+</div>
+
+  <div class="popup-overlay" *ngIf="showTotpPopup && totpEnabled">
+    <div class="popup">
+      <h3>Unesite TOTP kod</h3>
+      <input
+        type="text"
+        [(ngModel)]="totpCode"
+        placeholder="TOTP kod"
+        class="totp-input"
+      />
+      <div class="popup-actions">
+        <button (click)="verifyTotp()">Potvrdi</button>
+        <button class="close-btn" (click)="showTotpPopup = false">Zatvori</button>
+      </div>
+      <p *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </p>
+    </div>
+  </div>  
+  
+</section>

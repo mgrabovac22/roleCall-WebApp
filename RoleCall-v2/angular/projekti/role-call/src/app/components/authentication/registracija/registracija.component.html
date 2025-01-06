@@ -1,0 +1,51 @@
+<section>
+  <div class="registration-container">
+    <h2>Registrirajte se</h2>
+    <form (ngSubmit)="onRegister()">
+      <input type="text" [(ngModel)]="ime" name="ime" placeholder="Ime" required>
+      <input type="text" [(ngModel)]="prezime" name="prezime" placeholder="Prezime" required>
+      <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required>
+      <input type="text" [(ngModel)]="korime" name="korime" placeholder="Korisničko ime" required>
+      <input type="password" [(ngModel)]="lozinka" name="lozinka" placeholder="Lozinka" required>
+      <input type="text" [(ngModel)]="adresa" name="adresa" placeholder="Adresa" required>
+      <input type="text" [(ngModel)]="grad" name="grad" placeholder="Grad" required>
+      <input type="text" [(ngModel)]="drzava" name="drzava" placeholder="Država" required>
+      <input type="tel" [(ngModel)]="telefon" name="telefon" placeholder="Telefon" required>
+      <button type="submit" [disabled]="!isValid()">Registracija</button>
+    </form>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <div class="login-link">
+      <a routerLink="/login" class="login-text">Imate račun? Prijavite se</a>
+    </div>
+
+  </div>
+  
+  
+  <div class="falling-snow">
+    <div
+    class="flake"
+    *ngFor="let snowflake of snowflakes"
+    [style.animation-duration]="snowflake.duration + 's'"
+    [style.left]="snowflake.left + '%'"
+    >
+    &#10052;
+  </div>
+</div>  
+
+<div id="slider-container">
+  <label for="snijeg-slider">Intenzitet snijega:</label>
+  <input
+  id="snijeg-slider"
+  type="range"
+  min="5"
+  max="100"
+  step="1"
+  [(ngModel)]="intenzitetSnijega"
+  (input)="setIntenzitetSnijega()"
+  />
+  <span>{{ intenzitetSnijega }}</span>
+</div>
+
+<div class="rotating-snowflake bottom-left"></div>
+<div class="rotating-snowflake top-right"></div>
+</section>

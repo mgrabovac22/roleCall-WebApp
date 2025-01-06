@@ -24,9 +24,7 @@ export class RestKorisnik {
       korime,
       status,
       tip_korisnika: tip_korisnika_id,
-    };
-
-    
+    };    
 
     try {
       await this.kdao.dodaj(korisnik);

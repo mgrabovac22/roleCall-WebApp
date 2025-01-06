@@ -1,0 +1,338 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  min-height: 85vh;
+  width: 100%;
+}
+section{
+  display: block;
+  justify-content: center;
+  align-items: center;
+
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .popup {
+    background: #ffffff;
+    padding: 30px 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    overflow: hidden;
+    animation: slideIn 0.4s ease-in-out;
+  }
+  
+  .popup h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .popup .totp-input {
+    width: calc(100% - 20px); 
+    max-width: 100%; 
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+  }
+  
+  .popup .totp-input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  .popup-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .popup button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+  }
+  
+  .popup button:hover {
+    transform: scale(1.05);
+  }
+  
+  .popup button:first-child {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .popup button:first-child:hover {
+    background-color: #0056b3;
+  }
+  
+  .popup .close-btn {
+    background-color: #f8f9fa;
+    color: #333;
+  }
+  
+  .popup .close-btn:hover {
+    background-color: #e2e6ea;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      background: rgba(0, 0, 0, 0);
+    }
+    to {
+      background: rgba(0, 0, 0, 0.7);
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }  
+
+  @media (max-width: 480px) {
+    .popup {
+      width: 90%;
+    }
+  
+    .popup .totp-input {
+      font-size: 14px; 
+    }
+  }
+  
+
+  #slider-container {
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    margin: auto;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    font-size: 14px;
+    color: #333;
+  
+    label {
+      font-weight: bold;
+    }
+  
+    input[type="range"] {
+      width: 200px;
+      appearance: none;
+      height: 8px;
+      background: #ddd;
+      border-radius: 5px;
+      outline: none;
+      transition: background 0.3s;
+  
+      &::-webkit-slider-thumb {
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #007acc;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+  
+      &::-webkit-slider-thumb:hover {
+        background: #005f99;
+      }
+    }
+  }
+  .falling-snow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .flake {
+      position: absolute;
+      top: -10px;
+      font-size: 24px;
+      color: white;
+      opacity: 0.8;
+      animation: snow 6s linear infinite;
+      pointer-events: none;
+
+      &:nth-child(1) { left: 10%; animation-duration: 4s; }
+      &:nth-child(2) { left: 25%; animation-duration: 5s; }
+      &:nth-child(3) { left: 50%; animation-duration: 6s; }
+      &:nth-child(4) { left: 70%; animation-duration: 4s; }
+      &:nth-child(5) { left: 85%; animation-duration: 5.5s; }
+  }
+
+  @keyframes snow {
+      0% { transform: translateY(-10px); }
+      100% { transform: translateY(100vh); }
+  }
+
+  .rotating-snowflake {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: url('/assets/snjeguljica.png') no-repeat center center;
+      background-size: contain;
+      animation: rotate 4s linear infinite;
+  }
+
+  .bottom-left {
+      left: 10px;
+      bottom: 10px;
+  }
+
+  .top-right {
+      right: 10px;
+      top: 10px;
+  }
+
+  @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+  }
+
+  .login-container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+    position: relative;
+    z-index: 10;
+    margin: auto;
+
+    .register-link {
+      margin-top: 20px;
+      text-align: center;
+    }
+    
+    .register-text {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+    
+    .register-text:hover {
+      color: #0056b3; 
+      text-decoration: underline;
+      transform: scale(1.05);
+    }
+    
+  }
+
+  .auto-fill-buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;  
+    gap: 10px;  
+    justify-content: center;  
+  }
+  
+  .auto-fill-buttons button {
+    padding: 8px; 
+    font-size: 14px;  
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;  
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+    max-width: 200px;  
+    text-align: center;
+    width: auto;  
+  }
+  
+  .auto-fill-buttons button:hover {
+    background-color: #0056b3;
+    transform: scale(1.03);  
+  }
+  
+  .auto-fill-buttons button:active {
+    background-color: #004085;
+  }
+  
+  .auto-fill-buttons button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }  
+  
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-form button:disabled {
+  background-color: #ccc;
+}
+
+.error-message {
+  color: red;
+  margin-top: 15px;
+  font-size: 14px;
+}

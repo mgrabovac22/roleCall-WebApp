@@ -1,0 +1,8 @@
+<nav>
+    <a *ngFor="let item of menuItems" 
+        [routerLink]="item.link" 
+        (click)="item.action ? item.action() : null">
+        {{ item.label }}
+    </a>
+</nav>
+  

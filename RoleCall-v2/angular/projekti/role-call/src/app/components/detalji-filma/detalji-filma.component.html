@@ -1,0 +1,37 @@
+<section class="wholePage">
+
+    <div class="film-buttons">
+        <a [routerLink]="['/filmovi']" class="back-button">Nazad</a>
+    </div>
+    <div class="rotating-snowflake bottom-left"></div>
+    <div class="rotating-snowflake top-right"></div>
+
+    <section class="content-container">
+      
+        <section id="detaljiFilma" *ngIf="film">
+            <div class="film-poster-container">
+                <img *ngIf="film.putanja_postera || film.poster_path" [src]="environment.posteriPutanja + (film.putanja_postera || film.poster_path)" [alt]="film.naslov || film.title" class="film-poster"/>
+            </div>
+            <div class="film-info">
+                <h1>{{ film?.naslov }}</h1>
+                <p><strong>Opis:</strong> {{ film?.opis || 'Nema opisa' }}</p>
+                <p><strong>Jezik:</strong> {{ film?.jezik || 'Nepoznato' }}</p>
+                <p><strong>Originalni Naslov:</strong> {{ film?.org_naslov || 'Nepoznato' }}</p>
+                <p><strong>Datum Izdavanja:</strong> {{ film?.datum_izdavanja || 'Nepoznato' }}</p>
+                <p><strong>Popularnost:</strong> {{ film?.rang_popularnosti?.toFixed(2) || 'Nepoznato' }}</p>
+
+            </div>
+        </section>
+    </section>
+
+    <div class="falling-snow">
+        <div
+            class="flake"
+            *ngFor="let snowflake of snowflakes"
+            [style.animation-duration]="snowflake.duration + 's'"
+            [style.left]="snowflake.left + '%'"
+        >
+            &#10052;
+        </div>
+    </div>
+</section>
