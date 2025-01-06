@@ -7,3 +7,20 @@ package-lock.json
 */**/konfiguracija.csv
 
 build
+
+.angular/
+dist/
+
+*.tsbuildinfo
+
+.vscode/
+*.code-workspace
+
+.DS_Store
+Thumbs.db
+
+logs/
+*.log
+
+environments/environment.prod.ts
+environments/environment.ts

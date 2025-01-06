@@ -190,7 +190,8 @@ export class OsobaDAO {
         DELETE FROM film_osoba
         WHERE osoba_id = ?
     `;
-    try {
+    try {  
+          
         await this.baza.ubaciAzurirajPodatke(sql, [idOsobe]);
     } catch (err) {
         console.error(`Greška prilikom brisanja veza između filmova i osobe s ID-jem ${idOsobe}:`, err);

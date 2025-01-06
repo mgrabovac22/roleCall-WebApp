@@ -1,0 +1,215 @@
+section{
+    position: relative;
+    min-height: 85vh;
+    margin-bottom: 1vh;
+
+    .falling-snow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .flake {
+        position: absolute;
+        top: -10px;
+        font-size: 24px;
+        color: white;
+        opacity: 0.8;
+        animation: snow 6s linear infinite;
+        pointer-events: none;
+
+        &:nth-child(1) { left: 10%; animation-duration: 4s; }
+        &:nth-child(2) { left: 25%; animation-duration: 5s; }
+        &:nth-child(3) { left: 50%; animation-duration: 6s; }
+        &:nth-child(4) { left: 70%; animation-duration: 4s; }
+        &:nth-child(5) { left: 85%; animation-duration: 5.5s; }
+    }
+
+    @keyframes snow {
+        0% { transform: translateY(-10px); }
+        100% { transform: translateY(100vh); }
+    }
+
+    .filtriranje {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #ffffff;
+        padding: 1.5rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+        border-radius: 8px;
+    }
+
+    .filtriranje label {
+        font-size: 1.1rem;
+        color: #333;
+        margin-right: 10px;
+    }
+
+    .filtriranje input[type="date"] {
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        transition: border-color 0.3s ease-in-out;
+    }
+
+    .filtriranje input[type="date"]:focus {
+        outline: none;
+        border-color: #007bff;
+    }
+
+    .filtriranje button {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        background-color: #007bff;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .filtriranje button:hover {
+        background-color: #0056b3;
+    }
+
+    .filmovi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+        padding: 0 1.5rem;
+        overflow-x: auto; 
+        scroll-behavior: smooth;
+    }
+
+    .filmovi-grid::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .filmovi-grid::-webkit-scrollbar-thumb {
+        background-color: #007bff;
+        border-radius: 4px;
+    }
+
+    .filmovi-grid::-webkit-scrollbar-track {
+        background-color: #f0f0f0;
+    }
+
+    .film-card {
+        background-color: #fff;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        overflow: hidden;
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        height: 600px; 
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        background-color: #f9f9f9;
+
+        &:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .film-info {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
+            height: 30%;
+            overflow-y: auto; 
+
+            h3 {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #333;
+                margin: 0;
+            }
+
+            p {
+                font-size: 1rem;
+                color: #555;
+                margin: 0.5rem 0;
+            }
+
+            .film-details {
+                display: none;
+                font-size: 0.9rem;
+                color: #777;
+                text-align: left;
+                background-color: #f4f4f4;
+                padding: 0.8rem;
+                margin-top: 1rem;
+                border-top: 1px solid #ddd;
+            }
+        }
+
+        &:hover {
+            .film-info .film-details {
+                display: block;
+            }
+
+            img {
+                transform: translateY(-10px);
+            }
+
+            .film-card {
+                transform: translateY(50px);
+            }
+        }
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+        padding: 0 1.5rem; 
+        
+        button {
+            padding: 0.8rem 1.2rem;
+            border-radius: 6px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            margin: 0 0.5rem;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+
+        span {
+            font-size: 1.1rem;
+            color: #333;
+        }
+    }
+}

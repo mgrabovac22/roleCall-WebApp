@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="rotating-snowflake bottom-left"></div>
+    <div class="rotating-snowflake top-right"></div>
+    
+    <div class="message-box">
+        <h1>ERROR 401</h1>
+        <p>Pristup ovoj stranici je zabranjen jer ste pokušali ući u dio aplikacije za koji nemate prava pristupa.</p>
+        <p>Molimo vas da se prijavite sa odgovarajućom ulogom.</p>
+        <button class="back-btn" (click)="goBack()">Vrati me na početnu</button>
+    </div>
+
+    <div class="falling-snow">
+        <div
+          class="flake"
+          *ngFor="let snowflake of snowflakes"
+          [style.animation-duration]="snowflake.duration + 's'"
+          [style.left]="snowflake.left + '%'">
+          &#10052;
+        </div>
+    </div>    
+</div>
+  

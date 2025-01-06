@@ -1,0 +1,62 @@
+<section>
+  <div class="divKor" *ngIf="korisnik">
+    <h2>Profil korisnika</h2>
+    <p><strong>Korisničko ime:</strong> {{ korisnik.korime }}</p>
+    <p><strong>Email:</strong> {{ korisnik.email }}</p>
+    <p><strong>Status:</strong> {{ korisnik.status }}</p>
+    <p><strong>Ime:</strong> {{ korisnik.ime }}</p>
+    <p><strong>Prezime:</strong> {{ korisnik.prezime }}</p>
+    <p><strong>Adresa:</strong> {{ korisnik.adresa }}</p>
+    <div class="divKor" [ngSwitch]="korisnik.tip_korisnika_id">
+      <p *ngSwitchCase="1"><strong>Tip korisnika:</strong> Registrirani korisnik</p>
+      <p *ngSwitchCase="2"><strong>Tip korisnika:</strong> Administrator</p>
+      <p *ngSwitchCase="3"><strong>Tip korisnika:</strong> Gost</p>
+      <p *ngSwitchDefault><strong>Tip korisnika:</strong> Nepoznat</p>
+    </div>          
+    <p><strong>Telefon:</strong> {{ korisnik.telefon }}</p>
+    <p><strong>Grad:</strong> {{ korisnik.grad }}</p>
+    <p><strong>Država:</strong> {{ korisnik['država'] }}</p>
+    
+    <div class="divKor">
+      <button *ngIf="!korisnik.totpAktiviran" (click)="onActivateTOTP()">Aktiviraj TOTP</button>
+      <button *ngIf="korisnik.totpAktiviran" (click)="onDeactivateTOTP()">Deaktiviraj TOTP</button>
+    </div>
+  
+    <div class="divKor" *ngIf="korisnik.totpAktiviran">
+      <p><strong>Tajni TOTP ključ:</strong> {{ totpSecret }}</p>
+      <p>Koristite ovaj ključ za postavljanje TOTP-a u aplikaciji.</p>
+      <div class="divKor" *ngIf="totpSecret" id="qrCode">
+        <h3>Skenirajte da dobijete vrijednost totp tajnog ključa</h3>
+        <img *ngIf="qrCodeImage" [src]="qrCodeImage" alt="QR kod">
+      </div>
+    </div>
+    <div class="falling-snow">
+      <div
+        class="flake"
+        *ngFor="let snowflake of snowflakes"
+        [style.animation-duration]="snowflake.duration + 's'"
+        [style.left]="snowflake.left + '%'"
+      >
+        &#10052;
+      </div>
+    </div>
+  
+    <div id="slider-container">
+      <label for="snijeg-slider">Intenzitet snijega:</label>
+      <div class="slider-wrapper">
+        <input
+          id="snijeg-slider"
+          type="range"
+          min="5"
+          max="100"
+          step="1"
+          [(ngModel)]="intenzitetSnijega"
+          (input)="setIntenzitetSnijega()"
+        />
+        <span class="slider-value">{{ intenzitetSnijega }}</span>
+      </div>
+    </div>    
+    
+  </div>
+
+</section>

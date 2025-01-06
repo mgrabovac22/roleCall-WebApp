@@ -1,0 +1,31 @@
+<div class="user-status">
+    <div class="data-box">
+      <p><strong>Ime i prezime:</strong> {{ imePrezime }}</p>
+      <p><strong>Korisničko ime:</strong> {{ korisnickoIme }}</p>
+      <p><strong>Email:</strong> {{ email }}</p>
+      <p><strong>Status:</strong> {{ status }}</p>
+  
+      <button 
+          *ngIf="zahtjevAdminuVisible && !zahtjevPoslan" 
+          (click)="posaljiZahtjevAdminu()">
+          Pošalji zahtjev
+      </button>
+  
+      <p *ngIf="zahtjevPoslan">Zahtjev poslan</p>
+    </div>
+  
+    <div class="falling-snow">
+      <div
+        class="flake"
+        *ngFor="let snowflake of snowflakes"
+        [style.animation-duration]="snowflake.duration + 's'"
+        [style.left]="snowflake.left + '%'"
+      >
+        &#10052;
+      </div>
+    </div>
+  
+    <div class="rotating-snowflake bottom-left"></div>
+    <div class="rotating-snowflake top-right"></div>
+  </div>
+  
