@@ -66,9 +66,6 @@ Role Call is available in two versions:
 - Access the application in the browser at `http://localhost:12222` (Node.js version) or `http://localhost:4200` (Angular version).
 - Follow the provided documentation for API usage and user management.
 
-## Contribution
-Feel free to contribute by submitting issues, feature requests, or pull requests.
-
 ## License
 This project is licensed under the MIT License.
 
