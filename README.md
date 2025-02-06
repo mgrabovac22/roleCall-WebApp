@@ -37,7 +37,7 @@ Role Call is available in two versions:
 ### Steps
 1. **Clone the repository**:
    ```sh
-   git clone https://github.com/yourusername/roleCall-WebApp.git
+   git clone https://github.com/mgrabovac22/roleCall-WebApp.git
    cd roleCall-WebApp
    ```
 
