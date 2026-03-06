@@ -71,3 +71,12 @@ This project is licensed under the MIT License.
 
 ---
 Developed by **[Marin Grabovac]** 🚀
+
+<img width="1864" height="921" alt="image" src="https://github.com/user-attachments/assets/3d92f01c-6f27-40cd-a09f-7476d3e5bd85" />
+
+<img width="1867" height="927" alt="image" src="https://github.com/user-attachments/assets/d99d0c6b-0b5a-4849-90ac-f9e06a0018d9" />
+
+<img width="1867" height="928" alt="image" src="https://github.com/user-attachments/assets/7fc0a855-a5e5-4165-bd3a-5508884c960e" />
+
+
+
